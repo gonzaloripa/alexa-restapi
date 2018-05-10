@@ -2,8 +2,8 @@
 var dynamoose = require('dynamoose');
 //dynamoose.local();
 dynamoose.AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,//'AKIAI3NDSBREHM57OXBQ',
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,//'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',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,//'AKIAJQEJK7GDLIPWSFQA',
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,//'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',
   region: 'us-east-1'
 
 });
