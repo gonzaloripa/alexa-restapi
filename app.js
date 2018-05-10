@@ -1,7 +1,9 @@
 // app.js: for configuring the app
 var express = require('express');
 var app = express();
-var db = require('./db'); 
+var db = require('./db');
+const aws = require('aws-sdk'); 
+aws.config.region = 'us-east-1';
 var UserController = require('./user/UserController');
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
