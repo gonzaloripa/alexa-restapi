@@ -1,6 +1,6 @@
 // db.js:conectamos la base con el servidor
 var dynamoose = require('dynamoose');
-dynamoose.local();
+//dynamoose.local();
 dynamoose.AWS.config.update({
   accessKeyId: 'AKIAI3NDSBREHM57OXBQ',
   secretAccessKey: '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',
