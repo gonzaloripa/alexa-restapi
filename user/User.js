@@ -3,7 +3,7 @@
 var dynamoose = require('dynamoose');
 
 var userSchema = new dynamoose.Schema({
-  ownerId: {
+  userid: {
     type: String,
     hashKey: true
   },
