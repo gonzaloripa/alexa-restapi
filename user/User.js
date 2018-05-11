@@ -2,7 +2,7 @@
 
 var dynamoose = require('dynamoose');
 
-var userSchema = new Schema({
+var userSchema = new dynamoose.Schema({
   ownerId: {
     type: String,
     hashKey: true
