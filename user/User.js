@@ -2,7 +2,10 @@
 
 var dynamoose = require('dynamoose');
 
-var User = dynamoose.model('Usr', { userid: String, name: String,noticia:[Object]});
+var User = dynamoose.model('Usr', { userid: String, name: String,noticia:[Map]},{
+  useDocumentTypes: true,
+  saveUnknown: true,
+});
 
 module.exports = User;
 /*
