@@ -12,12 +12,13 @@ var userSchema = new Schema({
     rangeKey: true,
     index: true // name: nameLocalIndex, ProjectionType: ALL
   },
-  noticias:[{url:String,xpath:String,category:String}],
+  noticias:[{url:String,xpath:String,category:String}]
+  },
   {
   useDocumentTypes: true,
   saveUnknown: true,
   }
-});
+);
 
 var User = dynamoose.model('Usr', userSchema); //{ userid: String, name: String,noticias:[{url:String,xpath:String,category:String}]},{
 
