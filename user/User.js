@@ -12,9 +12,7 @@ var userSchema = new Schema({
     rangeKey: true,
     index: true // name: nameLocalIndex, ProjectionType: ALL
   },
-  noticias:{
-  	type: [{url:{type:String},xpath:{type:String},category:{type:String}}]	
-  },
+  noticias:[{url:String,xpath:String,category:String}],
   {
   useDocumentTypes: true,
   saveUnknown: true,
