@@ -27,7 +27,7 @@ router.put('/update/user/:name',function(req, res) {
 	  if(encontro){ //Si la noticia es distinta a las que ya tenia el usuario
 		  array.push(req.body);
 		  console.log('array ' + array,usuarios[0].noticias);
-		  User.update({userid: userid, name: req.params.name}, {noticia: array}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
+		  User.update({userid: userid, name: req.params.name}, {noticias: array}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
 			if(err) { return console.log(err); }
 			console.log('Actualizado ',req.body);
 			
