@@ -49,10 +49,11 @@ router.post('/', function (req, res) {
 	var userId ='amzn1.ask.account.AEM7C7O3S3FKO4J77F7YYBP5CXPUVG4VHEW4MM77YUETWFCQAMJE4PTXRJCZAJTWC2FKIP3MEVBILLNA2TK7VDHVBHBDA7ZSFLFRYWYE2U4WBV64CWFAKL74DHSBJ3KHY2VPD6HY7G5AWN5XUUIQCJYOQ3VAMD32MKA63PW5ZEDG5F2AXOIL5VNSGPKZZDY3IFDK4V75RD4CKYY';
 	var array = [];
 	var obj = {url:'https://diariohoy.net',
-			   xpath:"body/div[1]/div[1]/div[1]/div[2]/section[1]/article[1]/a[1]/h2[1]"
-			   };
+			   xpath:"body/div[1]/div[1]/div[1]/div[2]/section[1]/article[1]/a[1]/h2[1]",
+			   category:"Politica"
+			  };
 	array.push(obj);
-	var usuario = new User({userid: userId, name: 'gonza',noticia:array});
+	var usuario = new User({userid: userId, name: 'gonza',noticias:array});
 	usuario.save(function (err) {
 	  if(err) { return console.log(err); }
 	  console.log('Guardado');

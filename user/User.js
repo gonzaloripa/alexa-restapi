@@ -2,10 +2,27 @@
 
 var dynamoose = require('dynamoose');
 
-var User = dynamoose.model('Usr', { userid: String, name: String,noticias:[{url:String,xpath:String}]},{
+var userSchema = new Schema({
+  ownerId: {
+    type: String,
+    hashKey: true
+  },
+  name: {
+    type: String,
+    rangeKey: true,
+    index: true // name: nameLocalIndex, ProjectionType: ALL
+  },
+  noticias:{
+  	type: [{url:{type:String},xpath:{type:String},category:{type:String}}]	
+  },
+  {
   useDocumentTypes: true,
   saveUnknown: true,
+  }
 });
+
+var User = dynamoose.model('Usr', userSchema); //{ userid: String, name: String,noticias:[{url:String,xpath:String,category:String}]},{
+
 
 module.exports = User;
 /*
