@@ -17,7 +17,7 @@ router.put('/update/user/:name',function(req, res) {
 	User.scan('name').contains(req.params.name).exec(function (err, usuarios) {
 	  
 	  userid=usuarios[0].userid;
-	  var array = usuarios[0].noticia;
+	  var array = usuarios[0].noticias;
 	  var encontro;
 	  array.forEach(function(elem){
 	  	if( JSON.stringify(req.body) != JSON.stringify(elem)){	  	
@@ -26,7 +26,7 @@ router.put('/update/user/:name',function(req, res) {
 	  });
 	  if(encontro){ //Si la noticia es distinta a las que ya tenia el usuario
 		  array.push(req.body);
-		  console.log('array ' + array,usuarios[0].noticia);
+		  console.log('array ' + array,usuarios[0].noticias);
 		  User.update({userid: userid, name: req.params.name}, {noticia: array}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
 			if(err) { return console.log(err); }
 			console.log('Actualizado ',req.body);
