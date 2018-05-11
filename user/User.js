@@ -2,7 +2,7 @@
 
 var dynamoose = require('dynamoose');
 
-var User = dynamoose.model('Usr', { userid: String, name: String,noticia:[Map]},{
+var User = dynamoose.model('Usr', { userid: String, name: String,noticias:[{url:String,xpath:String}]},{
   useDocumentTypes: true,
   saveUnknown: true,
 });
