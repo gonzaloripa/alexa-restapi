@@ -8,7 +8,7 @@ var UserSchema = new mongoose.Schema({
   name: {type:String,index:true},
   noticias:[{
     url:String,
-    xpath:{type:String,lowercase: true}
+    xpath:{type:String,lowercase: true},
     category:String
   }]
 });
