@@ -6,7 +6,29 @@ var bodyParser = require('body-parser');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 var User = require('./User');
+
 var userId ='amzn1.ask.account.AEM7C7O3S3FKO4J77F7YYBP5CXPUVG4VHEW4MM77YUETWFCQAMJE4PTXRJCZAJTWC2FKIP3MEVBILLNA2TK7VDHVBHBDA7ZSFLFRYWYE2U4WBV64CWFAKL74DHSBJ3KHY2VPD6HY7G5AWN5XUUIQCJYOQ3VAMD32MKA63PW5ZEDG5F2AXOIL5VNSGPKZZDY3IFDK4V75RD4CKYY';
+
+// CREATES A NEW USER
+router.post('/', function (req, res) {
+	var name = req.body.name; //'gonza'
+	var array = [];
+	var obj = req.body.noticia;/*{url:'https://diariohoy.net',
+			   xpath:"body/div[1]/div[1]/div[1]/div[2]/section[1]/article[1]/a[1]/h2[1]",
+			   category:"Politica"
+			  };*/
+	array.push(obj);
+    
+    User.create({//Hace el new y el save juntos
+            userid: userId, 
+            name: name,
+            noticias:array
+        },function (err, user) {
+            if (err) return res.status(500).send("There was a problem adding the information to the database.");
+            res.status(201).send(user);
+        });
+});
+/*
 
 //Modificar una noticia de un usuario 
 router.put('/update/user/:name',function(req, res) {
@@ -43,42 +65,6 @@ router.put('/update/user/:name',function(req, res) {
 	})*/
   });
 
-// CREATES A NEW USER
-router.post('/', function (req, res) {
-    User.create({
-            name : req.body.name,
-            email : req.body.email,
-            password : req.body.password
-        }, 
-        function (err, user) {
-            if (err) return res.status(500).send("There was a problem adding the information to the database.");
-            res.status(200).send(user);
-        });
-});
-// CREATES A NEW USER
-router.post('/', function (req, res) { 
-	var userId ='amzn1.ask.account.AEM7C7O3S3FKO4J77F7YYBP5CXPUVG4VHEW4MM77YUETWFCQAMJE4PTXRJCZAJTWC2FKIP3MEVBILLNA2TK7VDHVBHBDA7ZSFLFRYWYE2U4WBV64CWFAKL74DHSBJ3KHY2VPD6HY7G5AWN5XUUIQCJYOQ3VAMD32MKA63PW5ZEDG5F2AXOIL5VNSGPKZZDY3IFDK4V75RD4CKYY';
-	var array = [];
-	var obj = {url:'https://diariohoy.net',
-			   xpath:"body/div[1]/div[1]/div[1]/div[2]/section[1]/article[1]/a[1]/h2[1]",
-			   category:"Politica"
-			  };
-	array.push(obj);
-	var usuario = new User({userid: userId, name: 'gonza',noticias:array});
-	usuario.save(function (err) {
-	  if(err) { return console.log(err); }
-	  console.log('Guardado');
-	});
-});
-
-// RETURNS ALL THE USERS IN THE DATABASE
-router.get('/', function (req, res) {
-    User.find({}, function (err, users) {
-        if (err) return res.status(500).send("There was a problem finding the users.");
-        res.status(200).send(users);
-    });
-});
-
 
 // GETS A SINGLE USER FROM THE DATABASE
 router.get('/:usrid/:name', function (req, res) {
@@ -94,6 +80,14 @@ router.get('/:usrid/:name', function (req, res) {
 
 // RETURNS ALL THE USERS IN THE DATABASE
 router.get('/', function (req, res) {
+    User.find({}, function (err, users) {
+        if (err) return res.status(500).send("There was a problem finding the users.");
+        res.status(200).send(users);
+    });
+});
+
+// RETURNS ALL THE USERS IN THE DATABASE
+router.get('/', function (req, res) {
 
 	
 	User.scan('name').contains('gonza').exec(function (err, users) {
@@ -102,22 +96,7 @@ router.get('/', function (req, res) {
         res.status(200).send(users);
 	});
 	
-	/*// Create a new cat object
-	var garfield = new Cat({id: 666, name: 'Garfield'});
-
-	// Save to DynamoDB
-	garfield.save();
-
-	// Lookup in DynamoDB
-	Cat.get(666)
-	.then(function (badCat) {
-	  console.log('Never trust a smiling cat. - ' + badCat.id);
-	});
-
-	Cat.scan().exec(function (err, users) {
-        if (err) return res.status(500).send("There was a problem finding the users.");
-        res.status(200).send(users);
-	});
+	/*
 		var usuario = User.update({id: '60',name:'gonza'}, {id:'600'}, function (err) {
   	if(err) { return console.log(err); }
   		console.log('Just a puppy');
@@ -148,4 +127,5 @@ router.delete('/:usrid', function (req, res) {
     */
 });
 
+*/
 module.exports = router;

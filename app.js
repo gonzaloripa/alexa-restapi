@@ -3,7 +3,7 @@ var express = require('express');
 var app = express();
 var db = require('./db');
 
-//var UserController = require('./user/UserController');
+var UserController = require('./user/UserController');
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
