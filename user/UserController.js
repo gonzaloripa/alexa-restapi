@@ -18,6 +18,7 @@ router.post('/', function (req, res) {
 			   category:"Politica"
 			  };*/
 	array.push(obj);
+	console.log(req.body);
     
     User.create({//Hace el new y el save juntos
             userid: userId, 

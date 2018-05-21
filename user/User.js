@@ -13,8 +13,7 @@ var UserSchema = new mongoose.Schema({
   }]
 });
 
-connection.model('User', UserSchema);
-module.exports = mongoose.model('User');
+module.exports = connection.model('User', UserSchema);
 /*
 var userSchema = new dynamoose.Schema({
   userid: {
