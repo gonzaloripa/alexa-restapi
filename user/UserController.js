@@ -21,7 +21,7 @@ router.post('/', function (req, res) {
 	console.log(name,array);
     
     User.create({//Hace el new y el save juntos
-            userid: userId, 
+            userId: userId, 
             name: name,
             noticias:array
         },function (err, user) {
