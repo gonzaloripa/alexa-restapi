@@ -43,7 +43,18 @@ router.put('/update/user/:name',function(req, res) {
 	})*/
   });
 
-
+// CREATES A NEW USER
+router.post('/', function (req, res) {
+    User.create({
+            name : req.body.name,
+            email : req.body.email,
+            password : req.body.password
+        }, 
+        function (err, user) {
+            if (err) return res.status(500).send("There was a problem adding the information to the database.");
+            res.status(200).send(user);
+        });
+});
 // CREATES A NEW USER
 router.post('/', function (req, res) { 
 	var userId ='amzn1.ask.account.AEM7C7O3S3FKO4J77F7YYBP5CXPUVG4VHEW4MM77YUETWFCQAMJE4PTXRJCZAJTWC2FKIP3MEVBILLNA2TK7VDHVBHBDA7ZSFLFRYWYE2U4WBV64CWFAKL74DHSBJ3KHY2VPD6HY7G5AWN5XUUIQCJYOQ3VAMD32MKA63PW5ZEDG5F2AXOIL5VNSGPKZZDY3IFDK4V75RD4CKYY';
@@ -58,6 +69,14 @@ router.post('/', function (req, res) {
 	  if(err) { return console.log(err); }
 	  console.log('Guardado');
 	});
+});
+
+// RETURNS ALL THE USERS IN THE DATABASE
+router.get('/', function (req, res) {
+    User.find({}, function (err, users) {
+        if (err) return res.status(500).send("There was a problem finding the users.");
+        res.status(200).send(users);
+    });
 });
 
 

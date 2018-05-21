@@ -1,7 +1,20 @@
 // User.js: modelo del usuario
 
-var dynamoose = require('dynamoose');
+var mongoose = require('mongoose');
+ 
+var UserSchema = new mongoose.Schema({  
+  uderId: String,
+  name: String,
+  noticias:[{
+    url:String,
+    xpath:String,
+    category:String
+  }]
+});
 
+mongoose.model('User', UserSchema);
+module.exports = mongoose.model('User');
+/*
 var userSchema = new dynamoose.Schema({
   userid: {
     type: String,
