@@ -62,7 +62,7 @@ router.put('/update/user/:name',function(req, res) {
 	/*User.get('amzn1.ask.account.AEM7C7O3S3FKO4J77F7YYBP5CXPUVG4VHEW4MM77YUETWFCQAMJE4PTXRJCZAJTWC2FKIP3MEVBILLNA2TK7VDHVBHBDA7ZSFLFRYWYE2U4WBV64CWFAKL74DHSBJ3KHY2VPD6HY7G5AWN5XUUIQCJYOQ3VAMD32MKA63PW5ZEDG5F2AXOIL5VNSGPKZZDY3IFDK4V75RD4CKYY','gonza').then(function (usuario) {
 	  //console.log('Usuario ' + usuario.userid);
 	  userid=usuario.userid;
-	})*/
+	})
   });
 
 
@@ -109,7 +109,7 @@ router.get('/', function (req, res) {
 	usuario.save(function (err) {
 	  if(err) { return console.log(err); }
 	  console.log('Guardado');
-	});*/
+	});
 
 });
 
@@ -124,7 +124,7 @@ router.delete('/:usrid', function (req, res) {
         if (err) return res.status(500).send("There was a problem deleting the user.");
         res.status(200).send("User "+ user.name +" was deleted.");
     });
-    */
+    
 });
 
 */
