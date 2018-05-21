@@ -18,13 +18,14 @@ router.post('/', function (req, res) {
 			   category:"Politica"
 			  };*/
 	array.push(obj);
-	console.log(req.body);
+	console.log(name,array);
     
     User.create({//Hace el new y el save juntos
             userid: userId, 
             name: name,
             noticias:array
         },function (err, user) {
+            console.log("----",user)
             if (err) return res.status(500).send("There was a problem adding the information to the database.");
             res.status(201).send(user);
         });
