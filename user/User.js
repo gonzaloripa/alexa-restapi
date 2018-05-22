@@ -2,8 +2,8 @@
 var mongoose = require('mongoose');
 
 var UserSchema = new mongoose.Schema({  
-  userId: {type:String,index:true},
-  name: {type:String,index:true},  
+  userId: {type:String},
+  name: {type:String},  
   noticias:[{
     url:String,
     xpath:{type:String,lowercase: true},
