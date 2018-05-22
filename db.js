@@ -1,12 +1,12 @@
 // db.js:conectamos la base con el servidor
 
 var mongoose = require('mongoose');
-var connection = mongoose.createConnection(process.env.MONGODB_URI);
-
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-  console.log('we are connected!')
+mongoose.connect(process.env.MONGODB_URI, function (err, res) {
+  if (err) { 
+    console.log ('ERROR connecting to: ' + process.env.MONGODB_URI + '. ' + err);
+  } else {
+    console.log ('Succeeded connected to: ' + process.env.MONGODB_URI);
+  }
 });
 
-module.exports = connection;
+
