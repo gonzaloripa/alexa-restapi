@@ -2,14 +2,15 @@
 var mongoose = require('mongoose');
 
 var UserSchema = new mongoose.Schema({  
-  uderId: {type:String,index:true},
-  name: {type:String}  
-});
-/*noticias:[{
+  userId: {type:String,index:true},
+  name: {type:String,index:true}  
+  noticias:[{
     url:String,
     xpath:{type:String,lowercase: true},
     category:String
-  }]*/
+  }]
+});
+
 mongoose.model('User', UserSchema);
 
 module.exports = mongoose.model('User');

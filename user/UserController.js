@@ -23,9 +23,9 @@ router.post('/', function (req, res) {
     User.create({//Hace el new y el save juntos
             userId: userId, 
             name: name
-            //noticias:array
+            noticias:array
         },function (err, user) {
-            console.log("----",user)
+            console.log("----Usuario:",user)
             if (err) return res.status(500).send("There was a problem adding the information to the database.");
             res.status(201).send(user);
         });
