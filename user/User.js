@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 
 var UserSchema = new mongoose.Schema({  
   userId: {type:String,index:true},
-  name: {type:String,index:true}  
+  name: {type:String,index:true},  
   noticias:[{
     url:String,
     xpath:{type:String,lowercase: true},
