@@ -6,12 +6,13 @@ var connection = require('../db');
 var UserSchema = new mongoose.Schema({  
   uderId: {type:String,index:true},
   name: {type:String,index:true},
-  noticias:[{
+  
+});
+/*noticias:[{
     url:String,
     xpath:{type:String,lowercase: true},
     category:String
-  }]
-});
+  }]*/
 
 module.exports = connection.model('User', UserSchema);
 /*
