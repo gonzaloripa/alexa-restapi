@@ -65,7 +65,7 @@ router.put('/update/user/:name',function(req, res) {
 	var array = [];
 	//Obtengo solo los campos userId y noticias del usuario con nombre :name
 	User.find({ name: req.params.name }, function (err, docs) { 
-		console.log("-----userId and noticias : "+docs);
+		console.log("-----noticias : "+docs.noticias+docs.userId);
 		userid = docs.userId;
 		array = docs.noticias;
 		array.push(req.body);//Agrego una nueva noticia a las que ya tenia el usuario
