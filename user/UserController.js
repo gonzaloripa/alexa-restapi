@@ -62,9 +62,9 @@ router.put('/update/user/:name',function(req, res) {
 	//req.body.url: 'https://diariohoy.net'
 	
 	var userid;
-	var array;
+	var array = [];
 	//Obtengo solo los campos userId y noticias del usuario con nombre :name
-	User.find({ name: req.params.name }, 'userId, noticias', function (err, docs) { 
+	User.find({ name: req.params.name }, function (err, docs) { 
 		console.log("-----userId and noticias : "+docs);
 		userid = docs.userId;
 		array = docs.noticias;
