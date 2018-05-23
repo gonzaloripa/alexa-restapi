@@ -65,7 +65,7 @@ router.put('/update/user/:name',function(req, res) {
 	var array = [];
 	//Obtengo solo los campos userId y noticias del usuario con nombre :name
 	User.find({ name: req.params.name }, function (err, docs) { 
-		console.log("-----noticias : "+docs[0]);
+		console.log("-----noticias : "+docs[0].noticias+docs[0].userId);
 		userid = docs[0].userId;
 		array = docs[0].noticias;
 		array.push(req.body);//Agrego una nueva noticia a las que ya tenia el usuario
@@ -73,7 +73,7 @@ router.put('/update/user/:name',function(req, res) {
 		var query = { userId: userid, name: req.params.name };
 		User.findOneAndUpdate(query, { $set: { noticias: array }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
 				if(err) return res.status(500).send("There was a problem updating the user.");
-				console.log('Actualizado ',req.body);
+				console.log('Actualizado ',user);
 				
 				res.status(200).send(user);
 		});
