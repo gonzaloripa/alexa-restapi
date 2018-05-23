@@ -50,30 +50,29 @@ router.get('/:usrid/:name', function (req, res) {
 
 // DELETES A USER FROM THE DATABASE
 router.delete('/:usrid/:name', function (req, res) {
-    User.findOneAndDelete({"userId":req.params.usrid,"name":req.params.name}, function (err, user) {
+    User.findOneAndRemove({"userId":req.params.usrid,"name":req.params.name}, function (err, user) {
         if (err) return res.status(500).send("There was a problem deleting the user.");
         res.status(200).send("User "+ user.name +" was deleted.");
     });
 });
 
-//UPDATE A USER WITH A NEW NOTICE 
+//ADD A NOTICE INTO THE COLLECTION OF A USER
 router.put('/update/user/:name',function(req, res) {
 	//req.body.xpath:body/div[1]/div[1]/div[1]/div[2]/section[1]/article[1]/a[1]/h2[1]
 	//req.body.url: 'https://diariohoy.net'
 	
 	var userid;
 	var array = [];
-	//Obtengo solo los campos userId y noticias del usuario con nombre :name
 	User.find({ name: req.params.name }, function (err, docs) { 
-		console.log("-----noticias : "+docs[0].noticias+docs[0].userId);
+	//docs contiene todos los documentos de un usuario con name :name
 		userid = docs[0].userId;
 		array = docs[0].noticias;
-		console.log(array);
 		array.push(req.body);//Agrego una nueva noticia a las que ya tenia el usuario
-		console.log("-",array," body ",req.body);
+
 		var query = { userId: userid, name: req.params.name };
 		User.findOneAndUpdate(query, { $set: { noticias: array }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
 				if(err) return res.status(500).send("There was a problem updating the user.");
+				//user contiene el usuario antes de ser actualizado
 				console.log('Actualizado ',user);
 				
 				res.status(200).send(user);
