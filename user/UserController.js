@@ -68,8 +68,9 @@ router.put('/update/user/:name',function(req, res) {
 		console.log("-----noticias : "+docs[0].noticias+docs[0].userId);
 		userid = docs[0].userId;
 		array = docs[0].noticias;
+		console.log(array);
 		array.push(req.body);//Agrego una nueva noticia a las que ya tenia el usuario
-		
+		console.log("-",array);
 		var query = { userId: userid, name: req.params.name };
 		User.findOneAndUpdate(query, { $set: { noticias: array }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
 				if(err) return res.status(500).send("There was a problem updating the user.");
