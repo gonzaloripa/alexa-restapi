@@ -44,7 +44,8 @@ router.get('/:usrid/:name', function (req, res) {
     User.find({'userId':req.params.usrid,'name':req.params.name}, function (err, user) {
         if (err) return res.status(500).send("There was a problem finding the user.");
         if (!user) return res.status(404).send("No user found.");
-        res.status(200).send(user[0].name);
+        console.log(user);
+        res.status(200).send(user.name);
     });
 });
 
