@@ -51,11 +51,11 @@ router.get('/:usrid/:name', function (req, res) {
 
 // GETS A SPECIFIC NOTICE OF ONE USER
 router.get('/notice/:usrid/:name', function (req, res) {
-    User.find({'userId':req.params.usrid,'name':req.params.name}, { '_id': 0, 'noticias' :1}, function(err, res){
+    User.find({'userId':req.params.usrid,'name':req.params.name}, { '_id': 0, 'noticias' :1}, function(err, result){
 	  if (err) return res.status(500).send("There was a problem finding the user.");
-      if (!res) return res.status(404).send("No user found.");
-      console.log(res[0].noticias[0])
-      res.status(200).send(res[0].noticias[0]);
+      if (!result) return res.status(404).send("No user found.");
+      console.log(result[0].noticias[0])
+      res.status(200).send(result[0].noticias[0]);
 	});	    
 });
 
