@@ -41,7 +41,7 @@ router.get('/', function (req, res) {
 
 // GETS A SINGLE USER FROM THE DATABASE
 router.get('/:usrid/:name', function (req, res) {
-    User.find({'userId':req.params.usrid,'name':req.params.name},{ '_id': 0, 'name' :1}, function (err, name) {
+    User.find({'userId':req.params.usrid,'name':req.params.name.toLowerCase()},{ '_id': 0, 'name' :1}, function (err, name) {
         if (err) return res.status(500).send("There was a problem finding the user.");
         if (!name) return res.status(404).send("No user found.");
         console.log(name);
@@ -51,7 +51,7 @@ router.get('/:usrid/:name', function (req, res) {
 
 // GETS A SPECIFIC NOTICE OF ONE USER
 router.get('/notice/:usrid/:name', function (req, res) {
-    User.find({'userId':req.params.usrid,'name':req.params.name}, { '_id': 0, 'noticias' :1}, function(err, result){
+    User.find({'userId':req.params.usrid,'name':req.params.name.toLowerCase()}, { '_id': 0, 'noticias' :1}, function(err, result){
 	  if (err) return res.status(500).send("There was a problem finding the user.");
       if (!result || result.length == 0) return res.status(404).send("No user found.");
       console.log(result[0].noticias[0])
@@ -61,7 +61,7 @@ router.get('/notice/:usrid/:name', function (req, res) {
 
 // DELETES A USER FROM THE DATABASE
 router.delete('/:usrid/:name', function (req, res) {
-    User.findOneAndRemove({"userId":req.params.usrid,"name":req.params.name}, function (err, user) {
+    User.findOneAndRemove({"userId":req.params.usrid,"name":req.params.name.toLowerCase()}, function (err, user) {
         if (err) return res.status(500).send("There was a problem deleting the user.");
         res.status(200).send("User "+ user.name +" was deleted.");
     });
@@ -74,13 +74,13 @@ router.put('/update/user/:name',function(req, res) {
 	
 	var userid;
 	var array = [];
-	User.find({ name: req.params.name }, function (err, docs) { 
+	User.find({ name: req.params.name.toLowerCase() }, function (err, docs) { 
 	//docs contiene todos los documentos de un usuario con name :name
 		userid = docs[0].userId;
 		array = docs[0].noticias;
 		array.push(req.body);//Agrego una nueva noticia a las que ya tenia el usuario
 
-		var query = { userId: userid, name: req.params.name };
+		var query = { userId: userid, name: req.params.name.toLowerCase() };
 		User.findOneAndUpdate(query, { $set: { noticias: array }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
 				if(err) return res.status(500).send("There was a problem updating the user.");
 				//user contiene el usuario antes de ser actualizado
