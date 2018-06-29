@@ -60,8 +60,8 @@ router.get('/notice/:usrid/:name', function (req, res) {
 });
 
 // GETS THE NOTICES OF ONE USER
-router.get('/notices/:usrid/:name', function (req, res) {
-    User.find({'userId':req.params.usrid,'name':req.params.name.toLowerCase()}, { '_id': 0, 'noticias' :1}, function(err, result){
+router.get('/notices/:category/:usrid/:name', function (req, res) {
+    User.find({'userId':req.params.usrid,'name':req.params.name.toLowerCase(),'noticias.category':req.params.category}, { '_id': 0, 'noticias' :1}, function(err, result){
 	  if (err) return res.status(500).send("There was a problem finding the user.");
       if (!result || result.length == 0) return res.status(404).send("No user found.");
       console.log(result[0].noticias)
