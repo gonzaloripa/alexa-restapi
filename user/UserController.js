@@ -84,7 +84,7 @@ router.get('/categories/:usrid/:name', function (req, res) {
 router.delete('/:usrid/:name', function (req, res) {
     User.findOneAndRemove({"userId":req.params.usrid,"name":req.params.name.toLowerCase()}, function (err, user) {
         if (err) return res.status(500).send("There was a problem deleting the user.");
-        res.status(200).send("User "+ user.name +" was deleted.");
+        res.status(200).send("User "+ req.params.name +" was deleted.");
     });
 });
 
