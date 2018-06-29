@@ -71,7 +71,7 @@ router.get('/notices/:usrid/:name', function (req, res) {
 
 // GETS THE CATEGORIES OF ONE USER => hacer consulta que obtenga solo las categorias
 router.get('/categories/:usrid/:name', function (req, res) {
-    User.find({'userId':req.params.usrid,'name':req.params.name.toLowerCase()}, { '_id': 0, 'noticias.category' :1}, function(err, result){
+    User.find({'userId':req.params.usrid,'name':req.params.name.toLowerCase()}, { '_id': 0, 'category' :1}, function(err, result){
 	  if (err) return res.status(500).send("There was a problem finding the user.");
       if (!result || result.length == 0) return res.status(404).send("No user found.");
       console.log(result)
