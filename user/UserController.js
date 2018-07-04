@@ -11,7 +11,7 @@ var userId ='amzn1.ask.account.AEM7C7O3S3FKO4J77F7YYBP5CXPUVG4VHEW4MM77YUETWFCQA
 
 // CREATES A NEW USER
 router.post('/', function (req, res) {
-	var name = req.body.name; //'gonza'
+	var name = req.body.name.toLowerCase(); //'gonza'
   userId = req.body.userId
 	var array = [];
 	/*var obj = req.body.noticia;{url:'https://diariohoy.net',
