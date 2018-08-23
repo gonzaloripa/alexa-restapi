@@ -8,7 +8,8 @@ var UserSchema = new mongoose.Schema({
     url:String,
     xpath:{type:String,lowercase: true},
     category:String,
-    state:String
+    state:String,
+    metainfo:String
   }]
 });
 
