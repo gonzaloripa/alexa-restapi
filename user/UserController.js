@@ -24,7 +24,7 @@ router.post('/', function (req, res) {
     User.create({//Hace el new y el save juntos
             userId: userId, 
             name: name,
-            noticias:array
+            contenidos:array
         },function (err, user) {
             console.log("----Usuario:",user)
             if (err) return res.status(500).send("There was a problem adding the information to the database.");
@@ -52,35 +52,35 @@ router.get('/:usrid/:name', function (req, res) {
 
 // GETS A SPECIFIC NOTICE OF ONE USER
 router.get('/notice/:usrid/:name', function (req, res) {
-    User.find({'userId':req.params.usrid,'name':req.params.name.toLowerCase()}, { '_id': 0, 'noticias' :1}, function(err, result){
+    User.find({'userId':req.params.usrid,'name':req.params.name.toLowerCase()}, { '_id': 0, 'contenidos' :1}, function(err, result){
 	  if (err) return res.status(500).send("There was a problem finding the user.");
       if (!result || result.length == 0) return res.status(404).send("No user found.");
-      console.log(result[0].noticias[0])
-      res.status(200).send(result[0].noticias[0]);
+      console.log(result[0].contenidos[0])
+      res.status(200).send(result[0].contenidos[0]);
 	});	    
 });
 
 // GETS THE NOTICES OF ONE USER
 router.get('/notices/:category/:usrid/:name', function (req, res) {
 
-var getCriteria = {'userId':req.params.usrid,'name':req.params.name.toLowerCase(),'noticias.category':req.params.category};
+var getCriteria = {'userId':req.params.usrid,'name':req.params.name.toLowerCase(),'contenidos.category':req.params.category};
 
-User.find(getCriteria,{ '_id': 0,'noticias.$' : 1},function(err, result){
+User.find(getCriteria,{ '_id': 0,'contenidos.$' : 1},function(err, result){
     if (err) return res.status(500).send("There was a problem finding the user.");
       if (!result || result.length == 0) return res.status(404).send("No user found.");
-      console.log(result[0].noticias)
-      res.status(200).send(result[0].noticias);
+      console.log(result[0].contenidos)
+      res.status(200).send(result[0].contenidos);
   });
   
 });
 
 // GETS THE CATEGORIES OF ONE USER => hacer consulta que obtenga solo las categorias
 router.get('/categories/:usrid/:name', function (req, res) {
-    User.find({'userId':req.params.usrid,'name':req.params.name.toLowerCase()}, { '_id': 0, 'noticias.category' :1}, function(err, result){
+    User.find({'userId':req.params.usrid,'name':req.params.name.toLowerCase()}, { '_id': 0, 'contenidos.category' :1}, function(err, result){
 	  if (err) return res.status(500).send("There was a problem finding the user.");
       if (!result || result.length == 0) return res.status(404).send("No user found.");
-      console.log(result[0].noticias)
-      res.status(200).send(result[0].noticias);
+      console.log(result[0].contenidos)
+      res.status(200).send(result[0].contenidos);
 	});	    
 });
 
@@ -97,17 +97,18 @@ router.delete('/:usrid/:name', function (req, res) {
 router.put('/update/user/:name',function(req, res) {
 	//req.body.xpath:body/div[1]/div[1]/div[1]/div[2]/section[1]/article[1]/a[1]/h2[1]
 	//req.body.url: 'https://diariohoy.net'
+  //req.body.state = 'new'/'old'
 	
 	var userid;
 	var array = [];
 	User.find({ name: req.params.name.toLowerCase() }, function (err, docs) { 
 	//docs contiene todos los documentos de un usuario con name :name
 		userid = docs[0].userId;
-		array = docs[0].noticias;
+		array = docs[0].contenidos;
 		array.push(req.body);//Agrego una nueva noticia a las que ya tenia el usuario
 
 		var query = { userId: userid, name: req.params.name.toLowerCase() };
-		User.findOneAndUpdate(query, { $set: { noticias: array }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
+		User.findOneAndUpdate(query, { $set: { contenidos: array }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
 				if(err) return res.status(500).send("There was a problem updating the user.");
 				//user contiene el usuario antes de ser actualizado
 				console.log('Actualizado ',user);
