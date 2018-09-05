@@ -115,7 +115,7 @@ router.get('/updateContent/user/:name/:category',function(req, res) {
     console.log("---contenido ",res)
     res.status(200).send(res);
   }) 
-}
+});
 
 
 //ADD A CONTENT INTO THE COLLECTION OF A USER
