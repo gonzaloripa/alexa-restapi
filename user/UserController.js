@@ -7,20 +7,17 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 var User = require('./User');
 
-var userId ='amzn1.ask.account.AEM7C7O3S3FKO4J77F7YYBP5CXPUVG4VHEW4MM77YUETWFCQAMJE4PTXRJCZAJTWC2FKIP3MEVBILLNA2TK7VDHVBHBDA7ZSFLFRYWYE2U4WBV64CWFAKL74DHSBJ3KHY2VPD6HY7G5AWN5XUUIQCJYOQ3VAMD32MKA63PW5ZEDG5F2AXOIL5VNSGPKZZDY3IFDK4V75RD4CKYY';
+    /*var obj = req.body.noticia;{url:'https://diariohoy.net',
+           xpath:"body/div[1]/div[1]/div[1]/div[2]/section[1]/article[1]/a[1]/h2[1]",
+           category:"Politica"
+          };*/  
+//var userId ='amzn1.ask.account.AEM7C7O3S3FKO4J77F7YYBP5CXPUVG4VHEW4MM77YUETWFCQAMJE4PTXRJCZAJTWC2FKIP3MEVBILLNA2TK7VDHVBHBDA7ZSFLFRYWYE2U4WBV64CWFAKL74DHSBJ3KHY2VPD6HY7G5AWN5XUUIQCJYOQ3VAMD32MKA63PW5ZEDG5F2AXOIL5VNSGPKZZDY3IFDK4V75RD4CKYY';
 
 // CREATES A NEW USER
 router.post('/', function (req, res) {
-	var name = req.body.name.toLowerCase(); //'gonza'
-  userId = req.body.userId
-	var array = [];
-	/*var obj = req.body.noticia;{url:'https://diariohoy.net',
-			   xpath:"body/div[1]/div[1]/div[1]/div[2]/section[1]/article[1]/a[1]/h2[1]",
-			   category:"Politica"
-			  };*/
-	//array.push(obj);
-	console.log(name,array);
-    
+  	var name = req.body.name.toLowerCase(); //'gonza'
+    userId = req.body.userId
+  	var array = []; 
     User.create({//Hace el new y el save juntos
             userId: userId, 
             name: name,
@@ -115,7 +112,7 @@ router.put('/updateContent/user/:name',function(req, res) {
   .exec((err, resul)=> { 
     console.log("---contenido ",resul)
     var state=(resul.contenidos[0].state=='new')?'old':'new';
-    User.updateOne({_id:resul.contenidos[0]._id},{ $set: { state: state }},(err,doc)=>{
+    User.findOneAndUpdate({_id:resul.contenidos[0]._id},{ $set: { state: state }},(err,doc)=>{
       console.log("---contenido ",doc)
       res.status(200).send(doc);
     })
