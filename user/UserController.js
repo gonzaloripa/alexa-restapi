@@ -133,6 +133,7 @@ router.put('/addContent/user/:name',function(req, res) {
 	User.findOne(query)
   .select({ contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}}})
   .exec((err, docs)=> {
+    console.log(docs)
     if(docs.length>0)
       res.status(404).send("Ya existe el contenido para ese usuario");  
     else{//Si no existe el contenido
