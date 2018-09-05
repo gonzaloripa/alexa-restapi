@@ -113,7 +113,7 @@ router.put('/updateContent/user/:name',function(req, res) {
     console.log("---contenido ",resul)
     var state=(resul.contenidos[0].state=='new')?'old':'new';
     console.log(state)
-    User.findOneAndUpdate({contenidos: {$elemMatch: {_id:resul.contenidos[0]._id}}},{ $set: { state: state }},(err,doc)=>{
+    User.findOneAndUpdate({contenidos: {$elemMatch: {_id:resul.contenidos[0]._id}}},{ $set: { 'contenidos.state': state }},(err,doc)=>{
       console.log("---contenido ",doc)
       res.status(200).send(doc);
     })
