@@ -88,7 +88,7 @@ User.find(getCriteria,{ '_id': 0,'contenidos.$' : 1},function(err, result){
   
 });
 
-// GETS THE CATEGORIES OF ONE USER => hacer consulta que obtenga solo las categorias
+// GETS THE CATEGORIES OF ONE USER 
 router.get('/categories/:usrid/:name', function (req, res) {
     User.find({'userId':req.params.usrid,'name':req.params.name.toLowerCase()}, { '_id': 0, 'contenidos.category' :1}, function(err, result){
 	  if (err) return res.status(500).send("There was a problem finding the user.");
@@ -107,15 +107,26 @@ router.delete('/:usrid/:name', function (req, res) {
     });
 });
 
-//ADD A NOTICE INTO THE COLLECTION OF A USER
-router.put('/update/user/:name',function(req, res) {
+//UPDATE THE STATE OF A CONTENT 
+router.get('/updateContent/user/:name',function(req, res) {
+  var userid;
+  User.findOne({ name: req.params.name.toLowerCase(), url: req.body.url, xpath: req.body.xpath }, function (err, res) { 
+  //docs contiene todos los documentos de un usuario con name :name
+    console.log("---contenido ",res)
+    res.status(200).send(res);
+  }) 
+}
+
+
+//ADD A CONTENT INTO THE COLLECTION OF A USER
+router.put('/addContent/user/:name',function(req, res) {
 	//req.body.xpath:body/div[1]/div[1]/div[1]/div[2]/section[1]/article[1]/a[1]/h2[1]
 	//req.body.url: 'https://diariohoy.net'
   //req.body.state = 'new'/'old'
 	
 	var userid;
-	var array = [];
-	User.find({ name: req.params.name.toLowerCase() }, function (err, docs) { 
+	var array = [];//agregar passsword
+	User.findOne({ name: req.params.name.toLowerCase() }, function (err, docs) { 
 	//docs contiene todos los documentos de un usuario con name :name
 		userid = docs[0].userId;
 		array = docs[0].contenidos;
