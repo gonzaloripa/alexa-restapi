@@ -108,9 +108,9 @@ router.delete('/:usrid/:name', function (req, res) {
 });
 
 //UPDATE THE STATE OF A CONTENT 
-router.get('/updateContent/user/:name',function(req, res) {
+router.get('/updateContent/user/:name/:category',function(req, res) {
   var userid;
-  User.findOne({ name: req.params.name.toLowerCase(), url: req.body.url, xpath: req.body.xpath }, function (err, res) { 
+  User.findOne({ name: req.params.name.toLowerCase(), category: req.params.category }, function (err, res) { 
   //docs contiene todos los documentos de un usuario con name :name
     console.log("---contenido ",res)
     res.status(200).send(res);
