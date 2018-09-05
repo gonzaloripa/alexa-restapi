@@ -108,12 +108,17 @@ router.delete('/:usrid/:name', function (req, res) {
 });
 
 //UPDATE THE STATE OF A CONTENT 
-router.get('/updateContent/user/:name/:category',function(req, res) {
-  var userid;
-  User.findOne({ name: req.params.name.toLowerCase()}).select({ contenidos: {$elemMatch: {category:req.params.category}}}).exec((err, resul)=> { 
-  //docs contiene todos los documentos de un usuario con name :name
+router.put('/updateContent/user/:name',function(req, res) {
+
+  User.findOne({ name: req.params.name.toLowerCase()})//agregar password
+  .select({ contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}}})
+  .exec((err, resul)=> { 
     console.log("---contenido ",resul)
-    res.status(200).send(resul);
+    var state=(resul.contenidos[0].state=='new')?'old':'new';
+    User.updateOne({_id:resul.contenidos[0]._id},{ $set: { state: state }},(err,doc)=>{
+      console.log("---contenido ",doc)
+      res.status(200).send(doc);
+    })
   }) 
 });
 
@@ -124,23 +129,23 @@ router.put('/addContent/user/:name',function(req, res) {
 	//req.body.url: 'https://diariohoy.net'
   //req.body.state = 'new'/'old'
 	
-	var userid;
-	var array = [];//agregar passsword
-	User.findOne({ name: req.params.name.toLowerCase() }, function (err, docs) { 
-	//docs contiene todos los documentos de un usuario con name :name
-		userid = docs[0].userId;
-		array = docs[0].contenidos;
-		array.push(req.body);//Agrego una nueva noticia a las que ya tenia el usuario
+  var query = { name: req.params.name.toLowerCase() };//agregar password
+	User.findOne(query)
+  .select({ contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}}})
+  .exec((err, docs)=> {
+    if(docs.length>0)
+      res.status(404).send("Ya existe el contenido para ese usuario");  
+    else{//Si no existe el contenido
+      User.findOneAndUpdate(query, { $push: { contenidos: req.body }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
+          if(err) return res.status(500).send("There was a problem updating the user.");
+          //user contiene el usuario antes de ser actualizado
+          console.log('Actualizado ',user);
+          
+          res.status(200).send(user);
+      });
+    }
+  })
 
-		var query = { userId: userid, name: req.params.name.toLowerCase() };
-		User.findOneAndUpdate(query, { $set: { contenidos: array }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
-				if(err) return res.status(500).send("There was a problem updating the user.");
-				//user contiene el usuario antes de ser actualizado
-				console.log('Actualizado ',user);
-				
-				res.status(200).send(user);
-		});
-	})
 });
 
 module.exports = router;
