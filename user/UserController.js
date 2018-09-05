@@ -111,9 +111,11 @@ router.put('/updateContent/user/:name',function(req, res) {
   .select({ contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}}})
   .exec((err, resul)=> { 
     console.log("---contenido ",resul)
-    resul.contenidos[0].state= (resul.contenidos[0].state=='new')?'old':'new';
-    resul.save();
-    res.status(200).send(resul);
+    resul.contenidos[0].state = (resul.contenidos[0].state=='new')?'old':'new';
+    User.findOneAndUpdate({ name: req.params.name.toLowerCase(), contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}}}},{ $set: { 'contenidos': resul }},(err,doc)=>{
+      console.log("---contenido ",doc)
+      res.status(200).send(doc);
+    })
   }) 
 });
 
