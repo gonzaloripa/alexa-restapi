@@ -126,8 +126,8 @@ router.put('/addListContent/user/:name',function(req, res) {
 	//req.body.url: 'https://diariohoy.net'
   //req.body.state = 'new'/'old'
 	var contBody = req.body;
-  var query = { 'name': req.params.name.toLowerCase(),'contenidos.url': {$ne: contBody.url},'contenidos.xpath':{$ne:contBody.xpath} };//agregar password
-  User.findOneAndUpdate(query, { $push: { contenidos:{$each: contBody} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
+  var query = { 'name': req.params.name.toLowerCase()};//agregar password
+  User.findOneAndUpdate(query,{$addToSet : {contenidos:{$each: contBody} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
     if(err) return res.status(500).send("There was a problem updating the user.");
     //user contiene el usuario antes de ser actualizado
     console.log('Actualizado ',user);
