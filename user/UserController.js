@@ -104,30 +104,46 @@ router.delete('/:usrid/:name', function (req, res) {
     });
 });
 
-//UPDATE THE STATE OF A CONTENT: ARREGLARRRR 
+//UPDATE THE STATE OF A CONTENT 
 router.put('/updateContent/user/:name',function(req, res) {
 
   User.findOne({ name: req.params.name.toLowerCase()})//agregar password
   .select({ contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}}})
   .exec((err, resul)=> { 
-    console.log("---contenido ",resul)
+    //console.log("---contenido ",resul)
     var state = (resul.contenidos[0].state=='new')?'old':'new';
     User.findOneAndUpdate({'contenidos._id':resul.contenidos[0]._id} ,{ $set: { 'contenidos.$.state': state }},(err,doc)=>{
-      console.log("---contenido ",doc)
+      //console.log("---contenido ",doc)
       res.status(200).send(doc);
     })
   }) 
 });
 
 
-//ADD A CONTENT INTO THE COLLECTION OF A USER
-router.put('/addContent/user/:name',function(req, res) {
+//ADD A LIST OF CONTENT INTO THE COLLECTION OF A USER
+router.put('/addListContent/user/:name',function(req, res) {
 	//req.body.xpath:body/div[1]/div[1]/div[1]/div[2]/section[1]/article[1]/a[1]/h2[1]
 	//req.body.url: 'https://diariohoy.net'
   //req.body.state = 'new'/'old'
-	
+	var contBody = req.body;
+  var query = { 'name': req.params.name.toLowerCase(),'contenidos._id': {$ne: contBody._id}} };//agregar password
+  User.findOneAndUpdate(query, { $push: { contenidos:{$each: contBody} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
+    if(err) return res.status(500).send("There was a problem updating the user.");
+    //user contiene el usuario antes de ser actualizado
+    console.log('Actualizado ',user);
+          
+    res.status(200).send(user);
+  })
+})
+
+//ADD A CONTENT INTO THE COLLECTION OF A USER
+router.put('/addContent/user/:name',function(req, res) {
+  //req.body.xpath:body/div[1]/div[1]/div[1]/div[2]/section[1]/article[1]/a[1]/h2[1]
+  //req.body.url: 'https://diariohoy.net'
+  //req.body.state = 'new'/'old'
+  
   var query = { name: req.params.name.toLowerCase() };//agregar password
-	User.findOne(query)
+  User.findOne(query)
   .select({ contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}}})
   .exec((err, docs)=> {
     console.log(docs)
