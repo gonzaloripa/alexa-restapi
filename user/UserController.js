@@ -104,15 +104,15 @@ router.delete('/:usrid/:name', function (req, res) {
     });
 });
 
-//UPDATE THE STATE OF A CONTENT 
+//UPDATE THE STATE OF A CONTENT: ARREGLARRRR 
 router.put('/updateContent/user/:name',function(req, res) {
 
   User.findOne({ name: req.params.name.toLowerCase()})//agregar password
   .select({ contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}}})
   .exec((err, resul)=> { 
     console.log("---contenido ",resul)
-    resul.contenidos[0].state = (resul.contenidos[0].state=='new')?'old':'new';
-    User.findOneAndUpdate({ name: req.params.name.toLowerCase(), contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}}},{ $set: { 'contenidos': resul }},(err,doc)=>{
+    var state = (resul.contenidos[0].state=='new')?'old':'new';
+    User.findOneAndUpdate({'contenidos._id':resul.contenidos[0]._id} ,{ $set: { 'contenidos.$.state': state }},(err,doc)=>{
       console.log("---contenido ",doc)
       res.status(200).send(doc);
     })
