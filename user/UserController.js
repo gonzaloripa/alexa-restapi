@@ -74,7 +74,22 @@ User.find(getCriteria,{ '_id': 0,'contenidos.$' : 1},function(err, result){
 // GETS THE NOTICES OF ONE USER FILTER BY STATE(new/old)
 router.get('/noticesByState/:state/:name', function (req, res) {
 
-var getCriteria = {'name':req.params.name.toLowerCase(),'contenidos.state':req.params.state};
+var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};
+    Story.
+    find(getCriteria).
+    populate({
+      path: 'contenidos',
+      match: { 'contenidos.state':req.params.state},
+      // Explicitly exclude `_id`, see http://bit.ly/2aEfTdB
+      options: { limit: 5 }
+    }).
+    exec(function(err, result){
+      if (err) return res.status(500).send("There was a problem finding the user.");
+        if (!result || result.length == 0) return res.status(404).send("No user found.");
+      console.log(result)
+      res.status(200).send(result);
+    });
+
     User.find({'contenidos':{"$elemMatch":{'state':req.params.state}}},{'contenidos.$':1}, function(err, result){
     if (err) return res.status(500).send("There was a problem finding the user.");
       if (!result || result.length == 0) return res.status(404).send("No user found.");
