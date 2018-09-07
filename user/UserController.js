@@ -79,7 +79,7 @@ var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':re
     find(getCriteria).
     populate({
       path: 'contenidos',
-      select:'category',
+      select:'contenidos.category',
       match: { 'contenidos.state':req.params.state},
       // Explicitly exclude `_id`, see http://bit.ly/2aEfTdB
       options: { limit: 5 }
