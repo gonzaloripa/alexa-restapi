@@ -78,7 +78,7 @@ var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':re
 
 User.findOne(getCriteria)//agregar password
   .select({ contenidos: {$elemMatch: {state:req.params.state}}})
-  .exec((err, resul)=> {
+  .exec((err, result)=> {
     if (err) return res.status(500).send("There was a problem finding the user.");
       if (!result || result.length == 0) return res.status(404).send("No user found.");
       console.log(result)
