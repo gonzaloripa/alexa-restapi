@@ -76,40 +76,16 @@ router.get('/noticesByState/:state/:name', function (req, res) {
 
 var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};
 
-User.aggregate([{
-    $match: {
-        "name": req.params.name.toLowerCase()
-    }
-}, {
-    $project: {
-        "name": 1,
-        "userId": 1,
-        "contenidos": {
-            "$filter": {
-                "input": "$contenidos",
-                "as": "content",
-                cond: {
-                    $eq: ["$$content.state", req.params.state]
-                }
-            }
-        }
-    }
-}],function(err, result){
-    if (err) return res.status(500).send("There was a problem finding the user.");
-      if (!result || result.length == 0) return res.status(404).send("No user found.");
-      console.log(result)
-      res.status(200).send(result);
-  })
 
 });
 
 // GETS THE CATEGORIES OF ONE USER 
 router.get('/categories/:usrid/:name', function (req, res) {
-    User.find({'userId':req.params.usrid,'name':req.params.name.toLowerCase()}, { '_id': 0, 'contenidos.category' :1}, function(err, result){
+    User.distinct('contenidos.category',{'userId':req.params.usrid,'name':req.params.name.toLowerCase()}, function(err, result){
 	  if (err) return res.status(500).send("There was a problem finding the user.");
       if (!result || result.length == 0) return res.status(404).send("No user found.");
-      console.log(result[0].contenidos)
-      res.status(200).send(result[0].contenidos);
+      console.log(result)
+      res.status(200).send(result);
 	});	    
 });
 
