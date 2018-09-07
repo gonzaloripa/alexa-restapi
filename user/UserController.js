@@ -75,7 +75,7 @@ User.find(getCriteria,{ '_id': 0,'contenidos.$' : 1},function(err, result){
 router.get('/noticesByState/:state/:name', function (req, res) {
 
 var getCriteria = {'name':req.params.name.toLowerCase(),'contenidos.state':req.params.state};
-    User.find({'contenidos':{"$elemMatch":{'state':req.params.state}}},{'contenidos.$:'1}, function(err, result){
+    User.find({'contenidos':{"$elemMatch":{'state':req.params.state}}},{'contenidos.$':1}, function(err, result){
     if (err) return res.status(500).send("There was a problem finding the user.");
       if (!result || result.length == 0) return res.status(404).send("No user found.");
       console.log(result)
