@@ -58,7 +58,7 @@ router.get('/notice/:usrid/:name', function (req, res) {
 });
 
 // GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
-router.get('/notices/:category/:name', function (req, res) {
+router.get('/noticesByCategory/:category/:name', function (req, res) {
 
 var getCriteria = {'name':req.params.name.toLowerCase(),'contenidos.category':req.params.category};
 
@@ -72,7 +72,7 @@ User.find(getCriteria,{ '_id': 0,'contenidos.$' : 1},function(err, result){
 });
 
 // GETS THE NOTICES OF ONE USER FILTER BY STATE(new/old)
-router.get('/notices/:state/:name', function (req, res) {
+router.get('/noticesByState/:state/:name', function (req, res) {
 
 var getCriteria = {'name':req.params.name.toLowerCase(),'contenidos.state':req.params.state};
 
