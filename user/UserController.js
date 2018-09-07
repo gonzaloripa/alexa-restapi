@@ -76,38 +76,30 @@ router.get('/noticesByState/:state/:name', function (req, res) {
 
 var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};
 
-
-User.aggregate(
-    [
-        { "$match": { "contenidos.state": req.params.state } },
-        { "$project": {
-            "contenidos": {
-                "$filter": {
-                    "input": "$contenidos",
-                    "as": "contenido",
-                    "cond": {
-                       "$eq": [ "$$contenido.state", req.params.state ]
-                    }
-                }
-            },
-            "__v": 1
-        }}
-    ],
-    function(err,orders) {
-      console.log(orders)
-        User.populate(
-            orders.map(function(order) { return new User(order) }),
-            {
-                "path": "contenidos.contenido",
-                "match": { "state": { "$eq": req.params.state } }
-            },
-            function(err,orders) {
-                console.log(orders)
-                // now it's all populated and mongoose documents
-            }
-        )
+User.aggregate([{
+    $match: {
+        "name": req.params.name.toLowerCase()
     }
-)
+}, {
+    $project: {
+        "name": 1,
+        "userId": 1,
+        "contenidos": {
+            "$filter": {
+                "input": "$contenidos",
+                "as": "content",
+                cond: {
+                    $eq: ["$$content.state", req.params.state]
+                }
+            }
+        }
+    }
+}],function(err, result){
+    if (err) return res.status(500).send("There was a problem finding the user.");
+      if (!result || result.length == 0) return res.status(404).send("No user found.");
+      console.log(result)
+      res.status(200).send(result);
+  })
 
 });
 
