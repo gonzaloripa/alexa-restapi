@@ -60,7 +60,7 @@ router.get('/notice/:usrid/:name', function (req, res) {
 // GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
 router.get('/notices/:category/:usrid/:name', function (req, res) {
 
-var getCriteria = {'userId':req.params.usrid,'name':req.params.name.toLowerCase(),'contenidos.category':req.params.category};
+var getCriteria = {'userId':req.params.usrid,'name':req.params.name.toLowerCase()};
 
    User.aggregate([
     { $match: getCriteria},
@@ -81,7 +81,7 @@ var getCriteria = {'userId':req.params.usrid,'name':req.params.name.toLowerCase(
 // GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
 router.get('/noticesByCategory/:category/:name', function (req, res) {
 
-var getCriteria = {'userId':req.params.usrid,'name':req.params.name.toLowerCase(),'contenidos.category':req.params.category};
+var getCriteria = {'name':req.params.name.toLowerCase()};
 
    User.aggregate([
     { $match: getCriteria},
