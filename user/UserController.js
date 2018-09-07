@@ -58,16 +58,44 @@ router.get('/notice/:usrid/:name', function (req, res) {
 });
 
 // GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
-router.get('/noticesByCategory/:category/:usrid/:name', function (req, res) {
+router.get('/notices/:category/:usrid/:name', function (req, res) {
 
 var getCriteria = {'userId':req.params.usrid,'name':req.params.name.toLowerCase(),'contenidos.category':req.params.category};
 
-User.find(getCriteria,{ '_id': 0,'contenidos.$' : 1},function(err, result){
-    if (err) return res.status(500).send("There was a problem finding the user.");
-      if (!result || result.length == 0) return res.status(404).send("No user found.");
-      console.log(result[0].contenidos)
-      res.status(200).send(result[0].contenidos);
-  });
+   User.aggregate([
+    { $match: getCriteria},
+    { $project: {
+        contenidos: {$filter: {
+            input: '$contenidos',
+            as: 'item',
+            cond: {$eq: ['$$item.category', req.params.category]}
+        }}
+    }}
+    ]).then(function (result) {
+      console.log(result.contenidos[0]); // [ { maxBalance: 98000 } ]
+      res.status(200).send(result.contenidos[0]);
+    });
+  
+});
+
+// GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
+router.get('/noticesByCategory/:category/:name', function (req, res) {
+
+var getCriteria = {'userId':req.params.usrid,'name':req.params.name.toLowerCase(),'contenidos.category':req.params.category};
+
+   User.aggregate([
+    { $match: getCriteria},
+    { $project: {
+        contenidos: {$filter: {
+            input: '$contenidos',
+            as: 'item',
+            cond: {$eq: ['$$item.category', req.params.category]}
+        }}
+    }}
+    ]).then(function (result) {
+      console.log(result.contenidos[0]); // [ { maxBalance: 98000 } ]
+      res.status(200).send(result.contenidos[0]);
+    });
   
 });
 
