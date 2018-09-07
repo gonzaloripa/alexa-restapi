@@ -72,8 +72,8 @@ var getCriteria = {'userId':req.params.usrid,'name':req.params.name.toLowerCase(
         }}
     }}
     ]).then(function (result) {
-      console.log(result[0].contenidos[0]); // [ { maxBalance: 98000 } ]
-      res.status(200).send(result[0].contenidos[0]);
+      console.log(result[0].contenidos); // [ { maxBalance: 98000 } ]
+      res.status(200).send(result[0].contenidos);
     });
   
 });
