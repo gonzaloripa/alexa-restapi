@@ -16,10 +16,10 @@ var User = require('./User');
 // CREATES A NEW USER
 router.post('/', function (req, res) {
   	var name = req.body.name.toLowerCase(); //'gonza'
-    userId = req.body.userId
+    //userId = req.body.userId
   	var array = []; 
     User.create({//Hace el new y el save juntos
-            userId: userId, 
+            //userId: userId, 
             name: name,
             contenidos:array
         },function (err, user) {
@@ -58,9 +58,9 @@ router.get('/notice/:usrid/:name', function (req, res) {
 });
 
 // GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
-router.get('/notices/:category/:usrid/:name', function (req, res) {
+router.get('/notices/:category/:name', function (req, res) {
 
-var getCriteria = {'userId':req.params.usrid,'name':req.params.name.toLowerCase(),'contenidos.category':req.params.category};
+var getCriteria = {'name':req.params.name.toLowerCase(),'contenidos.category':req.params.category};
 
 User.find(getCriteria,{ '_id': 0,'contenidos.$' : 1},function(err, result){
     if (err) return res.status(500).send("There was a problem finding the user.");
@@ -72,9 +72,9 @@ User.find(getCriteria,{ '_id': 0,'contenidos.$' : 1},function(err, result){
 });
 
 // GETS THE NOTICES OF ONE USER FILTER BY STATE(new/old)
-router.get('/notices/:state/:usrid/:name', function (req, res) {
+router.get('/notices/:state/:name', function (req, res) {
 
-var getCriteria = {'userId':req.params.usrid,'name':req.params.name.toLowerCase(),'contenidos.state':req.params.state};
+var getCriteria = {'name':req.params.name.toLowerCase(),'contenidos.state':req.params.state};
 
 User.find(getCriteria,{ '_id': 0,'contenidos.$' : 1},function(err, result){
     if (err) return res.status(500).send("There was a problem finding the user.");
