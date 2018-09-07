@@ -86,7 +86,8 @@ var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':re
         }}
     }}
     ]).then(function (result) {
-      console.log(result); // [ { maxBalance: 98000 } ]
+      console.log(result.contenidos[0]); // [ { maxBalance: 98000 } ]
+      res.status(200).send(result.contenidos[0]);
     });
 
 });
