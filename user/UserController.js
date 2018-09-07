@@ -94,6 +94,7 @@ User.aggregate(
         }}
     ],
     function(err,orders) {
+      console.log(orders)
         User.populate(
             orders.map(function(order) { return new User(order) }),
             {
