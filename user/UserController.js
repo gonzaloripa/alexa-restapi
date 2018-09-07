@@ -75,16 +75,12 @@ User.find(getCriteria,{ '_id': 0,'contenidos.$' : 1},function(err, result){
 router.get('/noticesByState/:state/:name', function (req, res) {
 
 var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};
-    User.
-    find(getCriteria).
-    populate({
-      path: 'contenidos',
-      select:'contenidos.category',
-      match: { 'contenidos.state':req.params.state},
-      // Explicitly exclude `_id`, see http://bit.ly/2aEfTdB
-      options: { limit: 5 }
-    }).
-    exec(function(err, result){
+    User.aggregate(
+    { $match: getCriteria},
+    { $unwind: '$contenidos'},
+    { $match: {'contenidos.state': req.params.state}},
+    { $group: {_id: '$_id', contenidos: {$push: '$contenidos.category'}}})
+    .exec(function(err, result){
       if (err) return res.status(500).send("There was a problem finding the user.");
         if (!result || result.length == 0) return res.status(404).send("No user found.");
       console.log(result)
