@@ -38,8 +38,8 @@ router.get('/', function (req, res) {
 });
 
 // GETS A SINGLE USER FROM THE DATABASE
-router.get('/:usrid/:name', function (req, res) {
-    User.find({'userId':req.params.usrid,'name':req.params.name.toLowerCase()},{ '_id': 0, 'name' :1}, function (err, name) {
+router.get('/:name', function (req, res) { //'/:usrid/:name'
+    User.find('name':req.params.name.toLowerCase()},{ '_id': 0, 'name' :1}, function (err, name) { //{"userId":req.params.usrid,
         if (err) return res.status(500).send("There was a problem finding the user.");
         if (!name || name.length == 0) return res.status(404).send("No user found.");
         console.log("Nombre",name);
@@ -48,8 +48,8 @@ router.get('/:usrid/:name', function (req, res) {
 });
 
 // GETS A SPECIFIC NOTICE OF ONE USER
-router.get('/notice/:usrid/:name', function (req, res) {
-    User.find({'userId':req.params.usrid,'name':req.params.name.toLowerCase()}, { '_id': 0, 'contenidos' :1}, function(err, result){
+router.get('/notice/:name', function (req, res) { //'/notice/:usrid/:name'
+    User.find('name':req.params.name.toLowerCase()}, { '_id': 0, 'contenidos' :1}, function(err, result){ //{"userId":req.params.usrid,
 	  if (err) return res.status(500).send("There was a problem finding the user.");
       if (!result || result.length == 0) return res.status(404).send("No user found.");
       console.log(result[0].contenidos[0])
@@ -58,9 +58,9 @@ router.get('/notice/:usrid/:name', function (req, res) {
 });
 
 // GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
-router.get('/notices/:category/:usrid/:name', function (req, res) {
+router.get('/notices/:category/:name', function (req, res) { //'/notices/:category/:usrid/:name'
 
-var getCriteria = {'userId':req.params.usrid,'name':req.params.name.toLowerCase()};
+var getCriteria = {'name':req.params.name.toLowerCase()}; //{"userId":req.params.usrid,
 
    User.aggregate([
     { $match: getCriteria},
@@ -121,8 +121,8 @@ var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':re
 });
 
 // GETS THE CATEGORIES OF ONE USER 
-router.get('/categories/:usrid/:name', function (req, res) {
-    User.distinct('contenidos.category',{'userId':req.params.usrid,'name':req.params.name.toLowerCase()}, function(err, result){
+router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
+    User.distinct('contenidos.category',{'name':req.params.name.toLowerCase()}, function(err, result){ //{'userId':req.params.usrid,
 	  if (err) return res.status(500).send("There was a problem finding the user.");
       if (!result || result.length == 0) return res.status(404).send("No user found.");
       console.log(result)
@@ -132,8 +132,8 @@ router.get('/categories/:usrid/:name', function (req, res) {
 
 
 // DELETES A USER FROM THE DATABASE
-router.delete('/:usrid/:name', function (req, res) {
-    User.findOneAndRemove({"userId":req.params.usrid,"name":req.params.name.toLowerCase()}, function (err, user) {
+router.delete('/:name', function (req, res) { //'/:usrid/:name'
+    User.findOneAndRemove("name":req.params.name.toLowerCase()}, function (err, user) { //{"userId":req.params.usrid,
         if (err) return res.status(500).send("There was a problem deleting the user.");
         res.status(200).send("User "+ req.params.name +" was deleted.");
     });
