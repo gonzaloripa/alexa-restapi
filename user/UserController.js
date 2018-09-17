@@ -57,7 +57,7 @@ router.get('/notice/:name', function (req, res) { //'/notice/:usrid/:name'
 	});	    
 });
 
-// GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
+/*/ GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
 router.get('/notices/:category/:name', function (req, res) { //'/notices/:category/:usrid/:name'
 
 var getCriteria = {'name':req.params.name.toLowerCase()}; //{"userId":req.params.usrid,
@@ -77,6 +77,7 @@ var getCriteria = {'name':req.params.name.toLowerCase()}; //{"userId":req.params
     });
   
 });
+*/
 
 // GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
 router.get('/noticesByCategory/:category/:name', function (req, res) {
@@ -134,6 +135,14 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
 // DELETES A USER FROM THE DATABASE
 router.delete('/:name', function (req, res) { //'/:usrid/:name'
     User.findOneAndRemove({"name":req.params.name.toLowerCase()}, function (err, user) { //{"userId":req.params.usrid,
+        if (err) return res.status(500).send("There was a problem deleting the user.");
+        res.status(200).send("User "+ req.params.name +" was deleted.");
+    });
+});
+
+// DELETES A CONTENT FROM A USER 
+router.delete('/:name', function (req, res) { //'/:usrid/:name'
+    User.findOneAndRemove({ contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}},"name":req.params.name.toLowerCase()}, function (err, user) { //{"userId":req.params.usrid,
         if (err) return res.status(500).send("There was a problem deleting the user.");
         res.status(200).send("User "+ req.params.name +" was deleted.");
     });
