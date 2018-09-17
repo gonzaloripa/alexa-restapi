@@ -141,7 +141,7 @@ router.delete('/:name', function (req, res) { //'/:usrid/:name'
 });
 
 // DELETES A CONTENT FROM A USER 
-router.delete('deleteContent/:name', function (req, res) { //'/:usrid/:name'
+router.delete('/deleteContent/:name', function (req, res) { //'/:usrid/:name'
   User.findOne({ name: req.params.name.toLowerCase()})//agregar password
   .select({ contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}}})
   .exec((err, resul)=> { 
