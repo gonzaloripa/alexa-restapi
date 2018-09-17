@@ -142,10 +142,16 @@ router.delete('/:name', function (req, res) { //'/:usrid/:name'
 
 // DELETES A CONTENT FROM A USER 
 router.delete('deleteContent/:name', function (req, res) { //'/:usrid/:name'
-    User.findOneAndRemove({ contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}},"name":req.params.name.toLowerCase()}, function (err, user) { //{"userId":req.params.usrid,
+  User.findOne({ name: req.params.name.toLowerCase()})//agregar password
+  .select({ contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}}})
+  .exec((err, resul)=> { 
+    //console.log("---contenido ",resul)
+    var state = (resul.contenidos[0].state=='new')?'old':'new';
+    User.findOneAndRemove({'contenidos._id':resul.contenidos[0]._id} ,{ $set: { 'contenidos.$.state': state }},(err,doc)=>{
         if (err) return res.status(500).send("There was a problem deleting the user.");
         res.status(200).send("User "+ req.params.name +" was deleted.");
-    });
+    })
+  })     
 });
 
 //UPDATE THE STATE OF A CONTENT 
