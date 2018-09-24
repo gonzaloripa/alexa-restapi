@@ -144,17 +144,17 @@ router.get('/titles/:name', function (req, res) { //'/categories/:usrid/:name'
       var titles=[];
       xpaths[0].contenidos.forEach((elem)=>{      
         
-        var title = fetch(elem.url)
+        fetch(elem.url)
         .then(response=>{
             return response.text()
         })
         .then(body => {
-          console.log(body)
+
             var docu = new dom().parseFromString(body);
-            return xpath.evaluate('//'+elem.xpath, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent;
+            titles.push(xpath.evaluate('//'+elem.xpath, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent);
         })
         
-        titles.push(title)
+        
       })
 
       res.status(200).send(titles);
