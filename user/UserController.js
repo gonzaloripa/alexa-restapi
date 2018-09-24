@@ -137,7 +137,7 @@ router.get('/titles/:name', function (req, res) { //'/categories/:usrid/:name'
     User.find({'name':req.params.name.toLowerCase()},{ '_id': 0,'contenidos.xpath':1, 'contenidos.url':1} ,function(err, xpaths){ //{'userId':req.params.usrid,
     if (err) return res.status(500).send("There was a problem finding the user.");
       if (!xpaths || xpaths.length == 0) return res.status(404).send("No user found.");
-      console.log(xpaths[0].contenidos.url,xpaths[0].contenidos.xpath)
+      console.log(xpaths)
       
       var xpath = require('xpath')
       ,dom = require('xmldom').DOMParser;
