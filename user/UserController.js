@@ -196,8 +196,9 @@ router.put('/addContent/user/:name',function(req, res) {
         console.log(result.contenidos)
           var aux;
           if(result.contenidos.length>0){
-            aux = result;  
-            aux.idContent = result.contenidos[0].idContent.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
+            aux = result.contenidos[0];
+            delete aux._id;  
+            aux.idContent = aux.idContent.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
           }
           else
             aux = req.body;
