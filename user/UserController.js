@@ -135,7 +135,7 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
 
 // DELETES A USER FROM THE DATABASE
 router.delete('/:name', function (req, res) { //'/:usrid/:name'
-    User.findOneAndDelete({"name":req.params.name.toLowerCase()}, function (err, user) { //{"userId":req.params.usrid,
+    User.findOneAndRemove({"name":req.params.name.toLowerCase()}, function (err, user) { //{"userId":req.params.usrid,
         if (err) return res.status(500).send("There was a problem deleting the user.");
         res.status(200).send("User "+ req.params.name +" was deleted.");
     });
@@ -197,7 +197,7 @@ router.put('/addContent/user/:name',function(req, res) {
           var aux;
           if(result.contenidos.length>0){
             aux = result;  
-            aux.idContent = result.contenidos.idContent.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
+            aux.idContent = result.contenidos[0].idContent.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
           }
           else
             aux = req.body;
