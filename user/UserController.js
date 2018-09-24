@@ -149,6 +149,7 @@ router.get('/titles/:name', function (req, res) { //'/categories/:usrid/:name'
             return response.text()
         })
         .then(body => {
+          console.log(body)
             var docu = new dom().parseFromString(body);
             return xpath.evaluate('//'+elem.xpath, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent;
         })
