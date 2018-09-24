@@ -195,11 +195,11 @@ router.put('/addContent/user/:name',function(req, res) {
       .exec((err, result)=> {
         console.log(result.contenidos)
           var aux=req.body;
-          var lastChar = aux.idContent.charAt(aux.idContent.length-1);
-          if(result.contenidos.length>0 && !isNaN(parseInt(lastChar,10)))
-            aux.idContent = result.contenidos[0].idContent.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
+          var lastChar = aux.idInc.charAt(aux.idContent.length-1);
+          if(result.contenidos.length>0)
+            aux.idInc = result.contenidos[0].idInc.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
           else
-            aux.idContent = aux.idContent+1
+            aux.idInc = aux.idContent+1
           User.findOneAndUpdate(query, { $push: { contenidos: aux }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
               if(err) return res.status(500).send("There was a problem updating the user.");
               //user contiene el usuario antes de ser actualizado
