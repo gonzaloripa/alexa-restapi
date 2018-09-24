@@ -193,6 +193,7 @@ router.put('/addContent/user/:name',function(req, res) {
       User.findOne(query)
       .select({ contenidos: {$elemMatch: {idContent:req.body.idContent,url:req.body.url}}})
       .exec((err, result)=> {
+        console.log(result.contenidos)
           var aux;
           if(result.contenidos.length>0){
             aux = result;  
