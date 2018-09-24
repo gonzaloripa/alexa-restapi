@@ -132,6 +132,29 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
 	});	    
 });
 
+router.get('/getTitle/:name',function(req,res){
+  var query = { name: req.params.name.toLowerCase() };//agregar password
+  User.findOne(query)
+  .select({ contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}}})
+  .exec((err, docs)=> {
+    console.log(docs)
+    fetch(docs.url)
+            .then(response=>{
+                return response.text()
+            })
+            .then(body => {
+
+                var docu = new dom().parseFromString(body);
+                var title = xpath.evaluate('//'+docs.xpath, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
+                console.log(title)
+                res.status(200).send(title);
+
+            })
+  })
+})
+
+
+/*
 // GETS THE TITLES OF ONE USER 
 router.get('/titles/:name', function (req, res) { //'/categories/:usrid/:name'
     User.find({'name':req.params.name.toLowerCase()},{ '_id': 0,'contenidos.xpath':1, 'contenidos.url':1} ,function(err, xpaths){ //{'userId':req.params.usrid,
@@ -165,7 +188,7 @@ router.get('/titles/:name', function (req, res) { //'/categories/:usrid/:name'
       });
   });     
 });
-
+*/
 
 // DELETES A USER FROM THE DATABASE
 router.delete('/:name', function (req, res) { //'/:usrid/:name'
