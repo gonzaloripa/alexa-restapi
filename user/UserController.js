@@ -195,7 +195,6 @@ router.put('/addContent/user/:name',function(req, res) {
       .exec((err, result)=> {
         console.log(result.contenidos)
           var aux=req.body;
-          var lastChar = aux.idInc.charAt(aux.idContent.length-1);
           if(result.contenidos.length>0)
             aux.idInc = result.contenidos[0].idInc.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
           else
