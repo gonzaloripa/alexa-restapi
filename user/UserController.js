@@ -155,12 +155,10 @@ router.get('/titles/:name', function (req, res) { //'/categories/:usrid/:name'
         })
         
         
-      }).then(()=>{
+      })
         console.log(titles)
         res.status(200).send(titles);
-      })
 
-      
   });     
 });
 
