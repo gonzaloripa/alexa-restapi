@@ -142,7 +142,7 @@ router.get('/titles/:name', function (req, res) { //'/categories/:usrid/:name'
       var xpath = require('xpath')
       ,dom = require('xmldom').DOMParser;
       var titles=[];
-      xpaths[0].forEach((elem)=>{      
+      xpaths[0].contenidos.forEach((elem)=>{      
         
         var title = fetch(elem.url)
         .then(response=>{
