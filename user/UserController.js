@@ -132,63 +132,6 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
 	});	    
 });
 
-router.get('/getTitle/:name/:url/:xpath',function(req,res){
-  var query = { name: req.params.name.toLowerCase() };//agregar password
-  User.findOne(query)
-  .select({ contenidos: {$elemMatch: {url:req.params.url,xpath:req.params.xpath}}})
-  .exec((err, docs)=> {
-    console.log(docs)
-    fetch(docs.url)
-            .then(response=>{
-                return response.text()
-            })
-            .then(body => {
-
-                var docu = new dom().parseFromString(body);
-                var title = xpath.evaluate('//'+docs.xpath, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
-                console.log(title)
-                res.status(200).send(title);
-
-            })
-  })
-})
-
-
-/*
-// GETS THE TITLES OF ONE USER 
-router.get('/titles/:name', function (req, res) { //'/categories/:usrid/:name'
-    User.find({'name':req.params.name.toLowerCase()},{ '_id': 0,'contenidos.xpath':1, 'contenidos.url':1} ,function(err, xpaths){ //{'userId':req.params.usrid,
-    if (err) return res.status(500).send("There was a problem finding the user.");
-      if (!xpaths || xpaths.length == 0) return res.status(404).send("No user found.");
-      console.log(xpaths[0].contenidos)
-      
-      var xpath = require('xpath')
-      ,dom = require('xmldom').DOMParser;
-      var titles=[];
-
-      let requests = xpaths[0].contenidos.map((elem) => {
-          return new Promise((resolve) => {
-            fetch(elem.url)
-            .then(response=>{
-                return response.text()
-            })
-            .then(body => {
-
-                var docu = new dom().parseFromString(body);
-                var title = xpath.evaluate('//'+elem.xpath, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
-                console.log(title)
-                titles.push(title)
-            })
-          });
-      })
-
-      Promise.all(requests).then(() => {    
-        console.log(titles)
-        res.status(200).send(titles);
-      });
-  });     
-});
-*/
 
 // DELETES A USER FROM THE DATABASE
 router.delete('/:name', function (req, res) { //'/:usrid/:name'
@@ -221,9 +164,7 @@ router.put('/updateContent/user/:name',function(req, res) {
 
 //ADD A LIST OF CONTENT INTO THE COLLECTION OF A USER
 router.put('/addListContent/user/:name',function(req, res) {
-	//req.body.xpath:body/div[1]/div[1]/div[1]/div[2]/section[1]/article[1]/a[1]/h2[1]
-	//req.body.url: 'https://diariohoy.net'
-  //req.body.state = 'new'/'old'
+
 	var contBody = req.body;
   var query = { 'name': req.params.name.toLowerCase()};//agregar password
   User.findOneAndUpdate(query,{$addToSet : {contenidos:{$each: contBody} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
@@ -249,13 +190,20 @@ router.put('/addContent/user/:name',function(req, res) {
     if(docs.contenidos.length>0)
       res.status(404).send("Ya existe el contenido para ese usuario");  
     else{//Si no existe el contenido
-      User.findOneAndUpdate(query, { $push: { contenidos: req.body }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
-          if(err) return res.status(500).send("There was a problem updating the user.");
-          //user contiene el usuario antes de ser actualizado
-          console.log('Actualizado ',user);
+      User.findOne(query)
+      .select({ contenidos: {$elemMatch: {idContent:req.body.idContent,url:req.body.url}}})
+      .exec((err, result)=> {
+          if(result.contenidos.length>0)  
+            result.Idcontent = result.Idcontent.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
           
-          res.status(200).send(user);
-      });
+          User.findOneAndUpdate(query, { $push: { contenidos: result }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
+              if(err) return res.status(500).send("There was a problem updating the user.");
+              //user contiene el usuario antes de ser actualizado
+              console.log('Actualizado ',user);
+              
+              res.status(200).send(user);
+          });
+      })
     }
   })
 

@@ -6,6 +6,7 @@ var UserSchema = new mongoose.Schema({
   name: {type:String},
   password:{type:String},  
   contenidos:[{
+    idContent:String,
     url:String,
     xpath:{type:String,lowercase: true},
     category:String,
