@@ -2,6 +2,7 @@
 var express = require('express');
 var router = express.Router();//Se usa para crear un subconjunto de rutas
 var bodyParser = require('body-parser');
+const fetch = require('node-fetch');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());

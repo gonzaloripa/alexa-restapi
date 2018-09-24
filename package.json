@@ -19,6 +19,7 @@
     "http-auth": "^3.2.3",
     "mongoose": "5.2.13",    
     "xmldom": "^0.1.27",
-    "xpath": "^0.0.24"
+    "xpath": "^0.0.24",
+    "node-fetch": "^2.2.0"
   }
 }
