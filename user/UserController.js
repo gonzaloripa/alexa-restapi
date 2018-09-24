@@ -131,6 +131,34 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
 	});	    
 });
 
+// GETS THE TITLES OF ONE USER 
+router.get('/titles/:name', function (req, res) { //'/categories/:usrid/:name'
+    User.distinct('contenidos.xpath,contenidos.url',{'name':req.params.name.toLowerCase()}, function(err, xpaths){ //{'userId':req.params.usrid,
+    if (err) return res.status(500).send("There was a problem finding the user.");
+      if (!xpaths || xpaths.length == 0) return res.status(404).send("No user found.");
+      console.log(xpaths)
+      
+      var xpath = require('xpath')
+      ,dom = require('xmldom').DOMParser;
+      var titles=[];
+      xpaths.forEach((elem)=>{      
+        
+        var title = fetch(elem.url)
+        .then(response=>{
+            return response.text()
+        })
+        .then(body => {
+            var docu = new dom().parseFromString(body);
+            return xpath.evaluate('//'+elem.xpath, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent;
+        })
+        
+        titles.push(title)
+      })
+
+      res.status(200).send(titles);
+  });     
+});
+
 
 // DELETES A USER FROM THE DATABASE
 router.delete('/:name', function (req, res) { //'/:usrid/:name'
@@ -142,16 +170,7 @@ router.delete('/:name', function (req, res) { //'/:usrid/:name'
 
 // DELETES A CONTENT FROM A USER 
 router.delete('/deleteContent/:name', function (req, res) { //'/:usrid/:name'
-  User.findOne({ name: req.params.name.toLowerCase()})//agregar password
-  .select({ contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}}})
-  .exec((err, resul)=> { 
-    //console.log("---contenido ",resul)
-    var state = (resul.contenidos[0].state=='new')?'old':'new';
-    User.findOneAndRemove({'contenidos._id':resul.contenidos[0]._id} ,{ $set: { 'contenidos.$.state': state }},(err,doc)=>{
-        if (err) return res.status(500).send("There was a problem deleting the user.");
-        res.status(200).send("User "+ req.params.name +" was deleted.");
-    })
-  })     
+ 
 });
 
 //UPDATE THE STATE OF A CONTENT 

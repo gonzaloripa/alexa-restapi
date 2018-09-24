@@ -17,6 +17,8 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.3",
     "http-auth": "^3.2.3",
-    "mongoose": "5.2.13"
+    "mongoose": "5.2.13",    
+    "xmldom": "^0.1.27",
+    "xpath": "^0.0.24"
   }
 }
