@@ -133,7 +133,7 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
 
 // GETS THE TITLES OF ONE USER 
 router.get('/titles/:name', function (req, res) { //'/categories/:usrid/:name'
-    User.distinct('contenidos.xpath,contenidos.url',{'name':req.params.name.toLowerCase()}, function(err, xpaths){ //{'userId':req.params.usrid,
+    User.distinct('contenidos.url',{'name':req.params.name.toLowerCase()}, function(err, xpaths){ //{'userId':req.params.usrid,
     if (err) return res.status(500).send("There was a problem finding the user.");
       if (!xpaths || xpaths.length == 0) return res.status(404).send("No user found.");
       console.log(xpaths)
