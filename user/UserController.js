@@ -142,25 +142,27 @@ router.get('/titles/:name', function (req, res) { //'/categories/:usrid/:name'
       var xpath = require('xpath')
       ,dom = require('xmldom').DOMParser;
       var titles=[];
-      xpaths[0].contenidos.forEach((elem)=>{      
-        
-        fetch(elem.url)
-        .then(response=>{
-            return response.text()
-        })
-        .then(body => {
 
-            var docu = new dom().parseFromString(body);
-            var title = xpath.evaluate('//'+elem.xpath, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
-            console.log(title)
-            titles.push(title)
-        })
-        
-        
+      let requests = xpaths[0].contenidos.map((elem) => {
+          return new Promise((resolve) => {
+            fetch(elem.url)
+            .then(response=>{
+                return response.text()
+            })
+            .then(body => {
+
+                var docu = new dom().parseFromString(body);
+                var title = xpath.evaluate('//'+elem.xpath, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
+                console.log(title)
+                titles.push(title)
+            })
+          });
       })
+
+      Promise.all(requests).then(() => {    
         console.log(titles)
         res.status(200).send(titles);
-
+      });
   });     
 });
 
