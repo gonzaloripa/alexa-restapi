@@ -132,10 +132,10 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
 	});	    
 });
 
-router.get('/getTitle/:name',function(req,res){
+router.get('/getTitle/:name/:url/:xpath',function(req,res){
   var query = { name: req.params.name.toLowerCase() };//agregar password
   User.findOne(query)
-  .select({ contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}}})
+  .select({ contenidos: {$elemMatch: {url:req.params.url,xpath:req.params.xpath}}})
   .exec((err, docs)=> {
     console.log(docs)
     fetch(docs.url)
