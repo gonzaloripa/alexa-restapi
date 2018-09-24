@@ -151,7 +151,9 @@ router.get('/titles/:name', function (req, res) { //'/categories/:usrid/:name'
         .then(body => {
 
             var docu = new dom().parseFromString(body);
-            titles.push(xpath.evaluate('//'+elem.xpath, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent);
+            var title = xpath.evaluate('//'+elem.xpath, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.textContent
+            console.log(title)
+            titles.push(title)
         })
         
         
