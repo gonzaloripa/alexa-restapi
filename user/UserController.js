@@ -173,8 +173,10 @@ router.put('/addListContent/user/:name',function(req, res) {
        console.log(result[0].contenidos)
        var contents = []
        contBody.forEach((elem)=>{
-        if(!result[0].contenidos.includes(elem)){
-          contents.push(elem);
+        for (i = 0; i < result[0].contenidos.length; i++) {
+            if (result[0].contenidos[i] != elem) {
+                contents.push(elem);
+            }
         }
        });
        User.findOneAndUpdate(query,{$addToSet : {contenidos:{$each: contents} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
