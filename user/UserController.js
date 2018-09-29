@@ -166,7 +166,7 @@ router.put('/updateContent/user/:name',function(req, res) {
 router.put('/addListContent/user/:name',function(req, res) {
 
 	var contBody = req.body;
-  //var query = { 'name': req.params.name.toLowerCase()};//agregar password
+  var query = { 'name': req.params.name.toLowerCase()};//agregar password
   
   User.find({'name': req.params.name.toLowerCase(), 
             'contenidos': {$elemMatch: {'url':req.body.url,'xpath':req.body.xpath}}}
