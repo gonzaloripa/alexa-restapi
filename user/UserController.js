@@ -166,7 +166,7 @@ router.put('/updateContent/user/:name',function(req, res) {
 router.put('/addListContent/user/:name',function(req, res) {
   var functionContains = function(array,obj){
     for (i = 0; i < array.length; i++) {
-            console.log("  aver ",(array[i] === obj),array[i],obj)
+            console.log("  aver ",(array[i] == obj),array[i],obj)
             if (array[i] === obj) {
 
                 return true
