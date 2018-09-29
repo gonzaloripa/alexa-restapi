@@ -170,7 +170,7 @@ router.put('/addListContent/user/:name',function(req, res) {
   
   User.find(query,{'contenidos._id':0}, 
     function (err, result) {
-       console.log(result)
+       console.log(result[0].contenidos)
        var contents = []
        contBody.forEach((elem)=>{
         if(!result[0].contenidos.includes(elem)){
