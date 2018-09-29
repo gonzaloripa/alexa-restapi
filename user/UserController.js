@@ -164,6 +164,14 @@ router.put('/updateContent/user/:name',function(req, res) {
 
 //ADD A LIST OF CONTENT INTO THE COLLECTION OF A USER
 router.put('/addListContent/user/:name',function(req, res) {
+  var functionContains = function(array,obj){
+    for (i = 0; i < array.length; i++) {
+            if (array[i] === obj) {
+                return true
+            }
+        }
+        return false;
+  };
 
 	var contBody = req.body;
   var query = { 'name': req.params.name.toLowerCase()};//agregar password
@@ -173,10 +181,8 @@ router.put('/addListContent/user/:name',function(req, res) {
        console.log(result[0].contenidos)
        var contents = []
        contBody.forEach((elem)=>{
-        for (i = 0; i < result[0].contenidos.length; i++) {
-            if (result[0].contenidos[i] != elem) {
-                contents.push(elem);
-            }
+        if(!result[0].contenidos.functionContains(result[0].contenidos,elem)){
+          contents.push(elem);
         }
        });
        User.findOneAndUpdate(query,{$addToSet : {contenidos:{$each: contents} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
