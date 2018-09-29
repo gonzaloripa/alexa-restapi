@@ -173,7 +173,7 @@ router.put('/addListContent/user/:name',function(req, res) {
        console.log(result)
        var contents = []
        contBody.forEach((elem)=>{
-        if(!result[0].includes(elem)){
+        if(!result[0].contenidos.includes(elem)){
           contents.push(elem);
         }
        });
