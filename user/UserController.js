@@ -168,9 +168,9 @@ router.put('/addListContent/user/:name',function(req, res) {
 	var contBody = req.body;
   var query = { 'name': req.params.name.toLowerCase()};//agregar password
   
-  User.find(query,{'contenidos._id':0,'contenidos':1}, 
+  User.find(query,{'contenidos._id':0}, 
     function (err, result) {
-       console.log(result,result[0])
+       console.log(result)
        var contents = []
        contBody.forEach((elem)=>{
         if(!result[0].includes(elem)){
