@@ -166,14 +166,27 @@ router.put('/updateContent/user/:name',function(req, res) {
 router.put('/addListContent/user/:name',function(req, res) {
 
 	var contBody = req.body;
-  var query = { 'name': req.params.name.toLowerCase()};//agregar password
-  User.findOneAndUpdate(query,{$addToSet : {contenidos:{$each: contBody} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
-    if(err) return res.status(500).send("There was a problem updating the user.");
-    //user contiene el usuario antes de ser actualizado
-    console.log('Actualizado ',user);
-          
-    res.status(200).send(user);
-  })
+  //var query = { 'name': req.params.name.toLowerCase()};//agregar password
+  
+  User.find({'name': req.params.name.toLowerCase(), 
+            'contenidos': {$elemMatch: {'url':req.body.url,'xpath':req.body.xpath}}}
+            , 'contenidos', 
+    function (err, result) {
+       console.log(result,result[0])
+       var contents = []
+       contBody.forEach((elem)=>{
+        if(!result.contains(contBody)){
+          contents.push(elem);
+        }
+       });
+       User.findOneAndUpdate(query,{$addToSet : {contenidos:{$each: contents} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
+          if(err) return res.status(500).send("There was a problem updating the user.");
+          //user contiene el usuario antes de ser actualizado
+          console.log('Actualizado ',contents);
+                
+          res.status(200).send(contents);
+        })
+    }) 
 })
 
 //ADD A CONTENT INTO THE COLLECTION OF A USER
