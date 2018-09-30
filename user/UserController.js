@@ -213,13 +213,14 @@ router.put('/addContent/user/:name',function(req, res) {
     else{//Si no existe el contenido
       User.findOne(query)
       .select({ contenidos: {$elemMatch: {idContent:req.body.idContent,url:req.body.url}}})
+      .sort({'contenidos.idInc': 'desc'})
       .exec((err, result)=> {
         console.log(result.contenidos)
           var aux=req.body;
           if(result.contenidos.length>0)
-            aux.idInc = result.contenidos[0].idInc.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
+            aux.idInc = result.contenidos[0].idInc + 1 //.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
           else
-            aux.idInc = aux.idContent+1
+            aux.idInc += 1   //aux.idContent+1
           User.findOneAndUpdate(query, { $push: { contenidos: aux }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
               if(err) return res.status(500).send("There was a problem updating the user.");
               //user contiene el usuario antes de ser actualizado
