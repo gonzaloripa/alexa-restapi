@@ -184,7 +184,22 @@ router.put('/addListContent/user/:name',function(req, res) {
        var contents = []
        contBody.forEach((elem)=>{
         if(!functionContains(result[0].contenidos,elem)){
-          contents.push(elem);
+          User.aggregate([
+             {$unwind:"$contenidos"},
+             {$match:{"contenidos.idContent":elem.idContent, "contenidos.url":elem.url}},
+             {$project:{contenidos:1,_id:0}},
+             {$sort:{"contenidos.idInc":-1}},
+             {$limit: 1}
+             ])
+          .then(function (result) {
+            console.log(result[0]); 
+            
+              if(result[0])
+                elem.idInc = result[0].contenidos.idInc + 1 //.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
+              else
+                elem.idInc = 1
+              contents.push(elem);
+            })
         }
        });
        User.findOneAndUpdate(query,{$addToSet : {contenidos:{$each: contents} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
