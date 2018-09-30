@@ -211,12 +211,14 @@ router.put('/addContent/user/:name',function(req, res) {
     if(docs.contenidos.length>0)
       res.status(404).send("Ya existe el contenido para ese usuario");  
     else{//Si no existe el contenido
-      User.findOne(query)
-      .select({ contenidos: {$elemMatch: {idContent:req.body.idContent,url:req.body.url}}})
-      .sort({'contenidos.idInc': 'asc'})
-      .exec((err, result)=> {
-        console.log(result.contenidos)
-          var aux=req.body;
+      User.aggregate([
+         {$unwind:"$contenidos"},
+         {$match:{"contenidos.idContent":req.body.idContent, "contenidos.url":req.body.url}},
+         {$sort:{"contenidos.idInc":1}}
+         ])
+      .then(function (result) {
+        console.log(result,result.contenidos[0]); 
+        var aux=req.body;
           if(result.contenidos.length>0)
             aux.idInc = result.contenidos[0].idInc + 1 //.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
           else
@@ -227,11 +229,10 @@ router.put('/addContent/user/:name',function(req, res) {
               console.log('Actualizado ',user);
               
               res.status(200).send(user);
-          });
-      })
+          })
+      });
     }
   })
-
 });
 
 module.exports = router;
