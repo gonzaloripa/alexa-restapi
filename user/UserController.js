@@ -214,13 +214,14 @@ router.put('/addContent/user/:name',function(req, res) {
       User.aggregate([
          {$unwind:"$contenidos"},
          {$match:{"contenidos.idContent":req.body.idContent, "contenidos.url":req.body.url}},
-         {$sort:{"contenidos.idInc":1}}
+         {$sort:{"contenidos.idInc":-1}},
+         {$limit: 1}
          ])
       .then(function (result) {
         console.log(result); 
         var aux=req.body;
-          if(result.contenidos.length>0)
-            aux.idInc = result.contenidos[0].idInc + 1 //.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
+          if(result.length>0)
+            aux.idInc = result.idInc + 1 //.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
           else
             aux.idInc = 1   //aux.idContent+1
           User.findOneAndUpdate(query, { $push: { contenidos: aux }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
