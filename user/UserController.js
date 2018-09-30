@@ -201,7 +201,7 @@ router.put('/addListContent/user/:name',function(req, res) {
             })
         }
        });
-       User.findOneAndUpdate(query,{$push : {contenidos: {$each: contents} }, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
+       User.findOneAndUpdate(query,{$push : {contenidos: {$each: contents} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
           if(err) return res.status(500).send("There was a problem updating the user.");
           //user contiene el usuario antes de ser actualizado
           console.log('Actualizado ',user);
