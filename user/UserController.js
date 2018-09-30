@@ -220,8 +220,8 @@ router.put('/addContent/user/:name',function(req, res) {
       .then(function (result) {
         console.log(result); 
         var aux=req.body;
-          if(result.length>0)
-            aux.idInc = result.idInc + 1 //.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
+          if(result[0].contenidos.length>0)
+            aux.idInc = result[0].contenidos.idInc + 1 //.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
           else
             aux.idInc = 1   //aux.idContent+1
           User.findOneAndUpdate(query, { $push: { contenidos: aux }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
