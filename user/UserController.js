@@ -167,7 +167,7 @@ router.put('/addListContent/user/:name',function(req, res) {
   var functionContains = function(array,obj){
     for (i = 0; i < array.length; i++) {
             //console.log("  aver ",(array[i] == obj),array[i],obj)
-            if (array[i].xpath === obj.xpath && array[i].url === obj.url) {
+            if (array[i].xpath === obj.xpath && array[i].url === obj.url && array[i].idContent === obj.idContent ) {
                 return true
             }
         }
@@ -182,25 +182,9 @@ router.put('/addListContent/user/:name',function(req, res) {
        console.log(result[0].contenidos)
        var contents = []
        
-       let promises = contBody.map((elem)=>{ //usar promise en foreach 
-        if(!functionContains(result[0].contenidos,elem)){
-          return User.aggregate([
-             {$unwind:"$contenidos"},
-             {$match:{"contenidos.idContent":elem.idContent, "contenidos.url":elem.url}},
-             {$project:{contenidos:1,_id:0}},
-             {$sort:{"contenidos.idInc":-1}},
-             {$limit: 1}
-             ])
-          .then(function (result) {
-            console.log(result[0]); 
-            
-              if(result[0])
-                elem.idInc = result[0].contenidos.idInc + 1 //.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
-              else
-                elem.idInc = 1
-              contents.push(elem);
-            })
-        }
+       let promises = contBody.map((elem)=>{ 
+        if(!functionContains(result[0].contenidos,elem))//si no se repiten los contenidos
+          return contents.push(elem);
        });
        Promise.all(promises).then((resultArray)=>{
         console.log("res",resultArray)
@@ -208,7 +192,7 @@ router.put('/addListContent/user/:name',function(req, res) {
           if(err) return res.status(500).send("There was a problem updating the user.");
           //user contiene el usuario antes de ser actualizado
           console.log('Actualizado ',user);
-                
+          if(contents.length == 0) res.status(400).send("No puede haber contenidos con el mismo xpath o id de una misma pagina");      
           res.status(200).send(contents);
         })
        }).catch((err)=>{
@@ -231,7 +215,87 @@ router.put('/addContent/user/:name',function(req, res) {
     if(docs.contenidos.length>0)
       res.status(404).send("Ya existe el contenido para ese usuario");  
     else{//Si no existe el contenido
-      User.aggregate([
+      
+          User.findOneAndUpdate(query, { $push: { contenidos: req.body }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
+              if(err) return res.status(500).send("There was a problem updating the user.");
+              //user contiene el usuario antes de ser actualizado
+              console.log('Actualizado ',user);
+              
+              res.status(200).send(user);
+          })
+      });
+    }
+  })
+});
+
+module.exports = router;
+
+
+
+
+/*addListContent
+
+var functionContains = function(array,obj){
+    for (i = 0; i < array.length; i++) {
+            //console.log("  aver ",(array[i] == obj),array[i],obj)
+            if (array[i].xpath === obj.xpath && array[i].url === obj.url) {
+                return true
+            }
+        }
+        return false;
+  };
+
+  var contBody = req.body;
+  var query = { 'name': req.params.name.toLowerCase()};//agregar password
+  
+  User.find(query,{'contenidos._id':0}, 
+    function (err, result) {
+       console.log(result[0].contenidos)
+       var contents = []
+
+       var elemAnt = {idContent:""};
+       var elemAct;
+       
+       let promises = contBody.map((elem)=>{ 
+        if(!functionContains(result[0].contenidos,elem)){//si no se repiten los contenidos
+          return User.aggregate([
+             {$unwind:"$contenidos"},
+             {$match:{"contenidos.idContent":elem.idContent, "contenidos.url":elem.url}},
+             {$project:{contenidos:1,_id:0}},
+             {$sort:{"contenidos.idInc":-1}},
+             {$limit: 1}
+             ])
+          .then(function (result) {
+            console.log(result[0]); 
+              
+              if(result[0])
+                elem.idInc = result[0].contenidos.idInc + 1 //.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
+              else 
+                elem.idInc = 1;
+              contents.push(elemAct);
+            })
+        }
+       });
+       Promise.all(promises).then((resultArray)=>{
+        console.log("res",resultArray)
+          User.findOneAndUpdate(query,{$push : {contenidos: {$each: contents} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
+          if(err) return res.status(500).send("There was a problem updating the user.");
+          //user contiene el usuario antes de ser actualizado
+          console.log('Actualizado ',user);
+                
+          res.status(200).send(contents);
+        })
+       }).catch((err)=>{
+        console.log("error",err)
+       })   
+    }) 
+
+
+
+
+
+addContent/user/name
+User.aggregate([
          {$unwind:"$contenidos"},
          {$match:{"contenidos.idContent":req.body.idContent, "contenidos.url":req.body.url}},
          {$project:{contenidos:1,_id:0}},
@@ -245,16 +309,7 @@ router.put('/addContent/user/:name',function(req, res) {
             aux.idInc = result[0].contenidos.idInc + 1 //.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
           else
             aux.idInc = 1   //aux.idContent+1
-          User.findOneAndUpdate(query, { $push: { contenidos: aux }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
-              if(err) return res.status(500).send("There was a problem updating the user.");
-              //user contiene el usuario antes de ser actualizado
-              console.log('Actualizado ',user);
-              
-              res.status(200).send(user);
-          })
-      });
-    }
-  })
-});
 
-module.exports = router;
+
+
+*/
