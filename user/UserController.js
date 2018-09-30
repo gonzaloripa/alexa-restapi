@@ -213,7 +213,7 @@ router.put('/addContent/user/:name',function(req, res) {
     else{//Si no existe el contenido
       User.findOne(query)
       .select({ contenidos: {$elemMatch: {idContent:req.body.idContent,url:req.body.url}}})
-      .sort({'contenidos.idInc': 'desc'})
+      .sort({'contenidos.idInc': 'asc'})
       .exec((err, result)=> {
         console.log(result.contenidos)
           var aux=req.body;
