@@ -181,9 +181,10 @@ router.put('/addListContent/user/:name',function(req, res) {
     function (err, result) {
        console.log(result[0].contenidos)
        var contents = []
-       contBody.forEach((elem)=>{
+       
+       let promises = contBody.map((elem)=>{ //usar promise en foreach 
         if(!functionContains(result[0].contenidos,elem)){
-          User.aggregate([
+          return User.aggregate([
              {$unwind:"$contenidos"},
              {$match:{"contenidos.idContent":elem.idContent, "contenidos.url":elem.url}},
              {$project:{contenidos:1,_id:0}},
@@ -201,13 +202,18 @@ router.put('/addListContent/user/:name',function(req, res) {
             })
         }
        });
-       User.findOneAndUpdate(query,{$push : {contenidos: {$each: contents} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
+       Promise.all(promises).then((res)=>{
+        console.log("res",res)
+          User.findOneAndUpdate(query,{$push : {contenidos: {$each: contents} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
           if(err) return res.status(500).send("There was a problem updating the user.");
           //user contiene el usuario antes de ser actualizado
           console.log('Actualizado ',user);
                 
           res.status(200).send(contents);
         })
+       }).catch((err)=>{
+        console.log("error",err)
+       })   
     }) 
 })
 
