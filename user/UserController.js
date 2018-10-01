@@ -153,7 +153,7 @@ router.put('/updateContent/user/:name',function(req, res) {
   .select({ contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}}})
   .exec((err, resul)=> { 
     //console.log("---contenido ",resul)
-    var state = (resul.contenidos[0].state=='new')?'old':'new';
+    var state = (resul.contenidos[0].state=='new')?'edited':'new';
     User.findOneAndUpdate({'contenidos._id':resul.contenidos[0]._id} ,{ $set: { 'contenidos.$.state': state }},(err,doc)=>{
       //console.log("---contenido ",doc)
       res.status(200).send(doc);
