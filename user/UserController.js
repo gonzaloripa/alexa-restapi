@@ -194,7 +194,7 @@ router.put('/addListContent/user/:name',function(req, res) {
           if(err) return res.status(500).send("There was a problem updating the user.");
           //user contiene el usuario antes de ser actualizado
           console.log('Actualizado ',user);
-          if(contents.length == 0) res.status(400).send("No puede haber contenidos con el mismo xpath o id de una misma pagina");      
+          if(contents.length == 0) return res.status(400).send("No puede haber contenidos con el mismo xpath o id de una misma pagina");      
           res.status(200).send(contents);
         })
        }).catch((err)=>{
@@ -239,7 +239,7 @@ router.put('/addContent/user/:name',function(req, res) {
                 User.findOneAndUpdate(criteria, { $push: { contenidos: req.body }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
                     if(err) return res.status(500).send("There was a problem updating the user.");
                     //user contiene el usuario antes de ser actualizado
-                    console.log('Actualizado ',user);
+                    console.log('Actualizado ',req.body);
                     
                     res.status(200).send(user);
                 })
