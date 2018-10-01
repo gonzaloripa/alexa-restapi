@@ -167,9 +167,10 @@ router.put('/addListContent/user/:name',function(req, res) {
   var functionContains = function(array,obj){
     for (i = 0; i < array.length; i++) {
             //console.log("  aver ",(array[i] == obj),array[i],obj)
-            if (array[i].xpath === obj.xpath && array[i].url === obj.url && array[i].idContent === obj.idContent ) {
+            if (array[i].xpath === obj.xpath && array[i].url === obj.url ) {
                 return true
             }
+            if(array[i].url === obj.url && array[i].idContent === obj.idContent )
         }
         return false;
   };
