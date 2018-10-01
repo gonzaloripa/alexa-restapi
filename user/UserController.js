@@ -225,7 +225,7 @@ router.put('/addContent/user/:name',function(req, res) {
          })
   .exec((err, docs)=> {
     console.log(docs)
-    if(docs)
+    if(docs[0])
       res.status(404).send("Ya existe el contenido para ese usuario");  
     else{//Si no existe el contenido
       
