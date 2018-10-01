@@ -220,7 +220,7 @@ router.put('/addContent/user/:name',function(req, res) {
          })
   .exec((err, docs)=> {
     console.log(docs)
-    if(docs[0])
+    if(docs)
       res.status(404).send("Ya existe el contenido para ese usuario");  
     else{//Si no existe el contenido
           User.findOne(criteria)
@@ -233,7 +233,7 @@ router.put('/addContent/user/:name',function(req, res) {
                    })
             .exec((err, result)=> {
               console.log(result)
-              if(result[0])
+              if(result)
                 res.status(404).send("Ya existe el id");  
               else{
                 User.findOneAndUpdate(criteria, { $push: { contenidos: req.body }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
