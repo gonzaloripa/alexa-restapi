@@ -208,17 +208,21 @@ router.put('/addContent/user/:name',function(req, res) {
   //req.body.state = 'new'/'old'
   
   var query = { name: req.params.name.toLowerCase() };//agregar password
-  User.findOne(query)
-  .elemMatch('contenidos', 
+  User.where(query)
+  .where({ contenidos: 
+          {$elemMatch: 
             {url:req.body.url,
              xpath:req.body.xpath
             }
-          )
-  .elemMatch('contenidos', 
+          }
+         })
+  .where({ contenidos: 
+          {$elemMatch: 
             {url:req.body.url,
              idContent:req.body.idContent
             }
-          )
+          }
+         })
   .exec((err, docs)=> {
     console.log(docs)
     if(docs)
