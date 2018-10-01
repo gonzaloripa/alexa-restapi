@@ -207,19 +207,12 @@ router.put('/addContent/user/:name',function(req, res) {
   //req.body.url: 'https://diariohoy.net'
   //req.body.state = 'new'/'old'
   
-  var query = { name: req.params.name.toLowerCase() };//agregar password
-  User.where(query)
-  .where({ contenidos: 
+  var criteria = { name: req.params.name.toLowerCase() };//agregar password
+  User.findOne(criteria)
+  .select({ contenidos: 
           {$elemMatch: 
             {url:req.body.url,
              xpath:req.body.xpath
-            }
-          }
-         })
-  .where({ contenidos: 
-          {$elemMatch: 
-            {url:req.body.url,
-             idContent:req.body.idContent
             }
           }
          })
@@ -228,14 +221,28 @@ router.put('/addContent/user/:name',function(req, res) {
     if(docs[0])
       res.status(404).send("Ya existe el contenido para ese usuario");  
     else{//Si no existe el contenido
-      
-          User.findOneAndUpdate(query, { $push: { contenidos: req.body }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
-              if(err) return res.status(500).send("There was a problem updating the user.");
-              //user contiene el usuario antes de ser actualizado
-              console.log('Actualizado ',user);
-              
-              res.status(200).send(user);
-          })
+          User.findOne(criteria)
+            .select({ contenidos: 
+                    {$elemMatch: 
+                      {url:req.body.url,
+                       idContent:req.body.idContent
+                      }
+                    }
+                   })
+            .exec((err, result)=> {
+              console.log(result)
+              if(result[0])
+                res.status(404).send("Ya existe el id");  
+              else{
+                User.findOneAndUpdate(criteria, { $push: { contenidos: req.body }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
+                    if(err) return res.status(500).send("There was a problem updating the user.");
+                    //user contiene el usuario antes de ser actualizado
+                    console.log('Actualizado ',user);
+                    
+                    res.status(200).send(user);
+                })
+              }
+            })
       }
   })
 });
