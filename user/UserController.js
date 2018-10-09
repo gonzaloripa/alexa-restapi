@@ -126,7 +126,7 @@ var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':re
 router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
     User.distinct('contenidos.category',{'name':req.params.name.toLowerCase()}, function(err, result){ //{'userId':req.params.usrid,
 	  if (err) return res.status(500).send("There was a problem finding the user.");
-      if (!result || result.length == 0) return res.status(404).send("No user found.");
+      if (!result || result.length == 0) return res.status(200).send("");
       console.log(result)
       res.status(200).send(result);
 	});	    
