@@ -182,6 +182,7 @@ router.put('/addListContent/user/:name',function(req, res) {
        var contents = []
        
        let promises = contBody.map((elem)=>{ 
+        console.log(elem,contBody)
         if(!functionContains(result[0].contenidos,elem))//si no se repiten los contenidos
           return contents.push(elem);
        });
