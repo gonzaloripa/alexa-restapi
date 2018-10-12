@@ -169,7 +169,7 @@ router.put('/updateListContents/user/:name', function (req, res) {
         const orders = req.body.map((elem)=>{
           return elem.order
         })
-        
+        console.log("orders",orders)
         User.update({'name':req.params.name.toLowerCase()}, 
         {'$set': {
           'contenidos.$[elem].order': {$each:orders}
