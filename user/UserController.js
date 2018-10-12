@@ -164,24 +164,17 @@ router.put('/updateContentsByState/user/:name', function (req, res) {
 
 //UPDATE A LIST OF CONTENTS
 router.put('/updateListContents/user/:name', function (req, res) {
-       var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};    
-        const orders=[];
-        const urls=[];
-        const xpaths=[];
-        req.body.map((elem,index)=>{
-          orders.push(elem.order)
-          urls.push(elem.url)
-          xpaths.push(elem.xpath)
-        })
-        console.log("orders",orders)
-        User.update({'name':req.params.name.toLowerCase()}, 
-        {'$set': {
-          'contenidos.$[elem].order': {$each:orders}
-          }},{ "arrayFilters": [{$and:[{ "elem.url": {$each:urls}},{"elem.xpath":{$each:xpaths} }]}], "multi": true }
-        ,(err,doc)=>{
-          //console.log("---contenido ",doc)
-          res.status(200).send(doc);
-        }) 
+
+        var updates = req.body.map((item)=>{
+            return User.update({'name':req.params.name.toLowerCase(), contenidos: {$elemMatch: {url:item.url,xpath:item.xpath}}}, 
+              {"$set": {
+                'contenidos.$[elem].order': item.order
+              }})       
+        });
+
+        Promise.all(updates).then((results)=>{
+            console.log(results);
+        }); 
 });
 
 
