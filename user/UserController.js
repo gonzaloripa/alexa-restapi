@@ -162,6 +162,25 @@ router.put('/updateContentsByState/user/:name', function (req, res) {
 });
 
 
+//UPDATE A LIST OF CONTENTS
+router.put('/updateListContents/user/:name', function (req, res) {
+       var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};    
+       
+        const orders = req.body.map((elem)=>{
+          return elem.order
+        })
+        
+        User.update({'name':req.params.name.toLowerCase()}, 
+        {'$set': {
+          'contenidos.$[elem].order': {$each:orders}
+          }},{ "arrayFilters": [{ "elem.url": req.body.url,"elem.xpath":req.body.xpath }], "multi": true }
+        ,(err,doc)=>{
+          //console.log("---contenido ",doc)
+          res.status(200).send(doc);
+        }) 
+});
+
+
 //UPDATE THE STATE OF A CONTENT 
 router.put('/updateContent/user/:name',function(req, res) {
 
