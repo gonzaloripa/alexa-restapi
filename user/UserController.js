@@ -169,7 +169,7 @@ router.put('/updateListContents/user/:name', function (req, res) {
             return User.update({'name':req.params.name.toLowerCase()}, 
               {"$set": {
                 'contenidos.$[elem].order': item.order
-              }},{ "arrayFilters": [{$and:[{url:item.url},{xpath:item.xpath}]}]})       
+              }},{ "arrayFilters": [{$and:[{'elem.url':item.url},{'elem.xpath':item.xpath}]}]})       
         });
 
         Promise.all(updates).then((results)=>{
