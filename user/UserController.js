@@ -174,6 +174,7 @@ router.put('/updateListContents/user/:name', function (req, res) {
 
         Promise.all(updates).then((results)=>{
             console.log(results);
+            res.status(200).send(req.body)
         }); 
 });
 
