@@ -149,25 +149,16 @@ router.delete('/deleteContent/:name', function (req, res) { //'/:usrid/:name'
 //UPDATE THE STATE OF GROUP OF CONTENTS
 router.put('/updateContentsByState/user/:name', function (req, res) {
 
-var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};
-    
-    User.aggregate([
-    { $match: getCriteria},
-    { $project: {
-        contenidos: {$filter: {
-            input: '$contenidos',
-            as: 'item',
-            cond: {$eq: ['$$item.state', 'new']}
-        }}
-    }}
-    ]).then(function (result) {
-        console.log(result[0]); 
-        User.findOneAndUpdate({'contenidos._id':result[0]._id} ,{ $set: { 'contenidos.$.state': state }},(err,doc)=>{
+        //var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};    
+        //console.log(result[0]);
+        User.update({'name':req.params.name.toLowerCase(),'contenidos.state': 'new'}, 
+        {'$set': {
+          'contenidos.$.state': 'edited'
+          }
+        },(err,doc)=>{
           //console.log("---contenido ",doc)
           res.status(200).send(doc);
-        })
-    });
-
+        }) 
 });
 
 
