@@ -153,8 +153,8 @@ router.put('/updateContentsByState/user/:name', function (req, res) {
         //console.log(result[0]);
         User.update({'name':req.params.name.toLowerCase(),'contenidos.state': 'new'}, 
         {'$set': {
-          'contenidos.$.state': 'edited'
-          }
+          'contenidos.$[elem].state': 'edited'
+          },{ "arrayFilters": [{ "elem.state": 'new' }], "multi": true }
         },(err,doc)=>{
           //console.log("---contenido ",doc)
           res.status(200).send(doc);
