@@ -169,10 +169,10 @@ router.put('/updateListContents/user/:name', function (req, res) {
         const orders = req.body.map((elem)=>{
           return elem.order
         })
-        console.log("orders",orders)
+        console.log("orders",orders,req.body)
         User.update({'name':req.params.name.toLowerCase()}, 
         {'$set': {
-          'contenidos.$[elem].order': parseInt(orders[0])
+          'contenidos.$[elem].order': 2
           }},{ "arrayFilters": [{"elem.xpath":req.body.xpath }], "multi": true }
         ,(err,doc)=>{
           //console.log("---contenido ",doc)
