@@ -165,15 +165,19 @@ router.put('/updateContentsByState/user/:name', function (req, res) {
 //UPDATE A LIST OF CONTENTS
 router.put('/updateListContents/user/:name', function (req, res) {
        var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};    
-       
-        const orders = req.body.map((elem)=>{
-          return elem.order
+        const orders=[];
+        const urls=[];
+        const xpaths=[];
+        req.body.map((elem,index)=>{
+          orders.push(elem.order)
+          urls.push(elem.url)
+          xpaths.push(elem.xpath)
         })
-        console.log("orders",orders,req.body)
+        console.log("orders",orders)
         User.update({'name':req.params.name.toLowerCase()}, 
         {'$set': {
-          'contenidos.$[elem].order': 2
-          }},{ "arrayFilters": [{"elem.xpath":req.body.xpath }], "multi": true }
+          'contenidos.$[elem].order': {$each:orders}
+          }},{ "arrayFilters": [{$and:[{ "elem.url": {$each:urls}},{"elem.xpath":{$each:xpaths} }]}], "multi": true }
         ,(err,doc)=>{
           //console.log("---contenido ",doc)
           res.status(200).send(doc);
