@@ -242,7 +242,7 @@ router.put('/addListContent/user/:name',function(req, res) {
        let promises = contBody.map((elem,index)=>{ 
         console.log(elem,contBody)
         if(!functionContains(result[0].contenidos,elem))//si no se repiten los contenidos
-          elem.order = result[0]maxOrder + index + 1
+          elem.order = result[0].maxOrder + index + 1
           return contents.push(elem);
        });
        
