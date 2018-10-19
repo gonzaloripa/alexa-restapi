@@ -61,11 +61,12 @@ router.get('/maxOrder/:name', function (req, res) { //'/notice/:usrid/:name'
       {
           "$group" : {
               "_id":"$_id",
-              "maxOrder" : {"$max" : "$contenidos.order"}
+              "maxOrder" : {"$max" : "$contenidos.order"},
+              "contenidos":"$contenidos"
           }
       }
     ]).then(function (result){
-      console.log(result,result.maxOrder)
+      console.log(result)
       res.status(200).send(result);
     })
 });
@@ -220,17 +221,31 @@ router.put('/addListContent/user/:name',function(req, res) {
 
 	var contBody = req.body;
   var query = { 'name': req.params.name.toLowerCase()};//agregar password
-  
-  User.find(query,{'contenidos._id':0}, 
-    function (err, result) {
-       console.log(result[0].contenidos)
+  User.aggregate([  
+                  {$unwind : "$contenidos"},
+                  {
+                      "$match": {
+                          "name": req.params.name.toLowerCase()
+                      }
+                  },
+                  {
+                      "$group" : {
+                          "_id":"$_id",
+                          "maxOrder" : {"$max" : "$contenidos.order"},
+                          "contenidos":"$contenidos"
+                      }
+                  }
+                ])
+  .then(function (result){
+
        var contents = []
-       
-       let promises = contBody.map((elem)=>{ 
+       let promises = contBody.map((elem,index)=>{ 
         console.log(elem,contBody)
         if(!functionContains(result[0].contenidos,elem))//si no se repiten los contenidos
+          elem.order = result[0]maxOrder + index + 1
           return contents.push(elem);
        });
+       
        Promise.all(promises).then((resultArray)=>{
           console.log("res",resultArray)
           if(contents.length == 0) return res.status(400).send("No puede haber contenidos con el mismo xpath o id de una misma pagina");      
@@ -279,13 +294,32 @@ router.put('/addContent/user/:name',function(req, res) {
               if(result.contenidos.length > 0)
                 res.status(404).send("Ya existe el id");  
               else{
-                User.findOneAndUpdate(criteria, { $push: { contenidos: req.body }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
+                User.aggregate([  
+                  {$unwind : "$contenidos"},
+                  {
+                      "$match": {
+                          "name": req.params.name.toLowerCase()
+                      }
+                  },
+                  {
+                      "$group" : {
+                          "_id":"$_id",
+                          "maxOrder" : {"$max" : "$contenidos.order"}
+                      }
+                  }
+                ]).then(function (elem){
+                  console.log(elem)
+                  const content = req.body
+                  content.order = parseInt(elem[0].maxOrder) + 1
+                  User.findOneAndUpdate(criteria, { $push: { contenidos: content }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
                     if(err) return res.status(500).send("There was a problem updating the user.");
                     //user contiene el usuario antes de ser actualizado
-                    console.log('Actualizado ',req.body);
+                    console.log('Actualizado ',content);
                     
-                    res.status(200).send(user);
+                    res.status(200).send(content);
+                  })
                 })
+                
               }
             })
       }
