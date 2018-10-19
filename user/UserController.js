@@ -61,8 +61,12 @@ router.get('/maxOrder/:name', function (req, res) { //'/notice/:usrid/:name'
       {
           "$group" : {
               "_id":"$_id",
-              "maxOrder" : {"$max" : "$contenidos.order"},
-              "contenidos":"$contenidos"
+              "maxOrder" : {"$max" : "$contenidos.order"}
+          }
+      },
+      { 
+          $project: {
+            contenidos:1
           }
       }
     ]).then(function (result){
@@ -234,8 +238,10 @@ router.put('/addListContent/user/:name',function(req, res) {
                           "maxOrder" : {"$max" : "$contenidos.order"}
                       }
                   },
-                  { $project: 
-                    {contenidos:1}
+                  { 
+                    $project:{ 
+                      contenidos:1
+                    }
                   }
                 ])
   .then(function (result){
