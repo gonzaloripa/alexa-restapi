@@ -231,9 +231,11 @@ router.put('/addListContent/user/:name',function(req, res) {
                   {
                       "$group" : {
                           "_id":"$_id",
-                          "maxOrder" : {"$max" : "$contenidos.order"},
-                          "contenidos":"$contenidos"
+                          "maxOrder" : {"$max" : "$contenidos.order"}
                       }
+                  },
+                  { $project: 
+                    {contenidos:1}
                   }
                 ])
   .then(function (result){
