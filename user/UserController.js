@@ -49,7 +49,7 @@ router.get('/:name', function (req, res) { //'/:usrid/:name'
 });
 
 // GETS A SPECIFIC NOTICE OF ONE USER
-router.get('/maxOrder', function (req, res) { //'/notice/:usrid/:name'
+router.get('/maxOrder/:name', function (req, res) { //'/notice/:usrid/:name'
     User.aggregate([
                    {
                      $project: {
@@ -57,10 +57,21 @@ router.get('/maxOrder', function (req, res) { //'/notice/:usrid/:name'
                      }
                    }
                 ])
-    .then((result)=>{
-      console.log(result,result.orderMax)
+    db.collection.aggregate([  
+      {$unwind : "$contenidos"},
+      {
+          "$match": {
+              "name": req.params.name.toLowerCase()
+          }
+      },
+      {
+          "$group" : {
+              "maxOrder" : {"$max" : "$contenidos.order"}
+          }
+      }
+    ]).then((result)=>{
+      console.log(result,result.maxOrder)
       res.status(200).send(result);
-
     })
 });
 
