@@ -49,13 +49,19 @@ router.get('/:name', function (req, res) { //'/:usrid/:name'
 });
 
 // GETS A SPECIFIC NOTICE OF ONE USER
-router.get('/notice/:name', function (req, res) { //'/notice/:usrid/:name'
-    User.find({'name':req.params.name.toLowerCase()}, { '_id': 0, 'contenidos' :1}, function(err, result){ //{"userId":req.params.usrid,
-	  if (err) return res.status(500).send("There was a problem finding the user.");
-      if (!result || result.length == 0) return res.status(404).send("No user found.");
-      console.log(result[0].contenidos[0])
-      res.status(200).send(result[0].contenidos[0]);
-	});	    
+router.get('/maxOrder', function (req, res) { //'/notice/:usrid/:name'
+    User.aggregate([
+                   {
+                     $project: {
+                       orderMax: { $max: "$contenidos.order"}
+                     }
+                   }
+                ])
+    .then((result)=>{
+      console.log(result,result.orderMax)
+      res.status(200).send(result);
+
+    })
 });
 
 /*/ GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
