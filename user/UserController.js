@@ -66,7 +66,8 @@ router.get('/maxOrder/:name', function (req, res) { //'/notice/:usrid/:name'
       },
       { 
           $project: {
-            contenidos:1
+            contenidos:1,
+            maxOrder:"$maxOrder"
           }
       }
     ]).then(function (result){
@@ -240,7 +241,8 @@ router.put('/addListContent/user/:name',function(req, res) {
                   },
                   { 
                     $project:{ 
-                      contenidos:1
+                      contenidos:1,
+                      maxOrder:"$maxOrder"
                     }
                   }
                 ])
