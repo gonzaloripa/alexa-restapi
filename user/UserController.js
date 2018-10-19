@@ -61,12 +61,13 @@ router.get('/maxOrder/:name', function (req, res) { //'/notice/:usrid/:name'
       {
           "$group" : {
               "_id":"$_id",
-              "maxOrder" : {"$max" : "$contenidos.order"}
+              "maxOrder" : {"$max" : "$contenidos.order"},
+              "contents": { $push: "$$ROOT" }
           }
       },
       { 
           $project: {
-            contenidos:"contenidos.$",
+            contenidos:"$contents",
             maxOrder:"$maxOrder"
           }
       }
