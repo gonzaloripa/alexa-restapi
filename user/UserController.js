@@ -238,7 +238,7 @@ router.put('/addListContent/user/:name',function(req, res) {
           "$group" : {
               "_id":"$_id",
               "maxOrder" : {"$max" : "$contenidos.order"},
-              "contents": { $push: {$each:"$$contenidos" }}
+              "contents": { $push: "$contenidos"}
           }
       },
       { 
