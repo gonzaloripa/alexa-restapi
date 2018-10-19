@@ -227,27 +227,28 @@ router.put('/addListContent/user/:name',function(req, res) {
 
 	var contBody = req.body;
   var query = { 'name': req.params.name.toLowerCase()};//agregar password
-  User.aggregate([  
-                  {$unwind : "$contenidos"},
-                  {
-                      "$match": {
-                          "name": req.params.name.toLowerCase()
-                      }
-                  },
-                  {
-                      "$group" : {
-                          "_id":"$_id",
-                          "maxOrder" : {"$max" : "$contenidos.order"}
-                      }
-                  },
-                  { 
-                    $project:{ 
-                      contenidos:1,
-                      maxOrder:"$maxOrder"
-                    }
-                  }
-                ])
-  .then(function (result){
+    User.aggregate([  
+      {$unwind : "$contenidos"},
+      {
+          "$match": {
+              "name": req.params.name.toLowerCase()
+          }
+      },
+      {
+          "$group" : {
+              "_id":"$_id",
+              "maxOrder" : {"$max" : "$contenidos.order"},
+              "contents": { $push: {$each:"$$contenidos" }}
+          }
+      },
+      { 
+          $project: {
+            contenidos:"$contents",
+            maxOrder:"$maxOrder"
+          }
+      }
+    ])
+    .then(function (result){
 
        var contents = []
        let promises = contBody.map((elem,index)=>{ 
@@ -270,7 +271,7 @@ router.put('/addListContent/user/:name',function(req, res) {
         console.log("error",err)
        })   
     }) 
-})
+});
 
 //ADD A CONTENT INTO THE COLLECTION OF A USER
 router.put('/addContent/user/:name',function(req, res) {
