@@ -99,7 +99,7 @@ var getCriteria = {'name':req.params.name.toLowerCase()}; //{"userId":req.params
 });
 */
 
-// GETS THE NOTICES OF ONE USER IN ORDER ==>todavia no ordena bien
+// GETS THE NOTICES OF ONE USER IN ORDER 
 router.get('/noticesByOrder/:name', function (req, res) {
     
     var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};
@@ -112,7 +112,7 @@ router.get('/noticesByOrder/:name', function (req, res) {
        ])
     .then(function (result) {
       console.log(result); // [ { maxBalance: 98000 } ]
-      res.status(200).send(result);
+      res.status(200).send(result[0].contents);
     })
 });
 
