@@ -106,7 +106,13 @@ router.get('/noticesByOrder/:name', function (req, res) {
     User.aggregate(
        [{ $unwind : "$contenidos" },
         { $match: getCriteria },
-        { $sort : { "order": 1}}
+        {
+          "$group" : {
+              "_id":"$_id",
+              "contents": { $push: "$contenidos"}
+          }
+        },
+        { $sort : { "contents.order": 1}}
        ])
     .then(function (result) {
       console.log(result); // [ { maxBalance: 98000 } ]
