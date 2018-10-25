@@ -281,7 +281,6 @@ router.put('/addListContent/user/:name',function(req, res) {
        Promise.all(promises).then((resultArray)=>{
           console.log("res",resultArray)
           if(contents.length == 0) return res.status(400).send("No puede haber contenidos con el mismo xpath o id de una misma pagina");      
-          if(err) return res.status(500).send("There was a problem updating the user.");
           User.findOneAndUpdate(query,{$push : {contenidos: {$each: contents} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
           //user contiene el usuario antes de ser actualizado
           console.log('Actualizado ',user);
