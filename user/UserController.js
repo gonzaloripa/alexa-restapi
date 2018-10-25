@@ -99,6 +99,21 @@ var getCriteria = {'name':req.params.name.toLowerCase()}; //{"userId":req.params
 });
 */
 
+// GETS THE NOTICES OF ONE USER IN ORDER 
+router.get('/noticesByOrder/:name', function (req, res) {
+    
+    var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};
+    User.aggregate(
+       [{ $unwind : "$contenidos" },
+        { "$match": getCriteria },
+        { $sort : { "$contenidos.order: 1"}}
+       ])
+    .then(function (result) {
+      console.log(result); // [ { maxBalance: 98000 } ]
+      res.status(200).send(result);
+    })
+});
+
 // GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
 router.get('/noticesByCategory/:category/:name', function (req, res) {
 
@@ -123,8 +138,7 @@ var getCriteria = {'name':req.params.name.toLowerCase()};
 // GETS THE NOTICES OF ONE USER FILTER BY STATE(new/old)
 router.get('/noticesByState/:state/:name', function (req, res) {
 
-var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};
-    
+    var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};
     User.aggregate([
     { $match: getCriteria},
     { $project: {
