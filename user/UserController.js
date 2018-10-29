@@ -341,7 +341,10 @@ router.put('/addContent/user/:name',function(req, res) {
                 ]).then(function (elem){
                   console.log(elem)
                   const content = req.body
-                  content.order = parseInt(elem[0].maxOrder) + 1
+                  if(elem.length > 0)
+                    content.order = parseInt(elem[0].maxOrder) + 1
+                  else
+                    content.order = 0
                   User.findOneAndUpdate(criteria, { $push: { contenidos: content }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
                     if(err) return res.status(500).send("There was a problem updating the user.");
                     //user contiene el usuario antes de ser actualizado
