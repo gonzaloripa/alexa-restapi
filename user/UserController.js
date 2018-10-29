@@ -30,7 +30,7 @@ router.get('/prueba',function(req,res){
       .then(body => {
           //console.log("---Body: ",body)    
           var docu = new dom().parseFromString(body);
-          console.log("---Body: ",docu)    
+          //console.log("---Body: ",docu)    
           var getElementByXpath = function(path) {
               //console.log("-------Path en getElement: ",path);
               //console.log("-------Evaluate: ",xpath.evaluate(path, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.lastChild.data);
@@ -58,7 +58,7 @@ router.get('/prueba',function(req,res){
             {
                 
                 "url": "https://infocielo.com/deportes/estudiantes/",
-                "xpath": "body/div[1]/section[1]/article[1]/a[1]"
+                "xpath": "body/div[1]/section[1]/article[1]/a[1]/div[1]/h1[1]"
                 
             },
             {
@@ -70,7 +70,7 @@ router.get('/prueba',function(req,res){
             {
                
                 "url": "https://www.bbc.com/news",
-                "xpath": "body/div[7]/div[1]/div[4]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/a[1]"
+                "xpath": "body/div[7]/div[1]/div[4]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/a[1]/h3[1]"
                 
             },
             {
