@@ -14,7 +14,7 @@ var User = require('./User');
           };*/  
 //var userId ='amzn1.ask.account.AEM7C7O3S3FKO4J77F7YYBP5CXPUVG4VHEW4MM77YUETWFCQAMJE4PTXRJCZAJTWC2FKIP3MEVBILLNA2TK7VDHVBHBDA7ZSFLFRYWYE2U4WBV64CWFAKL74DHSBJ3KHY2VPD6HY7G5AWN5XUUIQCJYOQ3VAMD32MKA63PW5ZEDG5F2AXOIL5VNSGPKZZDY3IFDK4V75RD4CKYY';
 
-router.get('prueba',function(req,res){
+router.get('/prueba',function(req,res){
   const fetch = require('node-fetch');
   //No devuelve el titulo en washingtonTimes
   function getTitleContent(noticia){
