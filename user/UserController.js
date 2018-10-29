@@ -14,6 +14,76 @@ var User = require('./User');
           };*/  
 //var userId ='amzn1.ask.account.AEM7C7O3S3FKO4J77F7YYBP5CXPUVG4VHEW4MM77YUETWFCQAMJE4PTXRJCZAJTWC2FKIP3MEVBILLNA2TK7VDHVBHBDA7ZSFLFRYWYE2U4WBV64CWFAKL74DHSBJ3KHY2VPD6HY7G5AWN5XUUIQCJYOQ3VAMD32MKA63PW5ZEDG5F2AXOIL5VNSGPKZZDY3IFDK4V75RD4CKYY';
 
+router.get('prueba',function(req,res){
+  const fetch = require('node-fetch');
+  //No devuelve el titulo en washingtonTimes
+  function getTitleContent(noticia){
+      var xpath = require('xpath')
+      ,dom = require('xmldom').DOMParser;
+      console.log("-------Noticia ",noticia,noticia.url,noticia.xpath)
+      var title;
+      fetch(noticia.url)
+      .then( response => {
+          //console.log("--Response: ",response) 
+          return response.text()
+      })
+      .then(body => {
+          //console.log("---Body: ",body)    
+          var docu = new dom().parseFromString(body);
+          console.log("---Body: ",docu)    
+          var getElementByXpath = function(path) {
+              //console.log("-------Path en getElement: ",path);
+              //console.log("-------Evaluate: ",xpath.evaluate(path, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.lastChild.data);
+              return (xpath.evaluate(path, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue);
+          }
+          //console.log("----Element a ",findElementA(getElementByXpath("//"+noticia.xpath)).attributes[1].nodeValue)
+          
+          try{
+              title = getElementByXpath("//"+noticia.xpath).textContent
+                      
+          }catch(e){
+              console.log("---error en get title ",e)
+              title = "The path of the content has changed"
+          }
+
+          console.log("---Title",title)
+         
+      })
+  }
+  
+  [{
+                "url": "https://diariohoy.net/",
+                "xpath": "body/div[1]/div[1]/div[1]/div[2]/section[1]/article[1]/a[1]"
+                },
+            {
+                
+                "url": "https://infocielo.com/deportes/estudiantes/",
+                "xpath": "body/div[1]/section[1]/article[1]/a[1]"
+                
+            },
+            {
+                
+                "url": "https://www.washingtontimes.com/",
+                "xpath": "body/div[3]/div[1]/div[1]/div[1]/div[2]/div[1]/section[1]/section[1]/article[1]/h2[1]/a[1]"
+                
+            },
+            {
+               
+                "url": "https://www.bbc.com/news",
+                "xpath": "body/div[7]/div[1]/div[4]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/a[1]"
+                
+            },
+            {
+                
+                "url": "https://www.telegraph.co.uk/",
+                "xpath": "body/div[4]/div[3]/main[1]/section[2]/div[1]/article[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/ol[1]/li[1]/div[1]/div[1]/h3[1]/a[1]"
+                
+            }].map((noticia)=>{
+              getTitleContent(noticia)
+            })
+})
+
+
 // CREATES A NEW USER
 router.post('/', function (req, res) {
   	var name = req.body.name.toLowerCase(); //'gonza'
