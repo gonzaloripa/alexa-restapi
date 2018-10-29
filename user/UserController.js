@@ -60,24 +60,6 @@ router.get('/prueba',function(req,res){
                 "url": "https://infocielo.com/deportes/estudiantes/",
                 "xpath": "body/div[1]/section[1]/article[1]/a[1]/div[1]/h1[1]"
                 
-            },
-            {
-                
-                "url": "https://www.washingtontimes.com/",
-                "xpath": "body/div[3]/div[1]/div[1]/div[1]/div[2]/div[1]/section[1]/section[1]/article[1]/h2[1]/a[1]"
-                
-            },
-            {
-               
-                "url": "https://www.bbc.com/news",
-                "xpath": "body/div[7]/div[1]/div[4]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/a[1]/h3[1]"
-                
-            },
-            {
-                
-                "url": "https://www.telegraph.co.uk/",
-                "xpath": "body/div[4]/div[3]/main[1]/section[2]/div[1]/article[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/ol[1]/li[1]/div[1]/div[1]/h3[1]/a[1]"
-                
             }].map((noticia)=>{
               getTitleContent(noticia)
             })
