@@ -43,7 +43,7 @@ router.get('/prueba',function(req,res){
           });
           var parser = new htmlparser.Parser(handler);
           var doc = parser.parseComplete(rawHtml);
-          sys.puts(sys.inspect(handler.dom, false, null));
+          
           //console.log("---Body: ",docu)    
           var getElementByXpath = function(path) {
               //console.log("-------Path en getElement: ",xpath.select(path,docu)[0].nodeValue);
