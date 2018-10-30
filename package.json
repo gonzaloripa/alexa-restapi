@@ -20,6 +20,7 @@
     "mongoose": "5.2.13",    
     "xmldom": "^0.1.27",
     "xpath": "^0.0.24",
-    "node-fetch": "^2.2.0"
+    "node-fetch": "^2.2.0",
+    "xmldom-alpha":"0.1.28"
   }
 }
