@@ -34,7 +34,7 @@ router.get('/prueba',function(req,res){
           var getElementByXpath = function(path) {
               //console.log("-------Path en getElement: ",path);
               //console.log("-------Evaluate: ",xpath.evaluate(path, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.lastChild.data);
-              return (xpath.evaluate(path, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue);
+              return (xpath.select1(path,doc).value);
           }
           //console.log("----Element a ",findElementA(getElementByXpath("//"+noticia.xpath)).attributes[1].nodeValue)
           
