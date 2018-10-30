@@ -33,12 +33,22 @@ router.get('/prueba',function(req,res){
       .then(body => {
           //console.log("---Body: ",body)    
           //var docu = new dom().parseFromString(body,'text/xml')
-          const dom = new JSDOM(body);
+          var htmlparser = require("htmlparser");
+          var rawHtml = body;
+          var handler = new htmlparser.DefaultHandler(function (error, dom) {
+              if (error)
+                  console.log(error)
+              else
+                  console.log("---Bien")
+          });
+          var parser = new htmlparser.Parser(handler);
+          var doc = parser.parseComplete(rawHtml);
+          sys.puts(sys.inspect(handler.dom, false, null));
           //console.log("---Body: ",docu)    
           var getElementByXpath = function(path) {
               //console.log("-------Path en getElement: ",xpath.select(path,docu)[0].nodeValue);
               //console.log("-------Evaluate: ",xpath.evaluate(path, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.lastChild.data);
-              return (xpath.evaluate(path, dom.window.document, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue);
+              return (xpath.evaluate(path, doc, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue);
           }
           //console.log("----Element a ",findElementA(getElementByXpath("//"+noticia.xpath)).attributes[1].nodeValue)
           
