@@ -19,7 +19,10 @@ router.get('/prueba',function(req,res){
   //No devuelve el titulo en washingtonTimes
   function getTitleContent(noticia){
       var xpath = require('xpath')
-      ,dom = require('xmldom').DOMParser;
+      //,dom = require('xmldom').DOMParser;
+      const jsdom = require("jsdom");
+      const { JSDOM } = jsdom;
+      
       console.log("-------Noticia ",noticia,noticia.url,noticia.xpath)
       var title;
       fetch(noticia.url)
@@ -29,12 +32,19 @@ router.get('/prueba',function(req,res){
       })
       .then(body => {
           //console.log("---Body: ",body)    
-          var docu = new dom().parseFromString(body,'text/html')
+          //var docu = new dom().parseFromString(body,'text/xml')
+          const dom = new JSDOM(``, {
+            url: noticia.url,
+            referrer: noticia.url,
+            contentType: "text/xml",
+            includeNodeLocations: false,
+            storageQuota: 10000000
+          });
           //console.log("---Body: ",docu)    
           var getElementByXpath = function(path) {
               //console.log("-------Path en getElement: ",xpath.select(path,docu)[0].nodeValue);
               //console.log("-------Evaluate: ",xpath.evaluate(path, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.lastChild.data);
-              return (xpath.evaluate(path, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue);
+              return (xpath.evaluate(path, dom.window.document, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue);
           }
           //console.log("----Element a ",findElementA(getElementByXpath("//"+noticia.xpath)).attributes[1].nodeValue)
           
