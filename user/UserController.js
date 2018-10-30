@@ -29,7 +29,7 @@ router.get('/prueba',function(req,res){
       })
       .then(body => {
           //console.log("---Body: ",body)    
-          var docu = '<!doctype html>
+          var docu = (<!doctype html>
 <html lang="es">
 <head>
 <title>Estudiantes - Cielosports</title>
@@ -1344,7 +1344,7 @@ window.onload=function(d, s, id) {
   })();
 </script>
 </body>
-</html>'
+</html>).toString()
           //console.log("---Body: ",docu)    
           var getElementByXpath = function(path) {
               console.log("-------Path en getElement: ",xpath.select(path,docu)[0].nodeValue);
