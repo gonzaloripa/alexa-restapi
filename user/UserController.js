@@ -31,7 +31,7 @@ router.get('/prueba',function(req,res){
       .then(body => {
           //console.log("---Body: ",body)    
           var docu = new dom().parseFromString(body)
-          console.log("---Body: ",docu)    
+          console.log("---Body: ",docu.childNodes[0])    
           var getElementByXpath = function(path) {
               //console.log("-------Path en getElement: ",xpath.select(path,docu)[0].nodeValue);
               //console.log("-------Evaluate: ",xpath.evaluate(path, docu, null, xpath.XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.lastChild.data);
