@@ -20,7 +20,6 @@ router.get('/prueba',function(req,res){
   function getTitleContent(noticia){
       var xpath = require('xpath')
       ,dom = require('xmldom').DOMParser;
-      var html = require('./html')
       console.log("-------Noticia ",noticia,noticia.url,noticia.xpath)
       var title;
       fetch(noticia.url)
