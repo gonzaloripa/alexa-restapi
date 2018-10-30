@@ -47,7 +47,7 @@ router.get('/prueba',function(req,res){
               title = "The path of the content has changed"
           }
 
-          console.log("---Title",title)
+          console.log("---Title",title.lastChild.data)
          
       })
   }
