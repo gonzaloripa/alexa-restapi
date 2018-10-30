@@ -40,7 +40,7 @@ router.get('/prueba',function(req,res){
           //console.log("----Element a ",findElementA(getElementByXpath("//"+noticia.xpath)).attributes[1].nodeValue)
           
           try{
-              title = getElementByXpath("//a[1]").textContent
+              title = getElementByXpath("//a[1]")
                       
           }catch(e){
               console.log("---error en get title ",e)
