@@ -564,7 +564,6 @@ router.get('/prueba',function(req,res){
  '   </script>  '  + 
  '   <div id="paginator" class="first center g12">  '  + 
  '   <a href="#paginator" class="fw700 fz12 bglink ffalt cbody p2 g8 tac pl20 pr20  mb20 ttu db  auto clear">CARGAR MÁS NOTICIAS</a>  '  + 
- '   <class="center none bglink" src="./images/loader.gif">  '  + 
  '   </div>  '  + 
  '   </section>  '  + 
  '   <aside id="columna2" class="g3 fll ml mt">  '  + 
