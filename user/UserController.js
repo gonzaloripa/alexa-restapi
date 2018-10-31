@@ -46,7 +46,6 @@ router.get('/prueba',function(req,res){
  '   <link rel="author" href="./humans.txt" />  '  + 
  '   <link rel="stylesheet" href="./style/style.css?=123">  '  + 
  '   <style>  '  + 
- '   .ffalt{ font-family: 'Montserrat', sans-serif; font-weight: 400; font-smooth: auto;}  '  + 
  '   .ffalt.bold, .ffalt .bold{ font-weight: 700; font-smooth: auto; }  '  + 
  '   </style>  '  + 
  '   <!--[if lt IE 9]>  '  + 
