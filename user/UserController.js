@@ -30,7 +30,7 @@ router.get('/prueba',function(req,res){
       })
       .then(body => {
           //console.log("---Body: ",body)    
-          var docu = new dom().parseFromString(body)
+          var docu = new dom().parseFromString(body,'text/html')
           //console.log("---Body: ",docu.childNodes[0])    
           var getElementByXpath = function(path) {
               //console.log("-------Path en getElement: ",xpath.select(path,docu)[0].nodeValue);
