@@ -1206,15 +1206,15 @@ router.get('/prueba',function(req,res){
       
       console.log("-------Noticia ",noticia,noticia.url,noticia.xpath)
       var title;
-      /*fetch(noticia.url)
+      fetch(noticia.url)
       .then( response => {
           //console.log("--Response: ",response) 
           return response.text()
       })
-      .then(body => {*/
+      .then(bodyy => {
         
-          //console.log("---Body: ",body)    
-          var docu = new dom().parseFromString(body,'text/html')
+          console.log("---Body: ",bodyy)    
+          var docu = new dom().parseFromString(bodyy)
           //console.log("---Body: ",docu.childNodes[0])    
           var getElementByXpath = function(path) {
               //console.log("-------Path en getElement: ",xpath.select(path,docu)[0].nodeValue);
@@ -1232,6 +1232,7 @@ router.get('/prueba',function(req,res){
           }
 
           console.log("---Title",title)
+        })
          
   }
   
