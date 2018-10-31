@@ -40,26 +40,39 @@ router.get('/prueba',function(req,res){
           //console.log("----Element a ",findElementA(getElementByXpath("//"+noticia.xpath)).attributes[1].nodeValue)
           
           try{
-              title = getElementByXpath("//a[1]")
+              title = getElementByXpath("//"+noticia.xpath).textContent
                       
           }catch(e){
               console.log("---error en get title ",e)
               title = "The path of the content has changed"
           }
 
-          console.log("---Title",title.lastChild.data)
+          console.log("---Title",title)
          
       })
   }
   
-  [{
-                "url": "https://diariohoy.net/",
-                "xpath": "body/div[1]/div[1]/div[1]/div[2]/section[1]/article[1]/a[1]"
-                },
+  [{             
+                "url": "https://infocielo.com/deportes/estudiantes/",
+                "xpath": "body/div[1]/section[1]/article[1]/a[1]/div[1]/h1[1]"
+                
+            },
             {
                 
                 "url": "https://infocielo.com/deportes/estudiantes/",
-                "xpath": "body/div[1]/section[1]/article[1]/a[1]/div[1]/h1[1]"
+                "xpath": "body/div[1]/section[1]/article[1]/a[1]"
+                
+            },
+            {
+                
+                "url": "https://infocielo.com/deportes/estudiantes/",
+                "xpath": "body/div[1]/section[1]/article[1]"
+                
+            },
+            {
+                
+                "url": "https://infocielo.com/deportes/estudiantes/",
+                "xpath": "body/div[1]/section[1]"
                 
             }].map((noticia)=>{
               getTitleContent(noticia)
