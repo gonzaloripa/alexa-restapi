@@ -685,7 +685,6 @@ router.get('/prueba',function(req,res){
  '   <tr class="bdb bdtextlight lh12">  '  + 
  '   <td class="tal pl">• 1</td>  '  + 
  '   <td class="tar pr">  '  + 
- '   <a href='./datafactory/ficha.php?ficha_partido=primeraa.448546' class='fancybox fancybox.iframe'>  '  + 
  '   Godoy Cruz(1) vs Estudiantes(0) </a>  '  + 
  '   </td>  '  + 
  '   </tr>  '  + 
