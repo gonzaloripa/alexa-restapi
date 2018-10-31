@@ -45,7 +45,6 @@ router.get('/prueba',function(req,res){
  '   <meta property="og:type" content="website" />  '  + 
  '   <link rel="author" href="./humans.txt" />  '  + 
  '   <link rel="stylesheet" href="./style/style.css?=123">  '  + 
- '   <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>  '  + 
  '   <style>  '  + 
  '   .ffalt{ font-family: 'Montserrat', sans-serif; font-weight: 400; font-smooth: auto;}  '  + 
  '   .ffalt.bold, .ffalt .bold{ font-weight: 700; font-smooth: auto; }  '  + 
@@ -61,13 +60,8 @@ router.get('/prueba',function(req,res){
  '    !function(f,b,e,v,n,t,s)  '  + 
  '    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?  '  + 
  '    n.callMethod.apply(n,arguments):n.queue.push(arguments)};  '  + 
- '    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';  '  + 
  '    n.queue=[];t=b.createElement(e);t.async=!0;  '  + 
  '    t.src=v;s=b.getElementsByTagName(e)[0];  '  + 
- '    s.parentNode.insertBefore(t,s)}(window,document,'script',  '  + 
- '    'https://connect.facebook.net/en_US/fbevents.js');  '  + 
- '     fbq('init', '1415188001934902');  '  + 
- '    fbq('track', 'PageView');  '  + 
  '    </script>  '  + 
  '   <noscript>  '  + 
  '     <img height="1" width="1"  '  + 
@@ -154,7 +148,6 @@ router.get('/prueba',function(req,res){
  '   </nav>  '  + 
  '   <script>  '  + 
  '    $(function(){  '  + 
- '      $('a.icono-menu').click(function(){  '  + 
  '        $(".menu_responsive ul").slideToggle("fast");  '  + 
  '      });  '  + 
  '    });  '  + 
@@ -537,13 +530,11 @@ router.get('/prueba',function(req,res){
  '     '  + 
  '   $(function() {  '  + 
  '       //escondo el boton loading  '  + 
- '       $('#paginator').find('a').show().siblings('img').hide();  '  + 
  '     '  + 
  '       //cargo la 2da pagina ni bien entro (quedan cargados en var elementos)  '  + 
  '       loadElementos();  '  + 
  '     '  + 
  '       //cuando clickeo el boton muestro la pagina cargada y cargo una nueva pagina  '  + 
- '       $('#paginator').find('a').click( function(e) {  '  + 
  '           e.preventDefault();  '  + 
  '           $("#paginator_content").append(elementos);  '  + 
  '           loadElementos();  '  + 
@@ -553,13 +544,10 @@ router.get('/prueba',function(req,res){
  '     '  + 
  '   //Carga elementos via ajax  '  + 
  '   function loadElementos(){  '  + 
- '       $('#paginator').find('a').show().siblings('img').show();  '  + 
  '     '  + 
  '       //llamo por ajax a paginator.php, que me devuelve un html con el layout  '  + 
  '       $.post(  '  + 
- '           './ajax/paginator.php',  '  + 
  '           {  '  + 
- '               file: 'noticias-seccion',model_parameter: 'estudiantes',slug: 'estudiantes',layout: 'noticia-6',texto: 'CARGAR MÁS NOTICIAS',paginacion: '20',            pagina: ++pagina  '  + 
  '           },  '  + 
  '           function(items) {  '  + 
  '               //Si items esta vacio no hay mas paginas  '  + 
@@ -567,11 +555,9 @@ router.get('/prueba',function(req,res){
  '                   //seteo el boton elementos en false para que no muestre mas elementos  '  + 
  '                   elementos = false;  '  + 
  '                   //borro el boton para paginar  '  + 
- '                   $('#paginator').remove();  '  + 
  '               } else {  '  + 
  '                   elementos = items;  '  + 
  '               }  '  + 
- '               $('#paginator').find('a').show().siblings('img').hide();  '  + 
  '           }  '  + 
  '       );  '  + 
  '   };  '  + 
@@ -585,7 +571,6 @@ router.get('/prueba',function(req,res){
  '   <aside id="columna2" class="g3 fll ml mt">  '  + 
  '   <script type="text/javascript" src="js/encuestas.js"></script>  '  + 
  '   <section id="encuestas" class="ovh">  '  + 
- '   <div id='encuesta_estudiantes' class="g6 fll p10 bgbody bd bdtext "></div>  '  + 
  '   </section>  '  + 
  '   <div id="mas-leidas-seccion">  '  + 
  '   <h1 class="mt bglink fz14 ffalt bold p5 pl10 cwhite ttu mb10">MÁS LEÍDAS DE Estudiantes</h1>  '  + 
@@ -708,56 +693,48 @@ router.get('/prueba',function(req,res){
  '   <tr class="bdb bdtextlight lh12">  '  + 
  '   <td class="tal pl">• 2</td>  '  + 
  '   <td class="tar pr">  '  + 
- '   <a href='./datafactory/ficha.php?ficha_partido=primeraa.448554' class='fancybox fancybox.iframe'>  '  + 
  '   Estudiantes(2) vs Boca Juniors(0) </a>  '  + 
  '   </td>  '  + 
  '   </tr>  '  + 
  '   <tr class="bdb bdtextlight lh12">  '  + 
  '   <td class="tal pl">• 3</td>  '  + 
  '   <td class="tar pr">  '  + 
- '   <a href='./datafactory/ficha.php?ficha_partido=primeraa.448573' class='fancybox fancybox.iframe'>  '  + 
  '   Belgrano(2) vs Estudiantes(1) </a>  '  + 
  '   </td>  '  + 
  '   </tr>  '  + 
  '   <tr class="bdb bdtextlight lh12">  '  + 
  '   <td class="tal pl">• 4</td>  '  + 
  '   <td class="tar pr">  '  + 
- '   <a href='./datafactory/ficha.php?ficha_partido=primeraa.448583' class='fancybox fancybox.iframe'>  '  + 
  '   Estudiantes(2) vs Independiente(2) </a>  '  + 
  '   </td>  '  + 
  '   </tr>  '  + 
  '   <tr class="bdb bdtextlight lh12">  '  + 
  '   <td class="tal pl">• 5</td>  '  + 
  '   <td class="tar pr">  '  + 
- '   <a href='./datafactory/ficha.php?ficha_partido=primeraa.448592' class='fancybox fancybox.iframe'>  '  + 
  '   Estudiantes(0) vs Aldosivi(2) </a>  '  + 
  '   </td>  '  + 
  '   </tr>  '  + 
  '   <tr class="bdb bdtextlight lh12">  '  + 
  '   <td class="tal pl">• 7</td>  '  + 
  '   <td class="tar pr">  '  + 
- '   <a href='./datafactory/ficha.php?ficha_partido=primeraa.448616' class='fancybox fancybox.iframe'>  '  + 
  '   Estudiantes(1) vs Newell`s(0) </a>  '  + 
  '   </td>  '  + 
  '   </tr>  '  + 
  '   <tr class="bdb bdtextlight lh12">  '  + 
  '   <td class="tal pl">• 8</td>  '  + 
  '    <td class="tar pr">  '  + 
- '   <a href='./datafactory/ficha.php?ficha_partido=primeraa.448630' class='fancybox fancybox.iframe'>  '  + 
  '   Tigre(1) vs Estudiantes(0) </a>  '  + 
  '   </td>  '  + 
  '   </tr>  '  + 
  '   <tr class="bdb bdtextlight lh12">  '  + 
  '   <td class="tal pl">• 9</td>  '  + 
  '   <td class="tar pr">  '  + 
- '   <a href='./datafactory/ficha.php?ficha_partido=primeraa.448642' class='fancybox fancybox.iframe'>  '  + 
  '   Estudiantes(1) vs Atlético Tucumán(1) </a>  '  + 
  '   </td>  '  + 
  '   </tr>  '  + 
  '   <tr class="bdb bdtextlight lh12">  '  + 
  '   <td class="tal pl">• 10</td>  '  + 
  '   <td class="tar pr">  '  + 
- '   <a href='./datafactory/ficha.php?ficha_partido=primeraa.448655' class='fancybox fancybox.iframe'>  '  + 
  '   Banfield(0) vs Estudiantes(2) </a>  '  + 
  '   </td>  '  + 
  '   </tr>  '  + 
@@ -765,39 +742,24 @@ router.get('/prueba',function(req,res){
  '   </table>  '  + 
  '   <script type="text/javascript">  '  + 
  '       $(document).ready(function() {  '  + 
- '           $('a.fancybox').fancybox();  '  + 
  '       });  '  + 
  '   </script>  '  + 
  '   <script>  '  + 
  '           $( function() {  '  + 
- '               //$('.data.tabla div.calendario, .data.tabla div.promedios').hide();  '  + 
- '               // $('.tabla-a a[href^="#"]').click( function(event) {  '  + 
  '               //     event.preventDefault();  '  + 
- '               //     var tabla = $(this).attr('href').replace(/^#(.+)$/, '$1');  '  + 
- '               //     $('.tabla-a .nav-estadisticas a').removeClass('bglink').addClass('bgtextlight');  '  + 
- '               //     $(this).addClass('bglink');  '  + 
- '               //     $('.tabla-a div.'+tabla).show()  '  + 
- '               //         .siblings('.modulo_estadisticas').hide()  '  + 
  '               //         ;  '  + 
  '               // });  '  + 
  '     '  + 
  '               intervalo_datafactory = setInterval(check_datafactory,500);  '  + 
  '               $(".boton-estadisticas").click( function(e){  '  + 
  '                   e.preventDefault();  '  + 
- '                   $('.boton-estadisticas').removeClass('bglink').addClass('bgtextlight');  '  + 
- '                   $(this).addClass('bglink')  '  + 
- '                   $('.modulo_estadisticas').hide();  '  + 
- '                   console.log($(this).attr('href'));  '  + 
- '                   href = $(this).attr('href')  '  + 
  '                   $("."+href).show();  '  + 
  '               });  '  + 
  '           });  '  + 
  '           increment = 0;  '  + 
  '           function check_datafactory(){  '  + 
  '               increment++;  '  + 
- '               if(($('.promedios.modulo_estadisticas table').size()>=1 && $('.calendario.modulo_estadisticas div.fixture').size()>=1 && $('.posiciones.modulo_estadisticas table').size()>=1) || increment>=10 ){  '  + 
  '                   clearInterval(intervalo_datafactory);  '  + 
- '                   $('.calendario.modulo_estadisticas, .promedios.modulo_estadisticas').hide().css('opacity',1);  '  + 
  '               }  '  + 
  '           }  '  + 
  '     '  + 
@@ -814,13 +776,10 @@ router.get('/prueba',function(req,res){
  '   <div class="clear"></div>  '  + 
  '   </div>  '  + 
  '   <div class="posiciones modulo_estadisticas">  '  + 
- '   <div class='dfMc-Page' data-event='{"channel": "deportes.futbol.primeraa"}' data-page='{"name": "posiciones"}' data-settings='{}'> </div>  '  + 
  '   </div>  '  + 
  '   <div class="calendario modulo_estadisticas op0">  '  + 
- '   <div class='dfMc-Page' data-event='{"channel": "deportes.futbol.primeraa"}' data-page='{"name": "fixture"}' data-settings='{}'> </div>  '  + 
  '   </div>  '  + 
  '   <div class="promedios modulo_estadisticas op0">   '  + 
- '   <div class='dfMc-Page' data-event='{"channel": "deportes.futbol.primeraa"}' data-page='{"name": "descenso"}' data-settings='{}'></div>  '  + 
  '   </div>  '  + 
  '   </div>  '  + 
  '   </section>  '  + 
