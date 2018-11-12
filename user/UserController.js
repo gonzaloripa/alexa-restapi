@@ -203,7 +203,8 @@ router.put('/updateListContents/user/:name', function (req, res) {
         var updates = req.body.map((item)=>{
             return User.update({'name':req.params.name.toLowerCase()}, 
               {"$set": {
-                'contenidos.$[elem].order': item.order
+                'contenidos.$[elem].order': item.order,
+                'contenidos.$[elem].state': item.state
               }},{ "arrayFilters": [{$and:[{'elem.url':item.url},{'elem.xpath':item.xpath}]}]})       
         });
 
