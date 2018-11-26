@@ -256,7 +256,7 @@ router.put('/updateListContents/user/:name', function (req, res) {
                 'contenidos.$[elem].order': index, //item.order
                 'contenidos.$[elem].state': (item.state != null) ? item.state : "edited",
                 'contenidos.$[elem].idConjunto': item.idConjunto
-              }},{ "arrayFilters": [{$and:[{'elem.url':item.url},{'elem.xpath':item.xpath},{'elem.idContent':item.idContent}]}]})       
+              }},{ "arrayFilters": [{$and:[{'elem.url':item.url},{'elem.xpath':item.xpath}]}]})       
         });
 
         Promise.all(updates).then((results)=>{
