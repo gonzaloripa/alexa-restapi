@@ -251,6 +251,7 @@ router.put('/updateListContents/user/:name', function (req, res) {
          idC = 1
       */
         var updates = req.body.map((item,index)=>{
+            console.log("item "+item+index)
             return User.update({'name':req.params.name.toLowerCase()}, 
               {"$set": {
                 'contenidos.$[elem].order': index, //item.order
