@@ -12,7 +12,8 @@ var UserSchema = new mongoose.Schema({
     xpath:{type:String,lowercase: true},
     category:String,
     state:String,
-    metainfo:String
+    metainfo:String,
+    idConjunto:String
   }]
 });
 

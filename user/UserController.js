@@ -100,15 +100,23 @@ var getCriteria = {'name':req.params.name.toLowerCase()}; //{"userId":req.params
 */
 
 // GETS THE NOTICES OF ONE USER IN ORDER 
-router.get('/noticesByOrder/:name', function (req, res) {
+router.get('/noticesByOrder/:conjunto/:name', function (req, res) {
     
     var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};
     User.aggregate(
        [
-        {$unwind: "$contenidos"},
+        { $unwind: "$contenidos"},
         { $match: getCriteria },
-        { $sort : { "contenidos.order": 1}},
-        {$group: {_id:"$_id", contents: {$push:"$contenidos"}}}
+        { $sort : {"contenidos.order":1 }},
+        //{ $sort : { "contenidos.order": 1}},
+        //{$group: {_id:"$_id", contents: {$push:"$contenidos"}}},
+        { $project: {
+          contenidos: {$filter: {
+              input: '$contenidos',
+              as: 'item',
+              cond: {$eq: ['$$item.idConjunto', req.params.conjunto]}
+          }}
+        }}
        ])
     .then(function (result) {
       console.log(result); // [ { maxBalance: 98000 } ]
@@ -196,25 +204,6 @@ router.put('/updateContentsByState/user/:name', function (req, res) {
         }) 
 });
 
-
-//UPDATE A LIST OF CONTENTS
-router.put('/updateListContents/user/:name', function (req, res) {
-
-        var updates = req.body.map((item)=>{
-            return User.update({'name':req.params.name.toLowerCase()}, 
-              {"$set": {
-                'contenidos.$[elem].order': item.order,
-                'contenidos.$[elem].state': item.state
-              }},{ "arrayFilters": [{$and:[{'elem.url':item.url},{'elem.xpath':item.xpath}]}]})       
-        });
-
-        Promise.all(updates).then((results)=>{
-            console.log(results);
-            res.status(200).send(req.body)
-        }); 
-});
-
-
 //UPDATE THE STATE OF A CONTENT 
 router.put('/updateContent/user/:name',function(req, res) {
 
@@ -230,21 +219,9 @@ router.put('/updateContent/user/:name',function(req, res) {
   }) 
 });
 
-
-//ADD A LIST OF CONTENT INTO THE COLLECTION OF A USER
-router.put('/addListContent/user/:name',function(req, res) {
-  var functionContains = function(array,obj){
-    for (i = 0; i < array.length; i++) {
-            //console.log("  aver ",(array[i] == obj),array[i],obj)
-            if (array[i].xpath === obj.xpath && array[i].url === obj.url ) 
-                return true
-        }
-        return false;
-  };
-
-	var contBody = req.body;
-  var query = { 'name': req.params.name.toLowerCase()};//agregar password
-    User.aggregate([  
+//UPDATE A LIST OF CONTENTS
+router.put('/updateListContents/user/:name', function (req, res) {
+      /*User.aggregate([  
       {$unwind : "$contenidos"},
       {
           "$match": {
@@ -254,7 +231,8 @@ router.put('/addListContent/user/:name',function(req, res) {
       {
           "$group" : {
               "_id":"$_id",
-              "maxOrder" : {"$max" : "$contenidos.order"},
+              "maxOrder" : {"$max" : "$contenidos.idConjunto"},
+              //"maxOrder" : {"$max" : "$contenidos.order"},
               "contents": { $push: "$contenidos"}
           }
       },
@@ -266,17 +244,71 @@ router.put('/addListContent/user/:name',function(req, res) {
       }
     ])
     .then(function (result){
+       var idC
+       if(result.length > 0)
+         idC = result[0].maxOrder + 1
+       else
+         idC = 1
+      */
+        var updates = req.body.map((item,index)=>{
+            return User.update({'name':req.params.name.toLowerCase()}, 
+              {"$set": {
+                'contenidos.$[elem].order': index, //item.order
+                'contenidos.$[elem].state': (item.state != null) ? item.state : "edited",
+                'contenidos.$[elem].idConjunto': item.idConjunto
+              }},{ "arrayFilters": [{$and:[{'elem.url':item.url},{'elem.xpath':item.xpath},{a'elem.idContent':item.idContent}]}]})       
+        });
 
+        Promise.all(updates).then((results)=>{
+            console.log(results);
+            res.status(200).send(req.body)
+        });
+});
+
+
+//ADD A LIST OF CONTENT INTO THE COLLECTION OF A USER
+router.put('/addListContent/user/:name',function(req, res) {
+      var functionContains = function(array,obj){
+        for (i = 0; i < array.length; i++) {
+                //console.log("  aver ",(array[i] == obj),array[i],obj)
+                if (array[i].xpath === obj.xpath && array[i].url === obj.url ) 
+                    return true
+            }
+            return false;
+      };
+
+      User.aggregate([  
+      {$unwind : "$contenidos"},
+      {
+          "$match": {
+              "name": req.params.name.toLowerCase()
+          }
+      },
+      {
+          "$group" : {
+              "_id":"$_id",
+              //"maxOrder" : {"$max" : "$contenidos.order"},
+              "contents": { $push: "$contenidos"}
+          }
+      },
+      { 
+          $project: {
+            contenidos:"$contents"
+            //maxOrder:"$maxOrder"
+          }
+      }
+    ])
+    .then(function (result){
+      	var contBody = req.body;
+        var query = { 'name': req.params.name.toLowerCase()}//agregar password
+    
        var contents = []
        let promises = contBody.map((elem,index)=>{ 
-        console.log(elem,contBody)
-        if(result.length > 0){
-          if(!functionContains(result[0].contenidos,elem))//si no se repiten los contenidos
-            elem.order = result[0].maxOrder + index + 1
-        }else{
-          elem.order = index
-        }
-        return contents.push(elem);
+          console.log(elem,contBody)
+          if(result.length > 0){
+            if(!functionContains(result[0].contenidos,elem))//si no se repiten los contenidos
+             return contents.push(elem)
+          }
        });
        
        Promise.all(promises).then((resultArray)=>{
@@ -289,8 +321,8 @@ router.put('/addListContent/user/:name',function(req, res) {
         })
        }).catch((err)=>{
         console.log("error",err)
-       })   
-    }) 
+       }) 
+    })     
 });
 
 //ADD A CONTENT INTO THE COLLECTION OF A USER
