@@ -102,21 +102,13 @@ var getCriteria = {'name':req.params.name.toLowerCase()}; //{"userId":req.params
 // GETS THE NOTICES OF ONE USER IN ORDER 
 router.get('/noticesByOrder/:conjunto/:name', function (req, res) {
     
-    var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};
+    //var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};
     User.aggregate(
        [
         { $unwind: "$contenidos"},
-        { $match: getCriteria },
+        { $match: {'name':req.params.name.toLowerCase(),'contenidos.idConjunto':req.params.conjunto }},
         { $sort : {"contenidos.order":1 }},
-        //{ $sort : { "contenidos.order": 1}},
-        //{$group: {_id:"$_id", contents: {$push:"$contenidos"}}},
-        { $project: {
-          contenidos: {$filter: {
-              input: '$contenidos',
-              as: 'item',
-              cond: {$eq: ['$$item.idConjunto', req.params.conjunto]}
-          }}
-        }}
+        {$group: {_id:"$_id", contents: {$push:"$contenidos"}}},
        ])
     .then(function (result) {
       console.log(result); // [ { maxBalance: 98000 } ]
@@ -255,7 +247,7 @@ router.put('/updateListContents/user/:name', function (req, res) {
             return User.update({'name':req.params.name.toLowerCase()}, 
               {"$set": {
                 'contenidos.$[elem].order': index, //item.order
-                'contenidos.$[elem].state': (item.state != null) ? item.state : "edited",
+                'contenidos.$[elem].state': "edited",
                 'contenidos.$[elem].idConjunto': item.idConjunto
               }},{ "arrayFilters": [{$and:[{'elem.url':item.url},{'elem.xpath':item.xpath}]}]})       
         });
