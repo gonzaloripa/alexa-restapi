@@ -167,6 +167,15 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
 	});	    
 });
 
+// GETS THE SETS OF CONTENTS OF ONE USER 
+router.get('/setsOfContents/:name', function (req, res) { //'/categories/:usrid/:name'
+    User.distinct('contenidos.idConjunto',{'name':req.params.name.toLowerCase()}, function(err, result){ //{'userId':req.params.usrid,
+    if (err) return res.status(500).send("There was a problem finding the user.");
+      if (!result || result.length == 0) return res.status(200).send("");
+      console.log(result)
+      res.status(200).send(result);
+  });     
+});
 
 // DELETES A USER FROM THE DATABASE
 router.delete('/:name', function (req, res) { //'/:usrid/:name'
