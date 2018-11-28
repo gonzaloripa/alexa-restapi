@@ -251,20 +251,34 @@ router.put('/updateListContents/user/:name', function (req, res) {
        else
          idC = 1
       */
-        var updates = req.body.map((item,index)=>{
-            console.log("item "+item.url+item.xpath+index)
-            return User.update({'name':req.params.name.toLowerCase()}, 
-              {"$set": {
-                'contenidos.$[elem].order': index, //item.order
-                'contenidos.$[elem].state': "edited",
-                'contenidos.$[elem].idConjunto': item.idConjunto
-              }},{ "arrayFilters": [{$and:[{'elem.url':item.url},{'elem.xpath':item.xpath}]}]})       
-        });
+      User.findOne(criteria)
+            .select({ contenidos: 
+                    {$elemMatch: 
+                      {
+                       idConjunto:req.body[0].idConjunto
+                      }
+                    }
+                   })
+            .exec((err, result)=> {
+              if (result.length == 0){ //No existe el idConjunto
+                var updates = req.body.map((item,index)=>{
+                    console.log("item "+item.url+item.xpath+index)
+                    return User.update({'name':req.params.name.toLowerCase()}, 
+                      {"$set": {
+                        'contenidos.$[elem].order': index, //item.order
+                        'contenidos.$[elem].state': "edited",
+                        'contenidos.$[elem].idConjunto': item.idConjunto
+                      }},{ "arrayFilters": [{$and:[{'elem.url':item.url},{'elem.xpath':item.xpath}]}]})       
+                });
 
-        Promise.all(updates).then((results)=>{
-            console.log(results);
-            res.status(200).send(req.body)
-        });
+                Promise.all(updates).then((results)=>{
+                    console.log(results);
+                    res.status(200).send(req.body)
+                });
+              }else{
+                    res.status(404).send("Ya existe un contenido con ese idConjunto")
+              }
+            })
 });
 
 
