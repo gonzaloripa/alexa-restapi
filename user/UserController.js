@@ -251,6 +251,7 @@ router.put('/updateListContents/user/:name', function (req, res) {
        else
          idC = 1
       */
+      var criteria = { 'name': req.params.name.toLowerCase()}
       User.findOne(criteria)
             .select({ contenidos: 
                     {$elemMatch: 
