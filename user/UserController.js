@@ -262,7 +262,7 @@ router.put('/updateListContents/user/:name', function (req, res) {
                    })
             .exec((err, result)=> {
               console.log("result "+result)
-              if (result.length == 0){ //No existe el idConjunto
+              if (result.contenidos.length == 0){ //No existe el idConjunto
                 var updates = req.body.map((item,index)=>{
                     console.log("item "+item.url+item.xpath+index)
                     return User.update({'name':req.params.name.toLowerCase()}, 
