@@ -3,21 +3,66 @@ var mongoose = require('mongoose');
 
 var UserSchema = new mongoose.Schema({  
   //userId: {type:String},
-  name: {type:String},
-  password:{type:String},  
-  contenidos:[{
-    order:Number,
-    idContent:String,
-    url:String,
-    xpath:{type:String,lowercase: true},
-    category:String,
-    state:String,
-    metainfo:String,
-    idConjunto:String
-  }]
+  name: {$type:String},
+  password:{$type:String},
+  flujos:[{
+          idConjunto:String,
+          contenidos:[{
+            idContent:String,
+            contents:[{
+              url:String,
+              xpath:{type:String,lowercase: true},
+              category:String,
+              state:String,
+              metainfo:String
+            }]
+          }]
+        }]
 });
 
-mongoose.model('User', UserSchema);
+var Usuario = mongoose.model('User', UserSchema);
+ var gonza = new Usuario ({
+    name: 'gonza',
+    flujos:[{
+      idConjunto: 'primero',
+      contenidos:[{
+        idContent:'bbc',
+        contents:[{
+          url:'bbc.news',
+          xpath:'unxpath',
+          state:'new'
+        },{
+        idContent:'marca',
+        contents:[{
+          url:'diariomarca',
+          xpath:'unxpath2',
+          state:'new'
+        }
+        ]
+      }
+      ]
+    },{
+      idConjunto: 'segundo',
+      contenidos:[{
+        idContent:'elpais',
+        contents:[{
+          url:'elpais.com',
+          xpath:'unxpath3',
+          state:'edited'
+        },{
+        idContent:'ole',
+        contents:[{
+          url:'ole.com.ar',
+          xpath:'unxpath4',
+          state:'edited'
+        }
+        ]
+      }
+      ]
+    }]
+  });
+
+console.log(gonza.name,gonza.flujos[0].contenidos[0].contents[0].url)
 
 module.exports = mongoose.model('User');
 /*
