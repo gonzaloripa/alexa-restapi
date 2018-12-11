@@ -6,20 +6,20 @@ var ContentSchema = new mongoose.Schema({
   category:String,
   state:String,
   metainfo:String,
-  user_id: mongoose.Schema.Types.ObjectId,
-  setContent_id: mongoose.Schema.Types.ObjectId,
-  flow_id: mongoose.Schema.Types.ObjectId
+  user_id: mongoose.ObjectId,
+  setContent_id: mongoose.ObjectId,
+  flow_id: mongoose.ObjectId
 })
 
 var FlowSchema = new mongoose.Schema({
   idConjunto:String,
-  user_id: mongoose.Schema.Types.ObjectId
+  user_id: mongoose.ObjectId
 })
 
 var SetContentSchema = new mongoose.Schema({
   idContent:String,
-  flow_id: mongoose.Schema.Types.ObjectId,
-  user_id: mongoose.Schema.Types.ObjectId
+  flow_id: mongoose.ObjectId,
+  user_id: mongoose.ObjectId
 })
 
 var UserSchema = new mongoose.Schema({  
@@ -41,10 +41,10 @@ var UserSchema = new mongoose.Schema({
         }]*/
 });
 
-user_id = ObjectId()
-flow_id = ObjectId()
-setC_id = ObjectId()
-content_id = ObjectId()
+user_id = new ObjectId
+flow_id = new ObjectId
+setC_id = new ObjectId
+content_id = new ObjectId
 /*
 db.places.insert({
     "_id": original_id,
