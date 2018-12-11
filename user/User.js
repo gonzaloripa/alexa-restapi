@@ -6,20 +6,20 @@ var ContentSchema = new mongoose.Schema({
   category:String,
   state:String,
   metainfo:String,
-  user_id: ObjectId,
-  setContent_id: ObjectId,
-  flow_id: ObjectId
+  user_id: Schema.Types.ObjectId,
+  setContent_id: Schema.Types.ObjectId,
+  flow_id: Schema.Types.ObjectId
 })
 
 var FlowSchema = new mongoose.Schema({
   idConjunto:String,
-  user_id: ObjectId
+  user_id: Schema.Types.ObjectId
 })
 
 var SetContentSchema = new mongoose.Schema({
   idContent:String,
-  flow_id: ObjectId,
-  user_id: ObjectId
+  flow_id: Schema.Types.ObjectId,
+  user_id: Schema.Types.ObjectId
 })
 
 var UserSchema = new mongoose.Schema({  
