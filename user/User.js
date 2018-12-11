@@ -71,7 +71,7 @@ var set = new SetContent ({
 
 var Flow = mongoose.model('Flow', FlowSchema);
 var flow = new Flow ({
-  _id:flow_id   
+  _id:flow_id,   
   idConjunto:'primero',
   user_id: user_id 
 })
