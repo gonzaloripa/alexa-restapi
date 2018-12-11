@@ -80,7 +80,7 @@ var Content = mongoose.model('Content', ContentSchema);
 var content = new Content ({ 
   url:'bbc.news',
   xpath:'unxpath',
-  state:'new'
+  state:'new',
   user_id: user_id,
   flow_id: flow_id 
 })
@@ -88,7 +88,7 @@ var content = new Content ({
 var content2 = new Content ({ 
   url:'elpais.com',
   xpath:'unxpath3',
-  state:'edited'
+  state:'edited',
   user_id: user_id,
   setContent_id: setC_id,
   flow_id: flow_id 
