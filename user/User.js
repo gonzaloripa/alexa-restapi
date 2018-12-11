@@ -31,15 +31,15 @@ var Usuario = mongoose.model('User', UserSchema);
           url:'bbc.news',
           xpath:'unxpath',
           state:'new'
+        }]
         },{
         idContent:'marca',
         contents:[{
           url:'diariomarca',
           xpath:'unxpath2',
           state:'new'
+        }]
         }
-        ]
-      }
       ]
     },{
       idConjunto: 'segundo',
@@ -49,6 +49,7 @@ var Usuario = mongoose.model('User', UserSchema);
           url:'elpais.com',
           xpath:'unxpath3',
           state:'edited'
+        }]
         },{
         idContent:'ole',
         contents:[{
