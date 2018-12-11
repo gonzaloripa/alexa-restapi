@@ -41,10 +41,10 @@ var UserSchema = new mongoose.Schema({
         }]*/
 });
 
-user_id = new ObjectId
-flow_id = new ObjectId
-setC_id = new ObjectId
-content_id = new ObjectId
+user_id = mongoose.Types.ObjectId()
+flow_id = mongoose.Types.ObjectId()
+setC_id = mongoose.Types.ObjectId()
+content_id = mongoose.Types.ObjectId()
 /*
 db.places.insert({
     "_id": original_id,
