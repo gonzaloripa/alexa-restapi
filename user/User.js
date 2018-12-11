@@ -3,8 +3,8 @@ var mongoose = require('mongoose');
 
 var UserSchema = new mongoose.Schema({  
   //userId: {type:String},
-  name: {$type:String},
-  password:{$type:String},
+  name: String,
+  password:String,
   flujos:[{
           idConjunto:String,
           contenidos:[{
