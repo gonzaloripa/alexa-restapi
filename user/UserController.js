@@ -21,7 +21,7 @@ router.post('/newUser', function (req, res) {
     //userId = req.body.userId
   	//var array = [];
 
-    Model.User.create({name: name,_id: new mongoose.Schema.Types.ObjectId()}//Hace el new y el save juntos
+    Model.User.create({name: name,_id: new mongoose.Types.ObjectId}//Hace el new y el save juntos
           //userId: userId, 
           //contenidos:array
           ,function (err, user) {
