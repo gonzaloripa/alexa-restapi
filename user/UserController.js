@@ -46,7 +46,7 @@ router.get('/', function (req, res) {
 router.get('/:name', function (req, res) { //'/:usrid/:name'
     
     Model.User.find({'name':req.params.name.toLowerCase()})
-    .populate(path: 'flows',select: 'idConjunto -_id'})
+    .populate({path: 'flows',select: 'idConjunto -_id'})
     .exec(function(error, flows) {
       //flows será un [] de instancias de Flow
       if (err) return res.status(404).send("No se hallaron flujos para ese usuario");
