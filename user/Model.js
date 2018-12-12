@@ -6,20 +6,20 @@ const ContentSchema = new mongoose.Schema({
   category:String,
   state:String,
   metainfo:String,
-  setContent_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SetContent' }],
-  user_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  flow_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Flow' }]
+  setContent_id: [{ type: mongoose.Types.ObjectId, ref: 'SetContent' }],
+  user_id: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+  flow_id: [{ type: mongoose.Types.ObjectId, ref: 'Flow' }]
 })
 
 const FlowSchema = new mongoose.Schema({
   idConjunto:{type:String,required: true},
-  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required:true }
+  user_id: { type: mongoose.Types.ObjectId, ref: 'User', required:true }
 })
 
 const SetContentSchema = new mongoose.Schema({
   idContent:{type:String,required: true},
-  flow_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Flow' },
-  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+  flow_id: { type: mongoose.Types.ObjectId, ref: 'Flow' },
+  user_id: { type: mongoose.Types.ObjectId, ref: 'User' }
 })
 
 const UserSchema = new mongoose.Schema({  
@@ -38,10 +38,10 @@ const UserSchema = new mongoose.Schema({
       //options: { sort: { name: -1 }, limit: 5 } // Query options, see http://bit.ly/mongoose-query-options
     });
 
-user_id = mongoose.Schema.Types.ObjectId()
-flow_id = mongoose.Schema.Types.ObjectId()
-setC_id = mongoose.Schema.Types.ObjectId()
-content_id = mongoose.Schema.Types.ObjectId()
+user_id = mongoose.Types.ObjectId()
+flow_id = mongoose.Types.ObjectId()
+setC_id = mongoose.Types.ObjectId()
+content_id = mongoose.Types.ObjectId()
 /*
 db.places.insert({
     "_id": original_id,
@@ -60,7 +60,7 @@ const SetContent = mongoose.model('SetContent', SetContentSchema);
 const Flow = mongoose.model('Flow', FlowSchema);
 const Content = mongoose.model('Content', ContentSchema);
 
-var gonza = new Usuario ({ name: 'gonza', _id: user_id })
+var gonza = new User ({ name: 'gonza', _id: user_id })
  
 var set = new SetContent ({
   _id:setC_id, 
