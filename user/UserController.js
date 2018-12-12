@@ -1,4 +1,5 @@
 // UserController.js
+const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();//Se usa para crear un subconjunto de rutas
 const bodyParser = require('body-parser');
