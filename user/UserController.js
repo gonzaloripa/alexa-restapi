@@ -1,12 +1,12 @@
 // UserController.js
-var express = require('express');
-var router = express.Router();//Se usa para crear un subconjunto de rutas
-var bodyParser = require('body-parser');
+const express = require('express');
+const router = express.Router();//Se usa para crear un subconjunto de rutas
+const bodyParser = require('body-parser');
 //const fetch = require('node-fetch');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
-var User = require('./User');
+const Model = require('./Model');
 
     /*var obj = req.body.noticia;{url:'https://diariohoy.net',
            xpath:"body/div[1]/div[1]/div[1]/div[2]/section[1]/article[1]/a[1]/h2[1]",
@@ -15,43 +15,51 @@ var User = require('./User');
 //var userId ='amzn1.ask.account.AEM7C7O3S3FKO4J77F7YYBP5CXPUVG4VHEW4MM77YUETWFCQAMJE4PTXRJCZAJTWC2FKIP3MEVBILLNA2TK7VDHVBHBDA7ZSFLFRYWYE2U4WBV64CWFAKL74DHSBJ3KHY2VPD6HY7G5AWN5XUUIQCJYOQ3VAMD32MKA63PW5ZEDG5F2AXOIL5VNSGPKZZDY3IFDK4V75RD4CKYY';
 
 // CREATES A NEW USER
-router.post('/', function (req, res) {
+router.post('/newUser', function (req, res) {
   	var name = req.body.name.toLowerCase(); //'gonza'
     //userId = req.body.userId
-  	var array = []; 
-    User.create({//Hace el new y el save juntos
-            //userId: userId, 
-            name: name,
-            contenidos:array
-        },function (err, user) {
+  	//var array = [];
+
+    Model.User.create({name: name,_id: new mongoose.Schema.Types.ObjectId()}//Hace el new y el save juntos
+          //userId: userId, 
+          //contenidos:array
+          ,function (err, user) {
             console.log("----Usuario:",user)
-            if (err) return res.status(500).send("There was a problem adding the information to the database.");
-            res.status(200).send(user);
-        });
+            if (err) return res.status(500).send("No se pudo agregar al usuario en la base");
+            Model.Flow.create({idConjunto: 'Primero',user_id: user._id}    // assign the _id from the user
+            ,function (err, flow) {
+              if (err) return res.status(500).send("No se pudo asignar el flujo para el usuario creado");
+              res.status(200).send(flow);
+            });
+        })
 });
 
 // RETURNS ALL THE USERS IN THE DATABASE
 router.get('/', function (req, res) {
-    User.find({}, function (err, users) {
-        if (err) return res.status(500).send("There was a problem finding the users.");
+    Model.user.find({}, function (err, users) {
+        if (err) return res.status(404).send("No se hallaron usuarios");
         res.status(200).send(users);
     });
 });
 
-// GETS A SINGLE USER FROM THE DATABASE
+// GETS THE FLOWS OF A SINGLE USER FROM THE DATABASE
 router.get('/:name', function (req, res) { //'/:usrid/:name'
-    User.find({'name':req.params.name.toLowerCase()},{ '_id': 0, 'name' :1}, function (err, name) { //{"userId":req.params.usrid,
-        if (err) return res.status(500).send("There was a problem finding the user.");
-        if (!name || name.length == 0) return res.status(404).send("No user found.");
-        console.log("Nombre",name);
-        res.status(200).send(name);
-    });
+    
+    Model.User.find({'name':req.params.name.toLowerCase()})
+    .populate(path: 'flows',select: 'idConjunto -_id'})
+    .exec(function(error, flows) {
+      //flows será un [] de instancias de Flow
+      if (err) return res.status(404).send("No se hallaron flujos para ese usuario");
+      console.log("Flujos: ",flows)
+      res.status(200).send(flows);
+    });  
+
 });
 
 // GETS A SPECIFIC NOTICE OF ONE USER
 router.get('/maxOrder/:name', function (req, res) { //'/notice/:usrid/:name'
 
-    User.aggregate([  
+    Model.aggregate([  
       {$unwind : "$contenidos"},
       {
           "$match": {
@@ -82,7 +90,7 @@ router.get('/notices/:category/:name', function (req, res) { //'/notices/:catego
 
 var getCriteria = {'name':req.params.name.toLowerCase()}; //{"userId":req.params.usrid,
 
-   User.aggregate([
+   Model.aggregate([
     { $match: getCriteria},
     { $project: {
         contenidos: {$filter: {
@@ -103,7 +111,7 @@ var getCriteria = {'name':req.params.name.toLowerCase()}; //{"userId":req.params
 router.get('/noticesByOrder/:conjunto/:name', function (req, res) {
     
     //var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};
-    User.aggregate(
+    Model.aggregate(
        [
         { $unwind: "$contenidos"},
         { $match: {'name':req.params.name.toLowerCase(),'contenidos.idConjunto':req.params.conjunto }},
@@ -121,7 +129,7 @@ router.get('/noticesByCategory/:category/:name', function (req, res) {
 
 var getCriteria = {'name':req.params.name.toLowerCase()};
 
-   User.aggregate([
+   Model.aggregate([
     { $match: getCriteria},
     { $project: {
         contenidos: {$filter: {
@@ -141,7 +149,7 @@ var getCriteria = {'name':req.params.name.toLowerCase()};
 router.get('/noticesByState/:state/:name', function (req, res) {
 
     var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};
-    User.aggregate([
+    Model.aggregate([
     { $match: getCriteria},
     { $project: {
         contenidos: {$filter: {
@@ -159,7 +167,7 @@ router.get('/noticesByState/:state/:name', function (req, res) {
 
 // GETS THE CATEGORIES OF ONE USER 
 router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
-    User.distinct('contenidos.category',{'name':req.params.name.toLowerCase()}, function(err, result){ //{'userId':req.params.usrid,
+    Model.distinct('contenidos.category',{'name':req.params.name.toLowerCase()}, function(err, result){ //{'userId':req.params.usrid,
 	  if (err) return res.status(500).send("There was a problem finding the user.");
       if (!result || result.length == 0) return res.status(200).send("");
       console.log(result)
@@ -169,7 +177,7 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
 
 // GETS THE SETS OF CONTENTS OF ONE USER 
 router.get('/setsOfContents/:name', function (req, res) { //'/categories/:usrid/:name'
-    User.distinct('contenidos.idConjunto',{'name':req.params.name.toLowerCase()}, function(err, result){ //{'userId':req.params.usrid,
+    Model.distinct('contenidos.idConjunto',{'name':req.params.name.toLowerCase()}, function(err, result){ //{'userId':req.params.usrid,
     if (err) return res.status(500).send("There was a problem finding the user.");
       if (!result || result.length == 0) return res.status(200).send("");
       console.log(result)
@@ -179,7 +187,7 @@ router.get('/setsOfContents/:name', function (req, res) { //'/categories/:usrid/
 
 // DELETES A USER FROM THE DATABASE
 router.delete('/:name', function (req, res) { //'/:usrid/:name'
-    User.findOneAndRemove({"name":req.params.name.toLowerCase()}, function (err, user) { //{"userId":req.params.usrid,
+    Model.findOneAndRemove({"name":req.params.name.toLowerCase()}, function (err, user) { //{"userId":req.params.usrid,
         if (err) return res.status(500).send("There was a problem deleting the user.");
         res.status(200).send("User "+ req.params.name +" was deleted.");
     });
@@ -195,7 +203,7 @@ router.put('/updateContentsByState/user/:name', function (req, res) {
 
         //var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};    
         //console.log(result[0]);
-        User.update({'name':req.params.name.toLowerCase(),'contenidos.state': 'new'}, 
+        Model.update({'name':req.params.name.toLowerCase(),'contenidos.state': 'new'}, 
         {'$set': {
           'contenidos.$[elem].state': 'edited'
           }},{ "arrayFilters": [{ "elem.state": 'new' }], "multi": true }
@@ -208,12 +216,12 @@ router.put('/updateContentsByState/user/:name', function (req, res) {
 //UPDATE THE STATE OF A CONTENT 
 router.put('/updateContent/user/:name',function(req, res) {
 
-  User.findOne({ name: req.params.name.toLowerCase()})//agregar password
+  Model.findOne({ name: req.params.name.toLowerCase()})//agregar password
   .select({ contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}}})
   .exec((err, resul)=> { 
     //console.log("---contenido ",resul)
     var state = (resul.contenidos[0].state=='new')?'edited':'new';
-    User.findOneAndUpdate({'contenidos._id':resul.contenidos[0]._id} ,{ $set: { 'contenidos.$.state': state }},(err,doc)=>{
+    Model.findOneAndUpdate({'contenidos._id':resul.contenidos[0]._id} ,{ $set: { 'contenidos.$.state': state }},(err,doc)=>{
       //console.log("---contenido ",doc)
       res.status(200).send(doc);
     })
@@ -222,7 +230,7 @@ router.put('/updateContent/user/:name',function(req, res) {
 
 //UPDATE A LIST OF CONTENTS
 router.put('/updateListContents/user/:name', function (req, res) {
-      /*User.aggregate([  
+      /*Model.aggregate([  
       {$unwind : "$contenidos"},
       {
           "$match": {
@@ -252,7 +260,7 @@ router.put('/updateListContents/user/:name', function (req, res) {
          idC = 1
       */
       var criteria = { 'name': req.params.name.toLowerCase()}
-      User.findOne(criteria)
+      Model.findOne(criteria)
             .select({ contenidos: 
                     {$elemMatch: 
                       {
@@ -265,7 +273,7 @@ router.put('/updateListContents/user/:name', function (req, res) {
               if (result.contenidos.length == 0){ //No existe el idConjunto
                 var updates = req.body.map((item,index)=>{
                     console.log("item "+item.url+item.xpath+index)
-                    return User.update({'name':req.params.name.toLowerCase()}, 
+                    return Model.update({'name':req.params.name.toLowerCase()}, 
                       {"$set": {
                         'contenidos.$[elem].order': index, //item.order
                         'contenidos.$[elem].state': "edited",
@@ -295,7 +303,7 @@ router.put('/addListContent/user/:name',function(req, res) {
             return false;
       };
 
-      User.aggregate([  
+      Model.aggregate([  
       {$unwind : "$contenidos"},
       {
           "$match": {
@@ -333,7 +341,7 @@ router.put('/addListContent/user/:name',function(req, res) {
        Promise.all(promises).then((resultArray)=>{
           console.log("res",resultArray)
           if(contents.length == 0) return res.status(400).send("No puede haber contenidos con el mismo xpath o id de una misma pagina");      
-          User.findOneAndUpdate(query,{$push : {contenidos: {$each: contents} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
+          Model.findOneAndUpdate(query,{$push : {contenidos: {$each: contents} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
           //user contiene el usuario antes de ser actualizado
           console.log('Actualizado ',user);
           res.status(200).send(contents);
@@ -351,7 +359,7 @@ router.put('/addContent/user/:name',function(req, res) {
   //req.body.state = 'new'/'old'
   
   var criteria = { name: req.params.name.toLowerCase() };//agregar password
-  User.findOne(criteria)
+  Model.findOne(criteria)
   .select({ contenidos: 
           {$elemMatch: 
             {url:req.body.url,
@@ -364,7 +372,7 @@ router.put('/addContent/user/:name',function(req, res) {
     if(docs.contenidos.length > 0)
       res.status(404).send("Ya existe el contenido para ese usuario");  
     else{//Si no existe el contenido
-          User.findOne(criteria)
+          Model.findOne(criteria)
             .select({ contenidos: 
                     {$elemMatch: 
                       {url:req.body.url,
@@ -377,7 +385,7 @@ router.put('/addContent/user/:name',function(req, res) {
               if(result.contenidos.length > 0)
                 res.status(404).send("Ya existe el id");  
               else{
-                User.aggregate([  
+                Model.aggregate([  
                   {$unwind : "$contenidos"},
                   {
                       "$match": {
@@ -397,7 +405,7 @@ router.put('/addContent/user/:name',function(req, res) {
                     content.order = parseInt(elem[0].maxOrder) + 1
                   else
                     content.order = 0
-                  User.findOneAndUpdate(criteria, { $push: { contenidos: content }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
+                  Model.findOneAndUpdate(criteria, { $push: { contenidos: content }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
                     if(err) return res.status(500).send("There was a problem updating the user.");
                     //user contiene el usuario antes de ser actualizado
                     console.log('Actualizado ',content);
@@ -432,7 +440,7 @@ var functionContains = function(array,obj){
   var contBody = req.body;
   var query = { 'name': req.params.name.toLowerCase()};//agregar password
   
-  User.find(query,{'contenidos._id':0}, 
+  Model.find(query,{'contenidos._id':0}, 
     function (err, result) {
        console.log(result[0].contenidos)
        var contents = []
@@ -442,7 +450,7 @@ var functionContains = function(array,obj){
        
        let promises = contBody.map((elem)=>{ 
         if(!functionContains(result[0].contenidos,elem)){//si no se repiten los contenidos
-          return User.aggregate([
+          return Model.aggregate([
              {$unwind:"$contenidos"},
              {$match:{"contenidos.idContent":elem.idContent, "contenidos.url":elem.url}},
              {$project:{contenidos:1,_id:0}},
@@ -462,7 +470,7 @@ var functionContains = function(array,obj){
        });
        Promise.all(promises).then((resultArray)=>{
         console.log("res",resultArray)
-          User.findOneAndUpdate(query,{$push : {contenidos: {$each: contents} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
+          Model.findOneAndUpdate(query,{$push : {contenidos: {$each: contents} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
           if(err) return res.status(500).send("There was a problem updating the user.");
           //user contiene el usuario antes de ser actualizado
           console.log('Actualizado ',user);
@@ -479,7 +487,7 @@ var functionContains = function(array,obj){
 
 
 addContent/user/name
-User.aggregate([
+Model.aggregate([
          {$unwind:"$contenidos"},
          {$match:{"contenidos.idContent":req.body.idContent, "contenidos.url":req.body.url}},
          {$project:{contenidos:1,_id:0}},
