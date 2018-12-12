@@ -95,10 +95,10 @@ var content2 = new Content ({
 
 console.log(gonza.name,set.user_id,content.flow_id.idConjunto,content2.setContent_id.idContent)
 
-exports.user = User;
-exports.setContent = SetContent;
-exports.flow = Flow;
-exports.content = Content;
+exports.User = User;
+exports.SetContent = SetContent;
+exports.Flow = Flow;
+exports.Content = Content;
 
 //module.exports = mongoose.model('User');
 /*
