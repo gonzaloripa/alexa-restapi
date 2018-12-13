@@ -46,17 +46,16 @@ router.get('/', function (req, res) {
 // GETS THE FLOWS OF A SINGLE USER FROM THE DATABASE
 router.get('/:name', function (req, res) { //'/:usrid/:name'
     
-    const user = Model.User.findOne({'name':req.params.name.toLowerCase()});
-    console.log(user)
-    Model.Flow.find({'user_id':user._id})
-    .select('idConjunto -_id')
-    .exec(function(err, idConjunto) {
-      //flows será un [] de instancias de Flow
-      if (err) return res.status(404).send("No se hallaron flujos para ese usuario");
-      console.log("Flujos: ",idConjunto)
-      res.status(200).send(idConjunto);
-    });  
-
+    Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+      Model.Flow.find({'user_id':userId})
+      .select('idConjunto -_id')
+      .exec(function(err, idConjunto) {
+        //flows será un [] de instancias de Flow
+        if (err) | (idConjunto.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+        console.log("Flujos: ",idConjunto)
+        res.status(200).send(idConjunto);
+      });  
+    });
 });
 
 // GETS A SPECIFIC NOTICE OF ONE USER
