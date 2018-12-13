@@ -21,18 +21,6 @@ router.post('/newUser', function (req, res) {
     //userId = req.body.userId
   	//var array = [];
 
-        user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-        page: Number,
-        count: { type: Number, max: 200 }, //Ajustar max en base a lo que ocupe cada documento (tamaño max. permitido 16mb)
-        contents:[{
-                   setContent_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SetContent' }], //max=2  
-                   flow_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Flow' }],
-                   url:{type:String,required: true},
-                   xpath:{type:String,lowercase: true, required:true},
-                   category:String,
-                   state:String,
-                   metainfo:String}]
-
     Model.User.create({name: name,_id: new mongoose.Types.ObjectId}//Hace el new y el save juntos
           //userId: userId, 
           //contenidos:array
