@@ -38,10 +38,10 @@ const UserSchema = new mongoose.Schema({
       //options: { sort: { name: -1 }, limit: 5 } // Query options, see http://bit.ly/mongoose-query-options
     });
 
-user_id = mongoose.Types.ObjectId
-flow_id = mongoose.Types.ObjectId
-setC_id = mongoose.Types.ObjectId
-content_id = mongoose.Types.ObjectId
+user_id = mongoose.Types.ObjectId()
+flow_id = mongoose.Types.ObjectId()
+setC_id = mongoose.Types.ObjectId()
+content_id = mongoose.Types.ObjectId()
 /*
 db.places.insert({
     "_id": original_id,
