@@ -21,16 +21,54 @@ router.post('/newUser', function (req, res) {
     //userId = req.body.userId
   	//var array = [];
 
+        user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        page: Number,
+        count: { type: Number, max: 200 }, //Ajustar max en base a lo que ocupe cada documento (tamaño max. permitido 16mb)
+        contents:[{
+                   setContent_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SetContent' }], //max=2  
+                   flow_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Flow' }],
+                   url:{type:String,required: true},
+                   xpath:{type:String,lowercase: true, required:true},
+                   category:String,
+                   state:String,
+                   metainfo:String}]
+
     Model.User.create({name: name,_id: new mongoose.Types.ObjectId}//Hace el new y el save juntos
           //userId: userId, 
           //contenidos:array
           ,function (err, user) {
+            
             console.log("----Usuario:",user)
             if (err) return res.status(500).send("No se pudo agregar al usuario en la base");
-            Model.Flow.create({idConjunto: 'Primero',user_id: user._id}    // assign the _id from the user
+            Model.Flow.create({idConjunto: 'Primero',_id: new mongoose.Types.ObjectId, user_id: user._id}    // assign the _id from the user
             ,function (err, flow) {
+
+              const array = [{
+                              flow_id:flow._id,
+                              url:"https://infocielo.com/",
+                              xpath:"//*[@id='noticias-destacadas-1']/div[1]/article/a",
+                              category:"Portada"
+                            },
+                            {
+                              flow_id:flow._id,
+                              url:"https://infocielo.com/",
+                              xpath:"//*[@id='columna1_y_2']/div/div[2]/article[7]/a",
+                              category:"Portada"
+                            },
+                            {
+                              flow_id:flow._id,
+                              url:"https://infocielo.com/politica",
+                              xpath:"//*[@id='paginator_content']/article[1]/a",
+                              category:"Portada"
+                            }]
               if (err) return res.status(500).send("No se pudo asignar el flujo para el usuario creado");
-              res.status(200).send(flow);
+              Model.Content.create({user_id:user._id, page:1, count:3,contents:array}
+                ,function(err,content){
+                  
+                  console.log("----Contents:",content)
+                  if (err) return res.status(500).send("No se pudieron asignar los contents para el usuario creado");
+                  res.status(200).send(content.contents);
+                })
             });
         })
 });
@@ -44,16 +82,16 @@ router.get('/', function (req, res) {
 });
 
 // GETS THE FLOWS OF A SINGLE USER FROM THE DATABASE
-router.get('/:name', function (req, res) { //'/:usrid/:name'
+router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
     
     Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
       Model.Flow.find({'user_id':userId})
       .select('idConjunto -_id')
-      .exec(function(err, idConjunto) {
-        //flows será un [] de instancias de Flow
+      .exec(function(err, flows) {
+        //flows será un [] de idConjunto
         if (err | idConjunto.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-        console.log("Flujos: ",idConjunto)
-        res.status(200).send(idConjunto);
+        console.log("Flujos: ",flows)
+        res.status(200).send(flows);
       });  
     });
 });
@@ -110,20 +148,30 @@ var getCriteria = {'name':req.params.name.toLowerCase()}; //{"userId":req.params
 */
 
 // GETS THE NOTICES OF ONE USER IN ORDER 
-router.get('/noticesByOrder/:conjunto/:name', function (req, res) {
+router.get('/noticesByOrder/:flow/:name', function (req, res) {
+    const json = []; 
     
-    //var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};
-    Model.aggregate(
-       [
-        { $unwind: "$contenidos"},
-        { $match: {'name':req.params.name.toLowerCase(),'contenidos.idConjunto':req.params.conjunto }},
-        { $sort : {"contenidos.order":1 }},
-        {$group: {_id:"$_id", contents: {$push:"$contenidos"}}},
-       ])
-    .then(function (result) {
-      console.log(result); // [ { maxBalance: 98000 } ]
-      res.status(200).send(result[0].contents);
-    })
+    Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+      Model.Flow.find({'user_id':userId,'idConjunto':req.params.flow})
+      .select('_id')
+      .exec(function(err, flows) {
+        //flows será un [] de flow_id
+        console.log("Flujos: ",flows)
+        
+        Model.Content.aggregate(
+           [
+            { $unwind: "$contents"},
+            { $match: {'user_id':userId, 'contents.flow_id':flows[0]._id }},
+            //{ $sort : {"contenidos.order":1 }},
+            {$group: {_id:"$contents.setContent_id", contenidos: {$push:"$contents"}}},
+           ])
+        .then(function (result) {
+          console.log(result); // [ { maxBalance: 98000 } ]
+          const newjson = json.concat(result[0].contenidos)
+          res.status(200).send(result[0].contenidos);
+        })
+      });  
+    });
 });
 
 // GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
