@@ -150,7 +150,7 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
            [
             { $unwind: "$contents"},
             { $match: {
-                  contents: { $elemMatch: {'user_id':userId, 'flow_id.$[elem]':flows[0]._id }}, //fijarse como hacer para comparar elementos de arrays
+                  contents: { $elemMatch: {'user_id':userId, 'flow_id':{$elemMatch:{ _id:flows[0]._id}} }}, //fijarse como hacer para comparar elementos de arrays
             }},
             //{ $sort : {"contenidos.order":1 }},
             {$group: {_id:"$_id", contenidos: {$push:"$contents"}}},
