@@ -1,8 +1,9 @@
-/* User.js: modelo del usuario
+/* Model.js: modelos
 
 Estrategias usadas: 
-  -relaciones N:M (Flow-Content, SetContent-Content) usamos One Way embedding
-  -relaciones 1:N (user-Content, User-SetContent, User-Flow) usamos Bucketing (hibrido entre Embedding y Linking)
+  -relaciones N:M (Flow-Content) usamos One Way embedding y (SetContent-Content) Two Way embedding
+  -relaciones 1:N (User-Content) usamos Bucketing (hibrido entre Embedding y Linking)
+  -relaciones 1:N (User-SetContent, User-Flow) usamos Linking
 */
 
 const mongoose = require('mongoose');

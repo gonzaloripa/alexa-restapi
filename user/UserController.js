@@ -49,7 +49,7 @@ router.get('/:name', function (req, res) { //'/:usrid/:name'
     const user = Model.User.findOne({'name':req.params.name.toLowerCase()});
     
     Model.Flow.find({'user_id':user._id})
-    .select({'idConjunto -_id'})
+    .select('idConjunto -_id')
     .exec(function(err, idConjunto) {
       //flows será un [] de instancias de Flow
       if (err) return res.status(404).send("No se hallaron flujos para ese usuario");
