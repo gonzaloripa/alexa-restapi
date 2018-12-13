@@ -83,7 +83,7 @@ var content2 = new Content ({
 })
 
 
-console.log(gonza.name,set.user_id,content.flow_id.idConjunto,content2.setContent_id.idContent)
+//console.log(gonza.name,set.user_id,content.flow_id.idConjunto,content2.setContent_id.idContent)
 
 exports.User = User;
 exports.SetContent = SetContent;
