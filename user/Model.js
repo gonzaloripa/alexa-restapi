@@ -1,64 +1,53 @@
-// User.js: modelo del usuario
+/* User.js: modelo del usuario
+
+Estrategias usadas: 
+  -relaciones N:M (Flow-Content, SetContent-Content) usamos One Way embedding
+  -relaciones 1:N (user-Content, User-SetContent, User-Flow) usamos Bucketing (hibrido entre Embedding y Linking)
+*/
+
 const mongoose = require('mongoose');
 const ContentSchema = new mongoose.Schema({
-  url:{type:String,required: true},
-  xpath:{type:String,lowercase: true, required:true},
-  category:String,
-  state:String,
-  metainfo:String,
-  setContent_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SetContent' }],
-  user_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  flow_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Flow' }]
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  page: Number,
+  count: { type: Number, max: 200 }, //Ajustar max en base a lo que ocupe cada documento (tamaño max. permitido 16mb)
+  contents:[{
+             setContent_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SetContent' }], //max=2  
+             flow_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Flow' }],
+             url:{type:String,required: true},
+             xpath:{type:String,lowercase: true, required:true},
+             category:String,
+             state:String,
+             metainfo:String}]
 })
 
 const FlowSchema = new mongoose.Schema({
-  idConjunto:{type:String,required: true},
+  idConjunto: {type:String,required: true},
   user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required:true }
 })
 
 const SetContentSchema = new mongoose.Schema({
-  idContent:{type:String,required: true},
-  flow_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Flow' },
-  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+  idContent: {type:String,required: true}, //Agrupamiento de contenidos hermanos
+  content_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Content' }], 
+  flow_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Flow' }],
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+
 })
 
 const UserSchema = new mongoose.Schema({  
   //userId: {type:String},
   name: {type:String,required: true},
-  password:String
+  password: String
 });
 
-    UserSchema.virtual('flows', {
-      ref: 'Flow', // The model to use
-      localField: '_id', // Find people where `localField`
-      foreignField: 'user_id', // is equal to `foreignField`
-      // If `justOne` is true, 'members' will be a single doc as opposed to
-      // an array. `justOne` is false by default.
-      justOne: false
-      //options: { sort: { name: -1 }, limit: 5 } // Query options, see http://bit.ly/mongoose-query-options
-    });
+const User = mongoose.model('User', UserSchema);
+const SetContent = mongoose.model('SetContent', SetContentSchema);
+const Flow = mongoose.model('Flow', FlowSchema);
+const Content = mongoose.model('Content', ContentSchema);
 
 user_id = mongoose.Types.ObjectId()
 flow_id = mongoose.Types.ObjectId()
 setC_id = mongoose.Types.ObjectId()
 content_id = mongoose.Types.ObjectId()
-/*
-db.places.insert({
-    "_id": original_id,
-    "name": "Broadway Center",
-    "url": "bc.example.net"
-})
-
-db.people.insert({
-    "name": "Erin",
-    "places_id": original_id,
-    "url":  "bc.example.net/Erin"
-})
-*/
-const User = mongoose.model('User', UserSchema);
-const SetContent = mongoose.model('SetContent', SetContentSchema);
-const Flow = mongoose.model('Flow', FlowSchema);
-const Content = mongoose.model('Content', ContentSchema);
 
 var gonza = new User ({ name: 'gonza', _id: user_id })
  
@@ -102,7 +91,31 @@ exports.Content = Content;
 
 //module.exports = mongoose.model('User');
 /*
-  /*flujos:[{
+    UserSchema.virtual('flows', {
+      ref: 'Flow', // The model to use
+      localField: '_id', // Find people where `localField`
+      foreignField: 'user_id', // is equal to `foreignField`
+      // If `justOne` is true, 'members' will be a single doc as opposed to
+      // an array. `justOne` is false by default.
+      justOne: false
+      //options: { sort: { name: -1 }, limit: 5 } // Query options, see http://bit.ly/mongoose-query-options
+    });
+
+db.places.insert({
+    "_id": original_id,
+    "name": "Broadway Center",
+    "url": "bc.example.net"
+})
+
+db.people.insert({
+    "name": "Erin",
+    "places_id": original_id,
+    "url":  "bc.example.net/Erin"
+})
+
+
+
+  flujos:[{
           idConjunto:String,
           contenidos:[{
             idContent:String,
