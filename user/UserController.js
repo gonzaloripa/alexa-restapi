@@ -51,7 +51,7 @@ router.get('/:name', function (req, res) { //'/:usrid/:name'
       .select('idConjunto -_id')
       .exec(function(err, idConjunto) {
         //flows será un [] de instancias de Flow
-        if (err) | (idConjunto.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+        if (err | idConjunto.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
         console.log("Flujos: ",idConjunto)
         res.status(200).send(idConjunto);
       });  
