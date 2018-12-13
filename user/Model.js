@@ -45,6 +45,18 @@ const SetContent = mongoose.model('SetContent', SetContentSchema);
 const Flow = mongoose.model('Flow', FlowSchema);
 const Content = mongoose.model('Content', ContentSchema);
 
+
+//console.log(gonza.name,set.user_id,content.flow_id.idConjunto,content2.setContent_id.idContent)
+
+exports.User = User;
+exports.SetContent = SetContent;
+exports.Flow = Flow;
+exports.Content = Content;
+
+//module.exports = mongoose.model('User');
+/*
+
+  
 user_id = mongoose.Types.ObjectId()
 flow_id = mongoose.Types.ObjectId()
 setC_id = mongoose.Types.ObjectId()
@@ -83,15 +95,6 @@ var content2 = new Content ({
 })
 
 
-//console.log(gonza.name,set.user_id,content.flow_id.idConjunto,content2.setContent_id.idContent)
-
-exports.User = User;
-exports.SetContent = SetContent;
-exports.Flow = Flow;
-exports.Content = Content;
-
-//module.exports = mongoose.model('User');
-/*
     UserSchema.virtual('flows', {
       ref: 'Flow', // The model to use
       localField: '_id', // Find people where `localField`

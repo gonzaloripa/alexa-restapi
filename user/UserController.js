@@ -47,7 +47,7 @@ router.get('/', function (req, res) {
 router.get('/:name', function (req, res) { //'/:usrid/:name'
     
     const user = Model.User.findOne({'name':req.params.name.toLowerCase()});
-    
+    console.log(user)
     Model.Flow.find({'user_id':user._id})
     .select('idConjunto -_id')
     .exec(function(err, idConjunto) {
