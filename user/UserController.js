@@ -144,14 +144,14 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
       .select('_id')
       .exec(function(err, flows) {
         //flows será un [] de flow_id
-        console.log("Flujos: ",flows)
+        console.log("Flujos: ",flows,userId)
         
         Model.Content.aggregate(
            [
             { $unwind: "$contents"},
             { $match: {'user_id':userId, 'contents.flow_id':flows[0]._id }},
             //{ $sort : {"contenidos.order":1 }},
-            {$group: {_id:"$contents.setContent_id", contenidos: {$push:"$contents"}}},
+            {$group: {_id:"setContent_id", contenidos: {$push:"$contents"}}},
            ])
         .then(function (result) {
           console.log(result); // [ { maxBalance: 98000 } ]
