@@ -160,11 +160,16 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
             ,
             //{ $sort : {"contenidos.order":1 }},
             {$group: {_id:"$_id", contenidos: {$push:"$contents"}}},
+              { 
+                  $project: {
+                    contents:"$contenidos"
+                  }
+              }
            ])
         .exec(function (result) {
           console.log(result); // [ { maxBalance: 98000 } ]
-          const newjson = json.concat(result[0].contenidos)
-          res.status(200).send(result[0].contenidos);
+          const newjson = json.concat(result[0].contents)
+          res.status(200).send(result[0].contents);
         })
       });  
     });
