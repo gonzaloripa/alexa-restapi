@@ -149,6 +149,7 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
           'user_id': userId
           //'contents.flow_id': flows[0]._id
         })
+        .select('contents')
         /*Model.Content.aggregate(
            [
             { $unwind: "$contents"},
@@ -166,7 +167,7 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
                   }
               }
            ])*/
-        .exec(function (result) {
+        .exec(function (err,result) {
           console.log(result); // [ { maxBalance: 98000 } ]
           const newjson = json.concat(result[0].contents)
           res.status(200).send(result[0].contents);
