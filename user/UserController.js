@@ -145,11 +145,11 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
       .exec(function(err, flows) {
         //flows será un [] de flow_id
         console.log("Flujos: ",flows,userId)
-        /*Model.Content.find({
-          'user_id': userId,
-          'contents.flow_id': flows[0]._id
-        })*/
-        Model.Content.aggregate(
+        Model.Content.find({
+          'user_id': userId
+          //'contents.flow_id': flows[0]._id
+        })
+        /*Model.Content.aggregate(
            [
             { $unwind: "$contents"},
             { $match: {
@@ -165,7 +165,7 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
                     contents:"$contenidos"
                   }
               }
-           ])
+           ])*/
         .exec(function (result) {
           console.log(result); // [ { maxBalance: 98000 } ]
           const newjson = json.concat(result[0].contents)
