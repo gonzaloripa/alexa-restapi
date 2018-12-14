@@ -149,7 +149,7 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
           'user_id': userId,
           contents: {$elemMatch: {flow_id: flows[0]._id} }
         })
-        .select('contents')
+        .select('contents.url')
         /*Model.Content.aggregate(
            [
             { $unwind: "$contents"},
