@@ -147,7 +147,7 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
         console.log("Flujos: ",flows,userId)
         Model.Content.find({
           'user_id': userId,
-          contents: {$elemMatch: {flow_id: {$elemMatch: { _id: flows[0]._id} }}}
+          contents: {$elemMatch: {flow_id: flows[0]._id} }
         })
         .select('contents')
         /*Model.Content.aggregate(
