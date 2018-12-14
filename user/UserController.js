@@ -146,10 +146,10 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
         //flows será un [] de flow_id
         console.log("Flujos: ",flows,userId)
         Model.Content.find({
-          'user_id': userId
-          //'contents.flow_id': flows[0]._id
+          'user_id': userId,
+          contents: {$elemMatch: {flow_id: {$elemMatch: { _id: flows[0]._id} }}}
         })
-        .select('contents')
+        .select('contents.url')
         /*Model.Content.aggregate(
            [
             { $unwind: "$contents"},
