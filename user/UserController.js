@@ -145,30 +145,34 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
       .exec(function(err, flows) {
         //flows será un [] de flow_id
         console.log("Flujos: ",flows,userId)
+        /* //Retorna todos los contenidos por flujo de un usuario
         Model.Content.find({
           'user_id': userId,
           contents: {$elemMatch: {flow_id: flows[0]._id} }
         })
-        .select('contents.url')
-        /*Model.Content.aggregate(
+        .select('contents')
+        */
+        Model.Content.aggregate(
            [
             { $unwind: "$contents"},
             { $match: {
-                  'user_id': userId
+                  'user_id': userId,
+                  contents: {$elemMatch: {flow_id: flows[0]._id} }
                   //'contents.flow_id': flows[0]._id  //fijarse como hacer para comparar elementos de arrays
               }
             }
             ,
             //{ $sort : {"contenidos.order":1 }},
-            {$group: {"_id":"$_id", "contenidos": {$push:"$contents"}}},
+            {$group: {"_id":"$contents.setContent_id", "contenidos": {$push:"$contents"}}},
               { 
                   $project: {
                     contents:"$contenidos"
                   }
               }
-           ])*/
+           ])
         .exec(function (err,result) {
           console.log(result); // [ { maxBalance: 98000 } ]
+
           const newjson = json.concat(result[0].contents)
           res.status(200).send(result[0].contents);
         })

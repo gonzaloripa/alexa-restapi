@@ -12,6 +12,7 @@ const ContentSchema = new mongoose.Schema({
   page: Number,
   count: { type: Number, max: 200 }, //Ajustar max en base a lo que ocupe cada documento (tamaño max. permitido 16mb)
   contents:[{
+             idContent:String, 
              setContent_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SetContent' }], //max=2  
              flow_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Flow' }],
              url:{type:String,required: true},
