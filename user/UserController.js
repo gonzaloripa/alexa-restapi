@@ -163,7 +163,7 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
             }
             ,
             //{ $sort : {"contenidos.order":1 }},
-            {$group: {"_id":"$contents.setContent_id", "contenidos": {$push:"$contents"}}},
+            {$group: {"_id":"$user_id", "contenidos": {$push:"$contents"}}},
               { 
                   $project: {
                     contents:"$contenidos"
