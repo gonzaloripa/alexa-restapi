@@ -179,11 +179,14 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
         Model.Content.aggregate([
         { $match: {'user_id': userId}},
         { $project: {
-            contenidos: {$filter: {
-                input: '$contents',
-                as: 'item',
-                cond: {$in: [flows[0],'$$item.flow_id']}
-            }}
+            contenidos:{
+              "$setIsSubset": [
+                [flows[0]._id], 
+                { "$setUnion": [ 
+                    { "$ifNull": [ "$flow_id", "Unespecified"] }
+                ] }
+            ] 
+            } 
         }}
         ]).then(function (result) {
           console.log(result); // [ { maxBalance: 98000 } ]
