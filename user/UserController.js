@@ -145,17 +145,17 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
       .exec(function(err, flows) {
         //flows será un [] de flow_id
         console.log("Flujos: ",flows,userId)
-        //Retorna todos los contenidos por flujo de un usuario
+        //Retorna todos los grupos de contenidos por flujo de un usuario
         Model.Content.find({
           'user_id': userId,
-          contents: {$elemMatch: {flow_id: flows[0]._id, setContent_id:{$ne: null} } }
+          contents: {$elemMatch: {flow_id: flows[0]._id, setContent_id:{$eq: null} } }
 
         })
         .select('contents')
         .exec(function (err,result) {
           console.log(result); // [ { maxBalance: 98000 } ]
 
-          const newjson = json.concat(result[0].contents)
+          //const newjson = json.concat(result[0].contents)
           res.status(200).send(result[0].contents);
         })
         /* 
