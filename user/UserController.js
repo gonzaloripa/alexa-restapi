@@ -182,12 +182,12 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
             contenidos: {$filter: {
                 input: '$contents',
                 as: 'item',
-                cond: {$eq: ['$$item.flow_id', flows[0]._id]}
+                cond: {$in: [flows[0]._id,'$$item.flow_id']}
             }}
         }}
         ]).then(function (result) {
-          console.log(result[0].contenidos); // [ { maxBalance: 98000 } ]
-          res.status(200).send(result[0].contenidos);
+          console.log(result); // [ { maxBalance: 98000 } ]
+          res.status(200).send(result);
         });
       });  
     });
