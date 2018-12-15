@@ -180,7 +180,7 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
         { $match: {'user_id': userId}},
         { $project: {
             contenidos: {$filter: {
-                input: '$contenidos',
+                input: '$contents',
                 as: 'item',
                 cond: {$eq: ['$$item.flow_id', flows[0]._id]}
             }}
