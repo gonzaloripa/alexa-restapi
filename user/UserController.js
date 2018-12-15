@@ -176,7 +176,7 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
           const newjson = json.concat(result[0].contents)
           res.status(200).send(result[0].contents);
         })*/
-        Model.aggregate([
+        Model.Content.aggregate([
         { $match: {'user_id': userId}},
         { $project: {
             contenidos: {$filter: {
