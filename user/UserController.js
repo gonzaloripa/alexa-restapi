@@ -151,7 +151,7 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
           contents: {$elemMatch: {flow_id: flows[0]._id} }
         })
         .select('contents')
-        */
+        
         Model.Content.aggregate(
            [
             { $unwind: "$contents"},
@@ -175,7 +175,20 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
 
           const newjson = json.concat(result[0].contents)
           res.status(200).send(result[0].contents);
-        })
+        })*/
+        Model.aggregate([
+        { $match: {'user_id': userId}},
+        { $project: {
+            contenidos: {$filter: {
+                input: '$contenidos',
+                as: 'item',
+                cond: {$eq: ['$$item.flow_id', flows[0]._id]}
+            }}
+        }}
+        ]).then(function (result) {
+          console.log(result[0].contenidos); // [ { maxBalance: 98000 } ]
+          res.status(200).send(result[0].contenidos);
+        });
       });  
     });
 });
