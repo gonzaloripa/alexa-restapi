@@ -58,7 +58,7 @@ router.post('/newUser', function (req, res) {
           if (err) return res.status(500).send("No se pudo asignar el flujo para el usuario creado");
           const flows = [flow._id];           
           console.log(flows)
-          
+
           Model.User.create({name: name, flows: flows }//Hace el new y el save juntos
           //userId: userId, 
           //contenidos:array
@@ -83,18 +83,15 @@ router.get('/', function (req, res) {
 // GETS THE FLOWS OF A SINGLE USER FROM THE DATABASE
 router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
     
-    Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
-      Model.Flow.find({'user_id':userId})
-      .select('idConjunto -_id')
-      .exec(function(err, flows) {
-        //flows será un [] de idConjunto
-        if (err | flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-        console.log("Flujos: ",flows)
-        res.status(200).send(flows);
-      });  
+    Model.User.findOne({'name':req.params.name.toLowerCase()})
+    .populate('flows','nombreConjunto')
+    .exec(function(err,user){
+      console.log('Flows %s ',user.flows.nombreConjunto)    
+        //flows será un [] de 
+        if (err | user.flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+        res.status(200).send(user.flows.nombreConjunto);
+      });
     });
-});
-
 
 // GETS THE CATEGORIES OF A SINGLE USER 
 router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
