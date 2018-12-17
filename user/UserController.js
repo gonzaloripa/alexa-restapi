@@ -52,7 +52,7 @@ router.post('/newUser', function (req, res) {
                   console.log("----Contents:",contents)
                   if (err) return res.status(500).send("No se pudieron asignar los contents para el usuario creado");
 
-                  const ids = contents.map((elem,index) => { if(index < 2) return elem._id } );
+                  const ids = contents.filter((elem,index) => { if(index < 2) return elem._id } );
                   var flow = {
                     _id: new mongoose.Types.ObjectId,
                     nombreConjunto:'Primero',
