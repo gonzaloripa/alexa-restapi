@@ -102,9 +102,9 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
         Model.Flow.find({'user': userId})
         .populate({path:'contents', select:'categoria'})
         .exec(function(err,flow){
-            console.log('Categories %s ',flow.contents)
-            if (err | flow.contents.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-            res.status(200).send(flow.contents);    
+            console.log('Categories %s ',flow)
+            if (err | flow.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+            res.status(200).send(flow);    
         })
       });
 });
