@@ -84,12 +84,12 @@ router.get('/', function (req, res) {
 router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
     
     Model.User.findOne({'name':req.params.name.toLowerCase()})
-    .populate('flows','nombreConjunto')
+    .populate('flows')
     .exec(function(err,user){
-      console.log('Flows %s ',user.flows.nombreConjunto)    
+      console.log('Flows %s ',user.flows)    
         //flows será un [] de 
         if (err | user.flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-        res.status(200).send(user.flows.nombreConjunto);
+        res.status(200).send(user.flows);
       });
     });
 
