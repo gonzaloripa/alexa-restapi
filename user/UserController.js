@@ -32,6 +32,7 @@ router.post('/newUser', function (req, res) {
                       url:"https://infocielo.com/politica",
                       xpath:"//*[@id='paginator_content']/article[1]/a"                    }
                   ]
+    var userId = new mongoose.Types.ObjectId;
     Model.InfoContent.insertMany(array
     ,function(err,contents){
         console.log("----Contents:",contents)
@@ -40,6 +41,7 @@ router.post('/newUser', function (req, res) {
         const ids = contents.filter((elem,index) => { if(index < 2) return elem._id } );
         var flow = {
           _id: new mongoose.Types.ObjectId,
+          user: userId,
           nombreConjunto:'Primero',
           contents: [
             { kind: 'SingleContent', identificador: 'infocielo', categoria:'Portada', content:contents[2]._id },
@@ -53,7 +55,7 @@ router.post('/newUser', function (req, res) {
           const flows = [flow._id];           
           console.log(flows)
 
-          Model.User.create({name: name, flows: flows }//Hace el new y el save juntos
+          Model.User.create({name: name, _id:userId, flows: flows }//Hace el new y el save juntos
           //userId: userId, 
           //contenidos:array
           ,function (err, user) {
@@ -91,17 +93,23 @@ router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
 router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
     
     Model.User.findOne({'name':req.params.name.toLowerCase()})
-    .populate({ path: 'flows', populate: { path: 'contents', select: 'categoria -_id,kind' } })
-    .exec(function(err,user){
-      console.log('Flujos %s ',user.flows.contents)    
+    .select('_id')
+    .exec(function(err,userId){
+        console.log('UserId %s ',userId)    
         //flows será un [] de 
+        if (err | userId == null) return res.status(404).send("No se hallaron flujos para ese usuario");
         
-        if (err | user.flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-        res.status(200).send(user.flows);
+        Model.Flow.find({'user': userId})
+        .populate({path:'contents', select:'categoria'})
+        .exec(function(err,flow){
+            console.log('Categories %s ',flow.contents)
+            if (err | flow.contents.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+            res.status(200).send(flow.contents);    
+        })
       });
 });
 
-// GETS THE CATEGORIES OF A SINGLE USER 
+/* GETS THE CATEGORIES OF A SINGLE USER 
 router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
       
     Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
@@ -121,7 +129,7 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
       console.log(result)
       res.status(200).send(result);
   });     
-});
+});*/
 
 
 // GETS THE NOTICES OF ONE USER IN ORDER 

@@ -38,8 +38,9 @@ var contentSchema = new mongoose.Schema({
 },
   { discriminatorKey: 'kind'});
 
-var flowSchema = new mongoose.Schema({ nombreConjunto: { type:String,required:true }, //nombreFlujo
-                              contents: [contentSchema] });
+var flowSchema = new mongoose.Schema({ user: {type: mongoose.Schema.Types.ObjectId, ref:'User'}, 
+                                      nombreConjunto: { type:String,required:true }, //nombreFlujo
+                                      contents: [contentSchema] });
 // flowSchema.path('contents')` gets the mongoose `DocumentArray`
 var docArray = flowSchema.path('contents');
 
