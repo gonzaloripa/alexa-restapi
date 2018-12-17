@@ -24,7 +24,7 @@ Flujo
 */
 
 const mongoose = require('mongoose'); 
-var InfoContentSchema = new Schema({
+var InfoContentSchema = new mongoose.Schema({
     url: {type:String,required: true},
     xpath: {type:String,lowercase: true, required:true},
     category: String,
@@ -33,22 +33,22 @@ var InfoContentSchema = new Schema({
 
 var InfoContent = mongoose.model('InfoContent', InfoContentSchema);
 
-var contentSchema = new Schema({
+var contentSchema = new mongoose.Schema({
   identificador: {type: String, required:true}
 },
   { discriminatorKey: 'kind'});
 
-var flowSchema = new Schema({ nombreConjunto: { type:String,required:true }, 
+var flowSchema = new mongoose.Schema({ nombreConjunto: { type:String,required:true }, 
                               contents: [contentSchema] });
 // flowSchema.path('contents')` gets the mongoose `DocumentArray`
 var docArray = flowSchema.path('contents');
 
 // The `contents` array can contain 2 different types of content: singleContent and siblingContent
-var SingleContent = docArray.discriminator('SingleContent', new Schema({
+var SingleContent = docArray.discriminator('SingleContent', new mongoose.Schema({
   content: { type: mongoose.Schema.Types.ObjectId, ref:'InfoContent'}
 }, { _id: false }));
 
-var SiblingContent = docArray.discriminator('SiblingContent', new Schema({
+var SiblingContent = docArray.discriminator('SiblingContent', new mongoose.Schema({
   siblings: [{ type: mongoose.Schema.Types.ObjectId, ref:'SingleContent'}]
 }, { _id: false }));
 
