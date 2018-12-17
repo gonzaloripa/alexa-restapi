@@ -4,14 +4,127 @@ Estrategias usadas:
   -relaciones N:M (Flow-Content) usamos One Way embedding y (SetContent-Content) Two Way embedding
   -relaciones 1:N (User-Content) usamos Bucketing (hibrido entre Embedding y Linking)
   -relaciones 1:N (User-SetContent, User-Flow) usamos Linking
+
+formas de enviar la info al front:
+[{c1},{c2},{c3}, [{c4},{c5},{c6}] ]
+
+newyork,lanacion, { hermanos-cielosports, [idCont,idCont]}
+newyork, { hermanos-cielosports, conjunto:true}, lanacion
+
+
+Crear jerarquia de esquemas:
+        Cont
+         _id
+Cont ind <-- Conjunto
+identif      identif
+             [_id]
+
+Flujo
+[Cont_id]
 */
 
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'); 
+var InfoContentSchema = new Schema({
+    url: {type:String,required: true},
+    xpath: {type:String,lowercase: true, required:true},
+    category: String,
+    metainfo: String
+  });
+
+var InfoContent = mongoose.model('InfoContent', InfoContentSchema);
+
+var contentSchema = new Schema({
+  identificador: {type: String, required:true}
+},
+  { discriminatorKey: 'kind'});
+
+var flowSchema = new Schema({ nombreConjunto: { type:String,required:true }, 
+                              contents: [contentSchema] });
+// flowSchema.path('contents')` gets the mongoose `DocumentArray`
+var docArray = flowSchema.path('contents');
+
+// The `contents` array can contain 2 different types of content: singleContent and siblingContent
+var SingleContent = docArray.discriminator('SingleContent', new Schema({
+  content: { type: mongoose.Schema.Types.ObjectId, ref:'InfoContent'}
+}, { _id: false }));
+
+var SiblingContent = docArray.discriminator('SiblingContent', new Schema({
+  siblings: [{ type: mongoose.Schema.Types.ObjectId, ref:'SingleContent'}]
+}, { _id: false }));
+
+var Flow = mongoose.model('Flow', flowSchema);
+
+const UserSchema = new mongoose.Schema({  
+  //userId: {type:String},
+  name: {type:String,required: true},
+  password: String,
+  flows: [{ type: mongoose.Schema.Types.ObjectId, ref:'Flow'}]
+});
+
+const User = mongoose.model('User', UserSchema);
+
+exports.User = User;
+exports.Flow = Flow;
+exports.InfoContent = InfoContent;
+
+//module.exports = mongoose.model('User');
+/*
+
+
+var options = { discriminatorKey: 'kind', _id:false };
+
+var ContentSchema = new mongoose.Schema(
+  {
+    _id: { type: mongoose.Schema.Types.ObjectId}
+  },
+  { discriminatorKey: 'kind' });
+
+var Content = mongoose.model('Content', ContentSchema);
+
+
+const SingleContentSchema = new mongoose.Schema({
+
+},options);
+
+var SingleContent = Content.discriminator('SingleContent',
+SingleContentSchema);
+
+
+const SiblingContentSchema = new mongoose.Schema({
+  siblings: [{type: mongoose.Schema.Types.ObjectId, ref:'SingleContent'}]
+},options);
+
+var SiblingContent = Content.discriminator('SiblingContent',
+SiblingContentSchema);
+
+
+
+
+
 const ContentSchema = new mongoose.Schema({
+
   user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   page: Number,
-  count: { type: Number, max: 200 }, //Ajustar max en base a lo que ocupe cada documento (tamaño max. permitido 16mb)
+  count: { type: Number, max: 200 }, //Ajustar max en base a lo que ocupe cada documento (tamaño max. permitido 16mb)  
   contents:[{
+             idContent:String, 
+             setContent_id: {type:[{ type: mongoose.Schema.Types.ObjectId, ref: 'SetContent'}] ,default: undefined }, //max=2  
+             flow_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Flow', required: false }],
+             url:{type:String,required: true},
+             xpath:{type:String,lowercase: true, required:true},
+             category:String,
+             metainfo:String}]
+})
+
+const FlowSchema = new mongoose.Schema({
+  [idC] = [1,[1,2,3],2,3]
+
+  idConjunto: {type:String,required: true},
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required:true }
+})
+
+const SetContentSchema = new mongoose.Schema({ //Ver si meter una coleccion de contents hermanos en este esquema
+   contents:[{
              idContent:String, 
              setContent_id: {type:[{ type: mongoose.Schema.Types.ObjectId, ref: 'SetContent'}] ,default: undefined }, //max=2  
              flow_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Flow', required: false }],
@@ -20,14 +133,6 @@ const ContentSchema = new mongoose.Schema({
              category:String,
              state:String,
              metainfo:String}]
-})
-
-const FlowSchema = new mongoose.Schema({
-  idConjunto: {type:String,required: true},
-  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required:true }
-})
-
-const SetContentSchema = new mongoose.Schema({
   idContent: {type:String,required: true}, //Agrupamiento de contenidos hermanos
   content_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Content' }], 
   flow_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Flow' }],
@@ -49,13 +154,8 @@ const Content = mongoose.model('Content', ContentSchema);
 
 //console.log(gonza.name,set.user_id,content.flow_id.idConjunto,content2.setContent_id.idContent)
 
-exports.User = User;
-exports.SetContent = SetContent;
-exports.Flow = Flow;
-exports.Content = Content;
 
-//module.exports = mongoose.model('User');
-/*
+
 
   
 user_id = mongoose.Types.ObjectId()

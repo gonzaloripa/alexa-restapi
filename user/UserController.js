@@ -19,8 +19,26 @@ const Model = require('./Model');
 router.post('/newUser', function (req, res) {
   	var name = req.body.name.toLowerCase(); //'gonza'
     //userId = req.body.userId
-  	//var array = [];
 
+    // Create a new flow of contents with different kinds
+    const array = [
+                    {
+                      url:"https://infocielo.com/",
+                      xpath:"//*[@id='noticias-destacadas-1']/div[1]/article/a",
+                      category:"Portada"
+                    },
+                    {
+                      url:"https://infocielo.com/",
+                      xpath:"//*[@id='columna1_y_2']/div/div[2]/article[7]/a",
+                      category:"Portada"
+                    },
+                    {
+                      url:"https://infocielo.com/politica",
+                      xpath:"//*[@id='paginator_content']/article[1]/a",
+                      category:"Portada"
+                    }
+                  ]
+                  
     Model.User.create({name: name,_id: new mongoose.Types.ObjectId}//Hace el new y el save juntos
           //userId: userId, 
           //contenidos:array
@@ -28,36 +46,28 @@ router.post('/newUser', function (req, res) {
             
             console.log("----Usuario:",user)
             if (err) return res.status(500).send("No se pudo agregar al usuario en la base");
-            Model.Flow.create({idConjunto: 'Primero',_id: new mongoose.Types.ObjectId, user_id: user._id}    // assign the _id from the user
-            ,function (err, flow) {
-
-              const array = [{
-                              flow_id:flow._id,
-                              url:"https://infocielo.com/",
-                              xpath:"//*[@id='noticias-destacadas-1']/div[1]/article/a",
-                              category:"Portada"
-                            },
-                            {
-                              flow_id:flow._id,
-                              url:"https://infocielo.com/",
-                              xpath:"//*[@id='columna1_y_2']/div/div[2]/article[7]/a",
-                              category:"Portada"
-                            },
-                            {
-                              flow_id:flow._id,
-                              url:"https://infocielo.com/politica",
-                              xpath:"//*[@id='paginator_content']/article[1]/a",
-                              category:"Portada"
-                            }]
-              if (err) return res.status(500).send("No se pudo asignar el flujo para el usuario creado");
-              Model.Content.create({user_id:user._id, page:1, count:3,contents:array}
-                ,function(err,content){
-                  
-                  console.log("----Contents:",content)
+            
+            Model.InfoContent.insertMany(array
+            ,function(err,contents){
+                  console.log("----Contents:",contents)
                   if (err) return res.status(500).send("No se pudieron asignar los contents para el usuario creado");
-                  res.status(200).send(content.contents);
-                })
-            });
+
+                  const ids = contents.map((elem,index) => { if(index < 2) return elem._id } );
+                  var flow = {
+                    _id: new mongoose.Types.ObjectId,
+                    nombreConjunto:'Primero',
+                    contents: [
+                      { kind: 'SingleContent', identificador: 'infocielo', content:contents[2]._id },
+                      { kind: 'SiblingContent', identificador: 'infocielo-hermanos', siblings: ids }
+                    ]
+                  };
+                  Model.Flow.create( flow    
+                  ,function (err, flow) {
+                    console.log(flow);
+                    if (err) return res.status(500).send("No se pudo asignar el flujo para el usuario creado");
+                    res.status(200).send(flow);
+                  })
+            })
         })
 });
 
@@ -84,61 +94,44 @@ router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
     });
 });
 
-// GETS A SPECIFIC NOTICE OF ONE USER
-router.get('/maxOrder/:name', function (req, res) { //'/notice/:usrid/:name'
 
-    Model.aggregate([  
-      {$unwind : "$contenidos"},
-      {
-          "$match": {
-              "name": req.params.name.toLowerCase()
-          }
-      },
-      {
-          "$group" : {
-              "_id":"$_id",
-              "maxOrder" : {"$max" : "$contenidos.order"},
-              "contents": { $push: "$contenidos"}
-          }
-      },
-      { 
-          $project: {
-            contenidos:"$contents",
-            maxOrder:"$maxOrder"
-          }
-      }
-    ]).then(function (result){
+// GETS THE CATEGORIES OF A SINGLE USER 
+router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
+      
+    Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+      Model.Content.find({'user_id':userId})
+      .select('idConjunto -_id')
+      .exec(function(err, flows) {
+        //flows será un [] de idConjunto
+        if (err | flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+        console.log("Flujos: ",flows)
+        res.status(200).send(flows);
+      });  
+    });
+
+    Model.distinct('contenidos.category',{'name':req.params.name.toLowerCase()}, function(err, result){ //{'userId':req.params.usrid,
+    if (err) return res.status(500).send("There was a problem finding the user.");
+      if (!result || result.length == 0) return res.status(200).send("");
       console.log(result)
       res.status(200).send(result);
-    })
+  });     
 });
 
-/*/ GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
-router.get('/notices/:category/:name', function (req, res) { //'/notices/:category/:usrid/:name'
-
-var getCriteria = {'name':req.params.name.toLowerCase()}; //{"userId":req.params.usrid,
-
-   Model.aggregate([
-    { $match: getCriteria},
-    { $project: {
-        contenidos: {$filter: {
-            input: '$contenidos',
-            as: 'item',
-            cond: {$eq: ['$$item.category', req.params.category]}
-        }}
-    }}
-    ]).then(function (result) {
-      console.log(result[0].contenidos); // [ { maxBalance: 98000 } ]
-      res.status(200).send(result[0].contenidos);
-    });
-  
-});
-*/
 
 // GETS THE NOTICES OF ONE USER IN ORDER 
 router.get('/noticesByOrder/:flow/:name', function (req, res) {
-    const json = []; 
-    
+    var json; 
+    var orderFunction = function (a, b) {
+        if (a.order > b.order) {
+          return 1;
+        } 
+        if (a.order < b.order) {
+          return -1;
+        }
+        // a must be equal to b
+        return 0;
+    }
+
     Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
       Model.Flow.find({'user_id':userId,'idConjunto':req.params.flow})
       .select('_id')
@@ -148,17 +141,34 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
         //Retorna todos los grupos de contenidos por flujo de un usuario
         Model.Content.find({
           'user_id': userId,
-          contents: {$elemMatch: {flow_id: flows[0]._id, setContent_id:{$eq: null} } }
+          contents: {$elemMatch: {flow_id: flows[0]._id, setContent_id:{$ne: null} } }
 
         })
         .select('contents')
         .exec(function (err,result) {
-          console.log(result); // [ { maxBalance: 98000 } ]
+            console.log(result); 
+            //json = json.concat(result[0].contents)
 
-          //const newjson = json.concat(result[0].contents)
-          res.status(200).send(result[0].contents);
-        })
-        /* 
+            json = result[0].contents
+
+            //Retorna todos los contenidos que no pertenecen a un grupo por flujo de un usuario
+            Model.Content.find({
+              'user_id': userId,
+              contents: {$elemMatch: {flow_id: flows[0]._id, setContent_id:{$eq: null} } }
+
+            })
+            .select('contents')
+            .exec(function (err,result) {
+              console.log(result); 
+
+              json = (json.concat(result[0].contents)).sort(orderFunction);
+
+              res.status(200).send(json);
+            });
+        });
+      });  
+    });
+    /* 
         Model.Content.aggregate(
            [
             { $unwind: "$contents"},
@@ -183,8 +193,6 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
           const newjson = json.concat(result[0].contents)
           res.status(200).send(result[0].contents);
         })*/
-      });  
-    });
 });
 
 // GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
@@ -228,17 +236,38 @@ router.get('/noticesByState/:state/:name', function (req, res) {
 
 });
 
-// GETS THE CATEGORIES OF ONE USER 
-router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
-    Model.distinct('contenidos.category',{'name':req.params.name.toLowerCase()}, function(err, result){ //{'userId':req.params.usrid,
-	  if (err) return res.status(500).send("There was a problem finding the user.");
-      if (!result || result.length == 0) return res.status(200).send("");
+
+// GETS A SPECIFIC NOTICE OF ONE USER
+router.get('/maxOrder/:name', function (req, res) { //'/notice/:usrid/:name'
+
+    Model.aggregate([  
+      {$unwind : "$contenidos"},
+      {
+          "$match": {
+              "name": req.params.name.toLowerCase()
+          }
+      },
+      {
+          "$group" : {
+              "_id":"$_id",
+              "maxOrder" : {"$max" : "$contenidos.order"},
+              "contents": { $push: "$contenidos"}
+          }
+      },
+      { 
+          $project: {
+            contenidos:"$contents",
+            maxOrder:"$maxOrder"
+          }
+      }
+    ]).then(function (result){
       console.log(result)
       res.status(200).send(result);
-	});	    
+    })
 });
 
-// GETS THE SETS OF CONTENTS OF ONE USER 
+
+/* GETS THE SETS OF CONTENTS OF ONE USER 
 router.get('/setsOfContents/:name', function (req, res) { //'/categories/:usrid/:name'
     Model.distinct('contenidos.idConjunto',{'name':req.params.name.toLowerCase()}, function(err, result){ //{'userId':req.params.usrid,
     if (err) return res.status(500).send("There was a problem finding the user.");
@@ -247,6 +276,28 @@ router.get('/setsOfContents/:name', function (req, res) { //'/categories/:usrid/
       res.status(200).send(result);
   });     
 });
+
+ GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
+router.get('/notices/:category/:name', function (req, res) { //'/notices/:category/:usrid/:name'
+
+var getCriteria = {'name':req.params.name.toLowerCase()}; //{"userId":req.params.usrid,
+
+   Model.aggregate([
+    { $match: getCriteria},
+    { $project: {
+        contenidos: {$filter: {
+            input: '$contenidos',
+            as: 'item',
+            cond: {$eq: ['$$item.category', req.params.category]}
+        }}
+    }}
+    ]).then(function (result) {
+      console.log(result[0].contenidos); // [ { maxBalance: 98000 } ]
+      res.status(200).send(result[0].contenidos);
+    });
+  
+});
+*/
 
 // DELETES A USER FROM THE DATABASE
 router.delete('/:name', function (req, res) { //'/:usrid/:name'
