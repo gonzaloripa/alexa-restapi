@@ -100,11 +100,11 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
         if (err | userId == null) return res.status(404).send("No se hallaron flujos para ese usuario");
         
         Model.Flow.find({'user': userId})
-        .populate({path:'contents', select:'categoria'})
-        .exec(function(err,flow){
-            console.log('Categories %s ',flow)
-            if (err | flow.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-            res.status(200).send(flow);    
+        .select('contents.categoria')
+        .exec(function(err,categorias){
+            console.log('Categories %s ',categorias)
+            if (err | categorias.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+            res.status(200).send(categorias);    
         })
       });
 });
