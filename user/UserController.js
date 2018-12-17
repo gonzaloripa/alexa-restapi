@@ -24,19 +24,13 @@ router.post('/newUser', function (req, res) {
     const array = [
                     {
                       url:"https://infocielo.com/",
-                      xpath:"//*[@id='noticias-destacadas-1']/div[1]/article/a",
-                      category:"Portada"
-                    },
+                      xpath:"//*[@id='noticias-destacadas-1']/div[1]/article/a"                    },
                     {
                       url:"https://infocielo.com/",
-                      xpath:"//*[@id='columna1_y_2']/div/div[2]/article[7]/a",
-                      category:"Portada"
-                    },
+                      xpath:"//*[@id='columna1_y_2']/div/div[2]/article[7]/a"                    },
                     {
                       url:"https://infocielo.com/politica",
-                      xpath:"//*[@id='paginator_content']/article[1]/a",
-                      category:"Portada"
-                    }
+                      xpath:"//*[@id='paginator_content']/article[1]/a"                    }
                   ]
     Model.InfoContent.insertMany(array
     ,function(err,contents){
@@ -48,8 +42,8 @@ router.post('/newUser', function (req, res) {
           _id: new mongoose.Types.ObjectId,
           nombreConjunto:'Primero',
           contents: [
-            { kind: 'SingleContent', identificador: 'infocielo', content:contents[2]._id },
-            { kind: 'SiblingContent', identificador: 'infocielo-hermanos', siblings: ids }
+            { kind: 'SingleContent', identificador: 'infocielo', categoria:'Portada', content:contents[2]._id },
+            { kind: 'SiblingContent', identificador: 'infocielo-hermanos', categoria:'Portada', siblings: ids }
           ]
         };
         Model.Flow.create( flow    
@@ -84,7 +78,7 @@ router.get('/', function (req, res) {
 router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
     
     Model.User.findOne({'name':req.params.name.toLowerCase()})
-    .populate({ path: 'flows', select: 'nombreConjunto -_id' })
+    .populate({ path: 'flows', select: 'nombreConjunto -_id,contents' })
     .exec(function(err,user){
       console.log('Flows %s ',user.flows)    
         //flows será un [] de 
@@ -97,10 +91,11 @@ router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
 router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
     
     Model.User.findOne({'name':req.params.name.toLowerCase()})
-    .populate({ path: 'flows', select: 'contents -_id,nombreConjunto' })
+    .populate({ path: 'flows', populate: { path: 'contents', select: 'categoria -_id,kind' } })
     .exec(function(err,user){
-      console.log('Contents id %s ',user.flows)    
+      console.log('Flujos %s ',user.flows)    
         //flows será un [] de 
+        
         if (err | user.flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
         res.status(200).send(user.flows);
       });

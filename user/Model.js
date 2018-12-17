@@ -27,14 +27,14 @@ const mongoose = require('mongoose');
 var InfoContentSchema = new mongoose.Schema({
     url: {type:String,required: true},
     xpath: {type:String,lowercase: true, required:true},
-    category: String,
     metainfo: String
   });
 
 var InfoContent = mongoose.model('InfoContent', InfoContentSchema);
 
 var contentSchema = new mongoose.Schema({
-  identificador: {type: String, required:true}
+  identificador: {type: String, required:true},    
+  category: type: String
 },
   { discriminatorKey: 'kind'});
 
