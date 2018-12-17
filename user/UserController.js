@@ -100,7 +100,7 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
         if (err | userId == null) return res.status(404).send("No se hallaron flujos para ese usuario");
         
         Model.Flow.find({'user': userId})
-        .select('contents.categoria')
+        .select('contents.categoria -_id,contents.kind')
         .exec(function(err,categorias){
             console.log('Categories %s ',categorias)
             if (err | categorias.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
