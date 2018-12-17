@@ -85,11 +85,11 @@ router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
     
     Model.User.findOne({'name':req.params.name.toLowerCase()})
     .populate({ path: 'flows', select: 'nombreConjunto -_id -contents' })
-    .exec(function(err,flows){
-      console.log('Flows %s ',flows)    
+    .exec(function(err,user){
+      console.log('Flows %s ',user.flows)    
         //flows será un [] de 
-        if (err | flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-        res.status(200).send(flows);
+        if (err | user.flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+        res.status(200).send(user.flows);
       });
 });
 
@@ -98,11 +98,11 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
     
     Model.User.findOne({'name':req.params.name.toLowerCase()})
     .populate({ path: 'flows', select: 'contents._id' })
-    .exec(function(err,contents){
-      console.log('Contents id %s ',contents)    
+    .exec(function(err,user){
+      console.log('Contents id %s ',user.contents)    
         //flows será un [] de 
-        if (err | contents.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-        res.status(200).send(contents);
+        if (err | user.contents.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+        res.status(200).send(user.contents);
       });
 });
 
