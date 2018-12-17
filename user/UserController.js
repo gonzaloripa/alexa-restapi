@@ -84,14 +84,27 @@ router.get('/', function (req, res) {
 router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
     
     Model.User.findOne({'name':req.params.name.toLowerCase()})
-    .populate({ path: 'flows', select: 'nombreConjunto' })
-    .exec(function(err,user){
+    .populate({ path: 'flows', select: 'nombreConjunto -_id -contents' })
+    .exec(function(err,flows){
       console.log('Flows %s ',user.flows)    
         //flows será un [] de 
         if (err | user.flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
         res.status(200).send(user.flows);
       });
-    });
+});
+
+// GETS THE CATEGORIES OF A SINGLE USER 
+router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
+    
+    Model.User.findOne({'name':req.params.name.toLowerCase()})
+    .populate({ path: 'flows', select: 'contents._id' })
+    .exec(function(err,contents){
+      console.log('Contents id %s ',user.flows)    
+        //flows será un [] de 
+        if (err | user.flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+        res.status(200).send(user.flows);
+      });
+});
 
 // GETS THE CATEGORIES OF A SINGLE USER 
 router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
