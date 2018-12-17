@@ -38,37 +38,36 @@ router.post('/newUser', function (req, res) {
                       category:"Portada"
                     }
                   ]
-                  
-    Model.User.create({name: name,_id: new mongoose.Types.ObjectId}//Hace el new y el save juntos
+    Model.InfoContent.insertMany(array
+    ,function(err,contents){
+        console.log("----Contents:",contents)
+        if (err) return res.status(500).send("No se pudieron asignar los contents para el usuario creado");
+
+        const ids = contents.filter((elem,index) => { if(index < 2) return elem._id } );
+        var flow = {
+          _id: new mongoose.Types.ObjectId,
+          nombreConjunto:'Primero',
+          contents: [
+            { kind: 'SingleContent', identificador: 'infocielo', content:contents[2]._id },
+            { kind: 'SiblingContent', identificador: 'infocielo-hermanos', siblings: ids }
+          ]
+        };
+        Model.Flow.create( flow    
+        ,function (err, flow) {
+          console.log('---Flow: ',flow);
+          if (err) return res.status(500).send("No se pudo asignar el flujo para el usuario creado");
+                    
+          Model.User.create({name: name,_id: new mongoose.Types.ObjectId}//Hace el new y el save juntos
           //userId: userId, 
           //contenidos:array
           ,function (err, user) {
-            
+                      
             console.log("----Usuario:",user)
             if (err) return res.status(500).send("No se pudo agregar al usuario en la base");
-            
-            Model.InfoContent.insertMany(array
-            ,function(err,contents){
-                  console.log("----Contents:",contents)
-                  if (err) return res.status(500).send("No se pudieron asignar los contents para el usuario creado");
-
-                  const ids = contents.filter((elem,index) => { if(index < 2) return elem._id } );
-                  var flow = {
-                    _id: new mongoose.Types.ObjectId,
-                    nombreConjunto:'Primero',
-                    contents: [
-                      { kind: 'SingleContent', identificador: 'infocielo', content:contents[2]._id },
-                      { kind: 'SiblingContent', identificador: 'infocielo-hermanos', siblings: ids }
-                    ]
-                  };
-                  Model.Flow.create( flow    
-                  ,function (err, flow) {
-                    console.log(flow);
-                    if (err) return res.status(500).send("No se pudo asignar el flujo para el usuario creado");
-                    res.status(200).send(flow);
-                  })
-            })
+            res.status(200).send(user);
+          })
         })
+    })
 });
 
 // RETURNS ALL THE USERS IN THE DATABASE
