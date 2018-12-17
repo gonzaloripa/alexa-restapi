@@ -93,7 +93,7 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
     Model.User.findOne({'name':req.params.name.toLowerCase()})
     .populate({ path: 'flows', populate: { path: 'contents', select: 'categoria -_id,kind' } })
     .exec(function(err,user){
-      console.log('Flujos %s ',user.flows)    
+      console.log('Flujos %s ',user.flows.contents)    
         //flows será un [] de 
         
         if (err | user.flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
