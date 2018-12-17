@@ -34,7 +34,7 @@ var InfoContent = mongoose.model('InfoContent', InfoContentSchema);
 
 var contentSchema = new mongoose.Schema({
   identificador: {type: String, required:true},    
-  category: type: String
+  categoria: String
 },
   { discriminatorKey: 'kind'});
 
