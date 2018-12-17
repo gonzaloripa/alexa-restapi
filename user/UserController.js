@@ -97,12 +97,12 @@ router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
 router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
     
     Model.User.findOne({'name':req.params.name.toLowerCase()})
-    .populate({ path: 'flows', select: 'contents -_id' })
+    .populate({ path: 'flows', select: 'contents -_id,nombreConjunto' })
     .exec(function(err,user){
-      console.log('Contents id %s ',user.contents)    
+      console.log('Contents id %s ',user.flows)    
         //flows será un [] de 
-        if (err | user.contents.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-        res.status(200).send(user.contents);
+        if (err | user.flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+        res.status(200).send(user.flows);
       });
 });
 
