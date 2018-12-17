@@ -101,10 +101,10 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
         
         Model.Flow.find({'user': userId})
         .select('contents.categoria -_id')
-        .exec(function(err,categorias){
-            console.log('Categories %s ',categorias)
-            if (err | categorias.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-            res.status(200).send(categorias);    
+        .exec(function(err,flows){
+            console.log('Categories %s ',flows.contents)
+            if (err | flows.contents.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+            res.status(200).send(flows.contents);    
         })
       });
 });
