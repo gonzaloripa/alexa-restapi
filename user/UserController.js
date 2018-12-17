@@ -97,7 +97,7 @@ router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
 router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
     
     Model.User.findOne({'name':req.params.name.toLowerCase()})
-    .populate({ path: 'flows', select: 'contents -_id,nombreConjunto' })
+    .populate({ path: 'flows', select: 'contents -_id' })
     .exec(function(err,user){
       console.log('Contents id %s ',user.contents)    
         //flows será un [] de 
