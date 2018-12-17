@@ -56,8 +56,9 @@ router.post('/newUser', function (req, res) {
         ,function (err, flow) {
           console.log('---Flow: ',flow);
           if (err) return res.status(500).send("No se pudo asignar el flujo para el usuario creado");
-                    
-          Model.User.create({name: name, $push: {flows: flow }  }//Hace el new y el save juntos
+          const flows = [].push(flow);
+          
+          Model.User.create({name: name, flows: flows }//Hace el new y el save juntos
           //userId: userId, 
           //contenidos:array
           ,function (err, user) {
