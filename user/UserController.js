@@ -104,14 +104,23 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
         if (err | userId == null) return res.status(404).send("No se hallaron flujos para ese usuario");
 
         Model.Flow.find({'user': userId})//,{'contents.categoria -_id -contents.kind'},
-        .populate({path:'contents',select:'categoria -_id'})
+        .populate({path:'contents',select:'categoria'})
         //.select('contents.categoria -_id')
         .exec(function(err,flow){
             try{
-              console.log('Categories %s ',flow,flow.contents)
-              //juntar las categorias en un array (dos for each o usar aggregate)
-              if (err | flow.contents.length == 0) return res.status(404).send("No se hallaron categorias para ese usuario");
-              res.status(200).send(flow.contents);
+              console.log('Categories %s ',flow,flow[0].contents)
+              if (err | flow[0].contents.length == 0) return res.status(404).send("No se hallaron categorias para ese usuario");
+
+              var idC = []; 
+              flow.map((f) => {
+                f[0].contents.map((elem) => {
+                  idC.push(elem._id)})
+              });
+
+              Model.Content.distinct('categoria',{'_id': {$in:idC }},function(err,resul){
+                if (err | resul.length == 0) return res.status(404).send("No se hallaron categorias para ese usuario");
+                res.status(200).send(resul);
+              }
             }catch(error){
               res.status(404).send("Ocurrio un error al obtener las categorias");
             }    
