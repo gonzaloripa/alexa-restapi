@@ -118,8 +118,8 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
 
               var idC = []; 
               flow.map((f) => {
-                console.log("flujos ",f,f[0])
-                f[0].contents.map((elem) => {
+                console.log("flujos ",f)
+                f.contents.map((elem) => {
                   console.log(elem)
                   idC.push(elem._id)})
               });
