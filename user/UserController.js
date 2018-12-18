@@ -105,13 +105,13 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
 
         Model.Flow.find({'user': userId})//,{'contents.categoria -_id -contents.kind'},
         .populate({path:'contents',select:'categoria -_id -kind'})
-        .distinct('contents.categoria')
+        .distinct('contents.categoria',
         //.select('contents.categoria -_id')
-        .exec(function(err,flow){
+        function(err,flow){
             console.log('Categories %s ',flow)
             //juntar las categorias en un array (dos for each o usar aggregate)
-            if (err | flow[0].contents.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-            res.status(200).send(flow[0].contents);    
+            if (err | flowlength == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+            res.status(200).send(flow);    
         })
     })
 });
