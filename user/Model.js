@@ -70,6 +70,7 @@ const User = mongoose.model('User', UserSchema);
 exports.User = User;
 exports.Flow = Flow;
 exports.InfoContent = InfoContent;
+exports.Content = Content;
 
 //module.exports = mongoose.model('User');
 /*
