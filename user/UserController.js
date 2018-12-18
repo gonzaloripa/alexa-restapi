@@ -120,7 +120,7 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
               Model.Content.distinct('categoria',{'_id': {$in:idC }},function(err,resul){
                 if (err | resul.length == 0) return res.status(404).send("No se hallaron categorias para ese usuario");
                 res.status(200).send(resul);
-              }
+              })
             }catch(error){
               res.status(404).send("Ocurrio un error al obtener las categorias");
             }    
