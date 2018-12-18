@@ -104,14 +104,17 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
         if (err | userId == null) return res.status(404).send("No se hallaron flujos para ese usuario");
 
         Model.Flow.find({'user': userId})//,{'contents.categoria -_id -contents.kind'},
-        .populate({path:'contents',select:'categoria -_id -kind'})
-        .distinct('contents.categoria',
+        .populate({path:'contents',select:'categoria -_id'})
         //.select('contents.categoria -_id')
-        function(err,flow){
-            console.log('Categories %s ',flow)
-            //juntar las categorias en un array (dos for each o usar aggregate)
-            if (err | flowlength == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-            res.status(200).send(flow);    
+        .exec(function(err,flow){
+            try{
+              console.log('Categories %s ',flow,flow.contents)
+              //juntar las categorias en un array (dos for each o usar aggregate)
+              if (err | flow.contents.length == 0) return res.status(404).send("No se hallaron categorias para ese usuario");
+              res.status(200).send(flow.contents);
+            }catch(error){
+              res.status(404).send("Ocurrio un error al obtener las categorias");
+            }    
         })
     })
 });
