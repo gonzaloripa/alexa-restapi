@@ -80,12 +80,12 @@ router.get('/', function (req, res) {
 router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
     
     Model.User.findOne({'name':req.params.name.toLowerCase()})
-    .populate({ path: 'flows', select: 'nombreConjunto -_id', populate: {path:'contents', select:'-kind'} })
+    .populate({ path: 'flows', select: 'nombreConjunto -_id -contents' })
     .exec(function(err,user){
-      console.log('Flows %s ',user.flows.contents)    
+      console.log('Flows %s ',user.flows)    
         //flows será un [] de 
         if (err | user.flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-        res.status(200).send(user.flows.contents);
+        res.status(200).send(user.flows);
       });
 });
 
@@ -99,14 +99,14 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
         //flows será un [] de 
         if (err | userId == null) return res.status(404).send("No se hallaron flujos para ese usuario");
         
-        Model.Flow.find({'user': userId})
-        .populate({path:'contents',select:'categoria'})
+        Model.Flow.find({'user': userId},{'contents.categoria -_id -contents.kind'},
+        //.populate({path:'contents',select:'categoria'})
         //.select('contents.categoria -_id')
-        .exec(function(err,categories){
-            console.log('Categories %s ',categories.contents)
+        function(err,categories){
+            console.log('Categories %s ',categories)
             //juntar las categorias en un array (dos for each o usar aggregate)
-            if (err | categories.contents.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-            res.status(200).send(categories.contents);    
+            if (err | categories.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+            res.status(200).send(categories);    
         })
       });
 });
