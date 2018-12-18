@@ -118,10 +118,12 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
 
               var idC = []; 
               flow.map((f) => {
+                console.log(f)
                 f[0].contents.map((elem) => {
+                  console.log(elem)
                   idC.push(elem._id)})
               });
-
+              console.log(idC)
               Model.Content.distinct('categoria',{'_id': {$in:idC }},function(err,resul){
                 if (err | resul.length == 0) return res.status(404).send("No se hallaron categorias para ese usuario");
                 res.status(200).send(resul);
