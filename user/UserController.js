@@ -39,17 +39,17 @@ router.post('/newUser', function (req, res) {
         if (err) return res.status(500).send("No se pudieron asignar los contents para el usuario creado");
 
         const ids = contents.filter((elem,index) => { if(index < 2) return elem._id } );
-        var id1 = new mongoose.Types.ObjectId, id2 = new mongoose.Types.ObjectId;
 
         Model.Content.insertMany([
-            { _id:id1, kind: 'SingleContent', identificador: 'infocielo', categoria:'Portada', content:contents[2]._id },
-            { _id2:id2, kind: 'SiblingContent', identificador: 'infocielo-hermanos', categoria:'Portada', siblings: ids }
+            { kind: 'SingleContent', identificador: 'infocielo', categoria:'Portada', content:contents[2]._id },
+            { kind: 'SiblingContent', identificador: 'infocielo-hermanos', categoria:'Portada', siblings: ids }
           ],function(err,contents){
+            const idC = contents.map((elem) => { return elem._id } );
             var flow = {
               _id: new mongoose.Types.ObjectId,
               user: userId,
               nombreConjunto:'Primero',
-              contents: [id1,id2]
+              contents: idC
             };
             Model.Flow.create( flow    
             ,function (err, flow) {
