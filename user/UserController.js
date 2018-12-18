@@ -108,7 +108,7 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
         .distinct('contents.categoria')
         //.select('contents.categoria -_id')
         .exec(function(err,flow){
-            console.log('Categories %s ',flow, flow.contents, flow[0].contents)
+            console.log('Categories %s ',flow)
             //juntar las categorias en un array (dos for each o usar aggregate)
             if (err | flow[0].contents.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
             res.status(200).send(flow[0].contents);    
