@@ -82,10 +82,10 @@ router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
     Model.User.findOne({'name':req.params.name.toLowerCase()})
     .populate({ path: 'flows', select: 'nombreConjunto -_id', populate: {path:'contents', select:'-kind'} })
     .exec(function(err,user){
-      console.log('Flows %s ',user.flows)    
+      console.log('Flows %s ',user.flows.contents)    
         //flows será un [] de 
         if (err | user.flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-        res.status(200).send(user.flows);
+        res.status(200).send(user.flows.contents);
       });
 });
 
@@ -100,7 +100,7 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
         if (err | userId == null) return res.status(404).send("No se hallaron flujos para ese usuario");
         
         Model.Flow.find({'user': userId})
-        .populate({path:'contents',select:'categoria -kind'})
+        .populate({path:'contents',select:'categoria'})
         //.select('contents.categoria -_id')
         .exec(function(err,categories){
             console.log('Categories %s ',categories.contents)
