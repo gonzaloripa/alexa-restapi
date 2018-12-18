@@ -45,20 +45,25 @@ router.post('/newUser', function (req, res) {
             { kind: 'SiblingContent', identificador: 'infocielo-hermanos', categoria:'Portada', siblings: ids }
           ],function(err,contents){
             const idC = contents.map((elem) => { return elem._id } );
-            var flow = {
+            var flows = [{
               _id: new mongoose.Types.ObjectId,
               user: userId,
               nombreConjunto:'Primero',
               contents: idC
-            };
-            Model.Flow.create( flow    
-            ,function (err, flow) {
-              console.log('---Flow: ',flow);
+            },{
+              _id: new mongoose.Types.ObjectId,
+              user: userId,
+              nombreConjunto:'Segundo',
+              contents: idC
+            }];
+            Model.Flow.insertMany(flows    
+            ,function (err, flows) {
+              console.log('---Flow: ',flows);
               if (err) return res.status(500).send("No se pudo asignar el flujo para el usuario creado");
-              const flows = [flow._id];           
-              console.log(flows)
+              const idFlows = flows.map((elem) => { return elem._id } );          
+              console.log(idFlows)
 
-              Model.User.create({name: name, _id:userId, flows: flows }//Hace el new y el save juntos
+              Model.User.create({name: name, _id:userId, flows: idFlows }//Hace el new y el save juntos
               //userId: userId, 
               //contenidos:array
               ,function (err, user) {
