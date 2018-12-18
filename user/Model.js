@@ -38,18 +38,21 @@ var contentSchema = new mongoose.Schema({
 },
   { discriminatorKey: 'kind'});
 
+var Content = mongoose.model('Content', contentSchema);
+
+
 var flowSchema = new mongoose.Schema({ user: {type: mongoose.Schema.Types.ObjectId, ref:'User'}, 
                                       nombreConjunto: { type:String,required:true }, //nombreFlujo
-                                      contents: [contentSchema] });
+                                      contents: [{type: mongoose.Schema.Types.ObjectId, ref:'Content'}] }); //contents: [contentSchema]
 // flowSchema.path('contents')` gets the mongoose `DocumentArray`
-var docArray = flowSchema.path('contents');
+//var docArray = flowSchema.path('contents');
 
 // The `contents` array can contain 2 different types of content: singleContent and siblingContent
-var SingleContent = docArray.discriminator('SingleContent', new mongoose.Schema({
+var SingleContent = Content.discriminator('SingleContent', new mongoose.Schema({
   content: { type: mongoose.Schema.Types.ObjectId, ref:'InfoContent'}
 }, { _id: false }));
 
-var SiblingContent = docArray.discriminator('SiblingContent', new mongoose.Schema({
+var SiblingContent = Content.discriminator('SiblingContent', new mongoose.Schema({
   siblings: [{ type: mongoose.Schema.Types.ObjectId, ref:'SingleContent'}]
 }, { _id: false }));
 

@@ -39,31 +39,35 @@ router.post('/newUser', function (req, res) {
         if (err) return res.status(500).send("No se pudieron asignar los contents para el usuario creado");
 
         const ids = contents.filter((elem,index) => { if(index < 2) return elem._id } );
-        var flow = {
-          _id: new mongoose.Types.ObjectId,
-          user: userId,
-          nombreConjunto:'Primero',
-          contents: [
-            { kind: 'SingleContent', identificador: 'infocielo', categoria:'Portada', content:contents[2]._id },
-            { kind: 'SiblingContent', identificador: 'infocielo-hermanos', categoria:'Portada', siblings: ids }
-          ]
-        };
-        Model.Flow.create( flow    
-        ,function (err, flow) {
-          console.log('---Flow: ',flow);
-          if (err) return res.status(500).send("No se pudo asignar el flujo para el usuario creado");
-          const flows = [flow._id];           
-          console.log(flows)
+        var id1 = new mongoose.Types.ObjectId, id2 = new mongoose.Types.ObjectId;
 
-          Model.User.create({name: name, _id:userId, flows: flows }//Hace el new y el save juntos
-          //userId: userId, 
-          //contenidos:array
-          ,function (err, user) {
-                      
-            console.log("----Usuario:",user)
-            if (err) return res.status(500).send("No se pudo agregar al usuario en la base");
-            res.status(200).send(user);
-          })
+        Model.Content.insertMany([
+            { _id:id1, kind: 'SingleContent', identificador: 'infocielo', categoria:'Portada', content:contents[2]._id },
+            { _id2:id2, kind: 'SiblingContent', identificador: 'infocielo-hermanos', categoria:'Portada', siblings: ids }
+          ],function(err,contents){
+            var flow = {
+              _id: new mongoose.Types.ObjectId,
+              user: userId,
+              nombreConjunto:'Primero',
+              contents: [id1,id2]
+            };
+            Model.Flow.create( flow    
+            ,function (err, flow) {
+              console.log('---Flow: ',flow);
+              if (err) return res.status(500).send("No se pudo asignar el flujo para el usuario creado");
+              const flows = [flow._id];           
+              console.log(flows)
+
+              Model.User.create({name: name, _id:userId, flows: flows }//Hace el new y el save juntos
+              //userId: userId, 
+              //contenidos:array
+              ,function (err, user) {
+                          
+                console.log("----Usuario:",user)
+                if (err) return res.status(500).send("No se pudo agregar al usuario en la base");
+                res.status(200).send(user);
+              })
+            })
         })
     })
 });
@@ -80,7 +84,7 @@ router.get('/', function (req, res) {
 router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
     
     Model.User.findOne({'name':req.params.name.toLowerCase()})
-    .populate({ path: 'flows', select: 'nombreConjunto -_id -contents' })
+    .populate({ path: 'flows', select: 'nombreConjunto -_id' })
     .exec(function(err,user){
       console.log('Flows %s ',user.flows)    
         //flows será un [] de 
@@ -99,16 +103,16 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
         //flows será un [] de 
         if (err | userId == null) return res.status(404).send("No se hallaron flujos para ese usuario");
         
-        Model.Flow.find({'user': userId},{'contents.categoria -_id -contents.kind'},
-        //.populate({path:'contents',select:'categoria'})
+        Model.Flow.find({'user': userId})//,{'contents.categoria -_id -contents.kind'},
+        .populate({path:'contents',select:'categoria -_id'})
         //.select('contents.categoria -_id')
-        function(err,categories){
-            console.log('Categories %s ',categories)
+        .exec(function(err,contents){
+            console.log('Categories %s ',contents.categoria)
             //juntar las categorias en un array (dos for each o usar aggregate)
-            if (err | categories.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-            res.status(200).send(categories);    
+            if (err | contents.categoria.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+            res.status(200).send(contents.categoria);    
         })
-      });
+    })
 });
 
 /* GETS THE CATEGORIES OF A SINGLE USER 
@@ -136,54 +140,35 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
 
 // GETS THE NOTICES OF ONE USER IN ORDER 
 router.get('/noticesByOrder/:flow/:name', function (req, res) {
-    var json; 
-    var orderFunction = function (a, b) {
-        if (a.order > b.order) {
-          return 1;
-        } 
-        if (a.order < b.order) {
-          return -1;
-        }
-        // a must be equal to b
-        return 0;
-    }
 
     Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
-      Model.Flow.find({'user_id':userId,'idConjunto':req.params.flow})
-      .select('_id')
-      .exec(function(err, flows) {
-        //flows será un [] de flow_id
-        console.log("Flujos: ",flows,userId)
-        //Retorna todos los grupos de contenidos por flujo de un usuario
-        Model.Content.find({
-          'user_id': userId,
-          contents: {$elemMatch: {flow_id: flows[0]._id, setContent_id:{$ne: null} } }
-
-        })
-        .select('contents')
+      Model.Flow.aggregate(
+           [
+            { $unwind: "$contents"},
+            { $match: {
+                  'user_id': userId
+                  //contents: {$elemMatch: {_id: flows[0]} }
+                  //'contents.flow_id': flows[0]._id  //fijarse como hacer para comparar elementos de arrays
+              }
+            }
+            ,
+            //{ $sort : {"contenidos.order":1 }},
+            {$group: {"_id":"$contents._id", "contenidos": {$push:"$contents._id"}}},
+              { 
+                  $project: {
+                    contents:"$contenidos"
+                  }
+              }
+           ])
         .exec(function (err,result) {
-            console.log(result); 
-            //json = json.concat(result[0].contents)
+            console.log("-Contents id %s ",result.contents)
 
-            json = result[0].contents
-
-            //Retorna todos los contenidos que no pertenecen a un grupo por flujo de un usuario
-            Model.Content.find({
-              'user_id': userId,
-              contents: {$elemMatch: {flow_id: flows[0]._id, setContent_id:{$eq: null} } }
-
-            })
-            .select('contents')
-            .exec(function (err,result) {
-              console.log(result); 
-
-              json = (json.concat(result[0].contents)).sort(orderFunction);
 
               res.status(200).send(json);
             });
-        });
+        
       });  
-    });
+
     /* 
         Model.Content.aggregate(
            [
