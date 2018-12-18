@@ -113,12 +113,12 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
         //.select('contents.categoria -_id')
         .exec(function(err,flow){
             try{
-              console.log('Categories %s ',flow,flow[0].contents)
+              console.log('Categories %s ',flow)
               if (err | flow[0].contents.length == 0) return res.status(404).send("No se hallaron categorias para ese usuario");
 
               var idC = []; 
               flow.map((f) => {
-                console.log(f)
+                console.log("flujos ",f,f[0])
                 f[0].contents.map((elem) => {
                   console.log(elem)
                   idC.push(elem._id)})
