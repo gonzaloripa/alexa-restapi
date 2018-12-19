@@ -277,7 +277,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
               }
             },
             { $unwind: '$contenidos'},
-            //{ $match: { $contenidos: {$elemMatch: {categoria:req.params.category }}} },
+            { $match: { '$contenidos.categoria':req.params.category }},
             /*{ $group: {
                 _id: '$_id',
                 cont: { $push: {
