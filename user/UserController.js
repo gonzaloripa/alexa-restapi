@@ -227,7 +227,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
           const newjson = json.concat(result[0].contents)
           res.status(200).send(result[0].contents);
         })*/
-//});
+});
 
 // GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
 router.get('/noticesByCategory/:category/:name', function (req, res) {
