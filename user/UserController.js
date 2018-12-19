@@ -204,17 +204,17 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                  }
                }
             },
-            { $unwind: '$combinedC'},/*
+            { $unwind: '$combinedC'},
             { $lookup: {
                 from: 'infocontents',
                 localField: 'combinedC',
                 foreignField: '_id',
                 as: 'infocontents'
               }
-            },*/
+            },
             {
               $project:{
-                contenidos:'$combinedC',
+                contenidos:'$infocontents',
                 _id:0
               }
             }
