@@ -178,7 +178,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 _id: '$_id',
                 contenidos: {$push: '$contents'}
               }
-            },
+            },/*
             { $unwind: '$contenidos'},
             { $group: {
                 _id: '$_id',
@@ -206,7 +206,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 foreignField: '_id',
                 as: 'infocontents'
               }
-            },
+            },*/
             {
               $project:{
                 contenidos:'$contenidos',
