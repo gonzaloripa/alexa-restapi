@@ -163,7 +163,7 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
 });*/
 
 
-// GETS THE NOTICES OF ONE USER IN ORDER 
+// GETS THE NOTICES OF ONE USER IN ORDER FILTERED BY FLOW
 router.get('/contentsByOrder/:flow/:name', function (req, res) {
 
     Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
@@ -224,7 +224,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
               res.status(200).send(result);
         });
         
-});
+  });
 })  
 
     /* 
@@ -257,7 +257,66 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
 // GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
 router.get('/noticesByCategory/:category/:name', function (req, res) {
 
-var getCriteria = {'name':req.params.name.toLowerCase()};
+  Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+      console.log(userId)
+      Model.Flow.aggregate(
+           [
+            { $match: {user:new mongoose.Types.ObjectId(userId._id) }},
+            { $lookup: {
+                from: 'contents',
+                localField: 'contents',
+                foreignField: '_id',
+                as: 'contents'
+              }
+            },
+            { $unwind: '$contents' },
+            { $group: {
+                _id: '$_id',
+                contenidos: {$push: '$contents'}
+              }
+            },
+            { $unwind: '$contenidos'},
+            { $match: {'$contenidos.category': req.params.category }},
+            { $group: {
+                _id: '$_id',
+                cont: { $push: {
+                    $cond: { if: { $eq: ['$contenidos.kind', 'SingleContent' ] }, then: ['$contenidos.content'] , else: '$contenidos.siblings'  
+                           } 
+                        } 
+                      }
+              }
+            },
+            {  $addFields:{
+                'combinedC':{
+                   $reduce: {
+                      input: '$cont',
+                      initialValue: [],
+                      in: { $concatArrays : ["$$value", "$$this"] }
+                   }
+                 }
+               }
+            },
+            { $unwind: '$combinedC'},
+            { $lookup: {
+                from: 'infocontents',
+                localField: 'combinedC',
+                foreignField: '_id',
+                as: 'infocontents'
+              }
+            },
+            {
+              $project:{
+                contenidos:'$infocontents',
+                _id:0
+              }
+            }
+           ])
+        .exec(function (err,result) {
+            console.log("-Contents id %s ",result,result[0].contenidos)
+              res.status(200).send(result);
+        });
+        
+});
 
    Model.aggregate([
     { $match: getCriteria},
