@@ -179,16 +179,16 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 contenidos: {$push: '$contents'}
               }
             },
-            { $unwind: '$contenidos'},/*
+            { $unwind: '$contenidos'},
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { "$eq": ['$contenidos.kind', 'SingleContent' ] }, then: ['$contenidos.content'] ,else: '$contenidos.siblings'  
+                    $cond: { if: { $eq: ['$contenidos.kind', 'SingleContent' ] }, then: ['$contenidos.content'] , else: '$contenidos.siblings'  
                            } 
                         } 
                       }
               }
-            },
+            },/*
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
@@ -209,7 +209,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             },*/
             {
               $project:{
-                contenidos:'$contenidos',
+                contenidos:'$cont',
                 _id:0
               }
             }
