@@ -277,16 +277,16 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
               }
             },
             { $unwind: '$contenidos'},
-            { $match: { '$contenidos.categoria':req.params.category }},
-            /*{ $group: {
+            //{ $match: { '$contenidos.categoria':req.params.category }},
+            { $group: {
                 _id: '$_id',
-                cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.kind', 'SingleContent' ] }, then: ['$contenidos.content'] , else: '$contenidos.siblings'  
+                cont: { $push: {  
+                    $cond: { if: { $and: [ {$eq: ['$contenidos.kind', 'SingleContent' ], $eq: ['$contenidos.categoria', req.params.category ] ] }, then: ['$contenidos.content'] , else: '$contenidos.siblings'  
                            } 
                         } 
                       }
               }
-            },
+            },/*
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
@@ -307,7 +307,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
             },*/
             {
               $project:{
-                contenidos:'$contenidos',
+                contenidos:'$cont',
                 _id:0
               }
             }
