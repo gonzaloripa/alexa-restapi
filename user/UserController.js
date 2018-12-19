@@ -273,7 +273,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
             { $group: {
                 _id: '$_id',
                 contenidos: {$push:{
-                                    $cond:{ $eq:['$contents.category', req.params.category ]}, '$contents'
+                                    $cond:[ {$eq:['$contents.category', req.params.category ]}, 1 , 0 ]
                                   }
                             }                                                                     
               }
