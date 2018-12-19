@@ -255,7 +255,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
 
 
 // GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
-router.get('/noticesByCategory/:category/:name', function (req, res) {
+router.get('/contentsByCategory/:category/:name', function (req, res) {
 
   Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
       console.log(userId)
@@ -316,8 +316,8 @@ router.get('/noticesByCategory/:category/:name', function (req, res) {
               res.status(200).send(result);
         });
         
-});
-
+  });
+/*
    Model.aggregate([
     { $match: getCriteria},
     { $project: {
@@ -330,7 +330,7 @@ router.get('/noticesByCategory/:category/:name', function (req, res) {
     ]).then(function (result) {
       console.log(result[0].contenidos); // [ { maxBalance: 98000 } ]
       res.status(200).send(result[0].contenidos);
-    });
+    });*/
   
 });
 
