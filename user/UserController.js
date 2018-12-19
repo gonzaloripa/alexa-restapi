@@ -269,7 +269,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
                 as: 'contents'
               }
             },
-            { $unwind: '$contents' },
+            { $unwind: '$contents' },/*
             { $group: {
                 _id: '$_id',
                 contenidos: {$push: '$contents'}
@@ -303,16 +303,16 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
                 foreignField: '_id',
                 as: 'infocontents'
               }
-            },
+            },*/
             {
               $project:{
-                contenidos:'$infocontents',
+                contenidos:'$contents',
                 _id:0
               }
             }
            ])
         .exec(function (err,result) {
-            console.log("-Contents id %s ",result,result[0].contenidos)
+            console.log("-Contents id %s ",result)
               res.status(200).send(result);
         });
         
@@ -335,7 +335,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
 });
 
 // GETS THE NOTICES OF ONE USER FILTER BY STATE(new/old)
-router.get('/noticesByState/:state/:name', function (req, res) {
+router.get('/contentsByState/:state/:name', function (req, res) {
 
     var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};
     Model.aggregate([
