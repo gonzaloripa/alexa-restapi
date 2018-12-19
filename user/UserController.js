@@ -165,12 +165,17 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
       console.log(userId)
       Model.Flow.aggregate(
            [
-            { $unwind: "$contents"},
+            //{ $unwind: "$contents"},
             { $match: {
-                  'nombreConjunto': req.params.flow,
-                  'user':userId
+                  nombreConjunto: req.params.flow,
+                  user: userId
                   //contents: {$elemMatch: {_id: flows[0]} }
                   //'contents.flow_id': flows[0]._id  //fijarse como hacer para comparar elementos de arrays
+              }
+            },
+            {
+              $project:{
+                id:'$_id'
               }
             }
             
