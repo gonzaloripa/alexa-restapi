@@ -279,8 +279,8 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
               }
             },
             { $unwind: '$contenidos'},
-            //{ $match: { $contents: {$elemMatch: {category:req.params.category }}} },
-            { $group: {
+            //{ $match: { $contents: {$elemMatch: {categoria:req.params.category }}} },
+            /*{ $group: {
                 _id: '$_id',
                 cont: { $push: {
                     $cond: { if: { $eq: ['$contenidos.kind', 'SingleContent' ] }, then: ['$contenidos.content'] , else: '$contenidos.siblings'  
@@ -288,7 +288,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
                         } 
                       }
               }
-            },/*
+            },
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
