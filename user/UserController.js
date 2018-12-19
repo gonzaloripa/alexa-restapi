@@ -174,7 +174,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             }
             ,
             //{ $sort : {"contenidos.order":1 }},
-            {$group: {"_id":"$contents", "contenidos": {$push:"$contents"}}},
+            {$group: {"_id":"$_id", "contenidos": {$push:"$contents"}}},
               { 
                   $project: {
                     contents:"$contenidos"
