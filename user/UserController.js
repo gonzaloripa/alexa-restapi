@@ -264,13 +264,16 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
               }
             },
             { $unwind: '$contents' },
-            /*{ $group: {
+            { $group: {
                 _id: '$_id',
-                contenidos: {$push: '$contents'}
+                contenidos: {$push: {
+                                    $cond:{ $eq:['$contents.category', req.params.category ]}
+                                  }
+                            }
               }
             },
             { $unwind: '$contenidos'},
-            { $match: { $contents: {$elemMatch: {category:req.params.category }}} },
+            /*{ $match: { $contents: {$elemMatch: {category:req.params.category }}} },
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
@@ -300,7 +303,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
             },*/
             {
               $project:{
-                contenidos:'$contents',
+                contenidos:'$contenidos',
                 _id:0
               }
             }
