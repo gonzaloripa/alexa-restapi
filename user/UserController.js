@@ -181,8 +181,14 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             { $unwind: '$contents' },
             { $group: {
                 _id: '$_id',
+                contenidos: {$push: {'$contents.category'}}
+              }
+            },
+            { $unwind: '$contenidos'},
+            { $group: {
+                _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { $eq: ['$contents.kind', 'SingleContent' ] }, then: ['$contents.content'] , else: '$contents.siblings'  
+                    $cond: { if: { $eq: ['$contenidos.kind', 'SingleContent' ] }, then: ['$contenidos.content'] , else: '$contenidos.siblings'  
                            } 
                         } 
                       }
