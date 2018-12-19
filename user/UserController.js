@@ -40,7 +40,7 @@ router.post('/newUser', function (req, res) {
 
         //const ids = contents.filter((elem,index) => { if(index < 2) return elem._id } ); 
         const ids = []; 
-        contents.forEach((elem,index) => { if(index < 1) ids.push(elem._id) } ); 
+        contents.forEach((elem,index) => { if(index < 2) ids.push(elem._id) } ); 
 
         console.log("----ids:",ids)
 
