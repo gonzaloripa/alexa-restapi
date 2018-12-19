@@ -165,7 +165,14 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
       console.log(userId)
       Model.Flow.aggregate(
            [
-           { $match: { nombreConjunto: req.params.flow}},
+           { $lookup: {
+                from: 'users',
+                localField: 'user',
+                foreignField: '_id',
+                as: 'user'
+              }
+            },
+            { $match: { nombreConjunto: req.params.flow, '$user._id':userId}},
             { $lookup: {
                 from: 'contents',
                 localField: 'contents',
@@ -177,6 +184,12 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             { $group: {
                 _id: '$_id',
                 contenidos: {$push: '$contents._id'}
+              }
+            },
+            {
+              $project:{
+                contenidos:'$contenidos',
+                _id:0
               }
             }
            ])
