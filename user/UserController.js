@@ -180,19 +180,30 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
               }
             },
             { $unwind: '$contenidos'},
-            {
-               $addFields: 
-               { cont:
-                  {
-                    $cond: { if: { '$contenidos.kind': [ "$eq", 'SingleContent' ] }, then: { $add: { '$contenidos.content'}}
-                      , else: {$addToSet: { cont: { $each: '$contenidos.siblings' } } } }
-                  }
-               } 
+            { $group: {
+                _id: '$_id',
+                cont: { $push: {
+                    $cond: { if: { "$eq": ['$contenidos.kind', 'SingleContent' ] }, then: ['$contenidos.content']
+                            ,else: '$contenidos.siblings'  
+                           } 
+                        } 
+                      }
+              }
             },
-            { $unwind: '$cont'},
+            {  $addFields:{
+                'combinedC':{
+                   $reduce: {
+                      input: '$cont',
+                      initialValue: [],
+                      in: { $concatArrays : ["$$value", "$$this"] }
+                   }
+                 }
+               }
+            },
+            { $unwind: '$combinedC'},
             { $lookup: {
                 from: 'infocontents',
-                localField: 'cont',
+                localField: 'combinedC',
                 foreignField: '_id',
                 as: 'infocontents'
               }
@@ -205,11 +216,12 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             }
            ])
         .exec(function (err,result) {
-            console.log("-Contents id %s ",result[0].contenidos)
+            console.log("-Contents id %s ",result,result[0].contenidos)
               res.status(200).send(result[0].contenidos);
         });
         
-});  
+});
+})  
 
     /* 
         Model.Content.aggregate(
@@ -236,7 +248,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
           const newjson = json.concat(result[0].contents)
           res.status(200).send(result[0].contents);
         })*/
-});
+
 
 // GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
 router.get('/noticesByCategory/:category/:name', function (req, res) {
