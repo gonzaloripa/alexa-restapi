@@ -183,8 +183,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { "$eq": ['$contenidos.kind', 'SingleContent' ] }, then: ['$contenidos.content']
-                            ,else: '$contenidos.siblings'  
+                    $cond: { if: { "$eq": ['$contenidos.kind', 'SingleContent' ] }, then: ['$contenidos.content'] ,else: '$contenidos.siblings'  
                            } 
                         } 
                       }
@@ -217,7 +216,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result,result[0].contenidos)
-              res.status(200).send(result[0].contenidos);
+              res.status(200).send(result);
         });
         
 });
