@@ -162,6 +162,7 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
 router.get('/contentsByOrder/:flow/:name', function (req, res) {
 
     Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+      console.log(userId)
       Model.Flow.aggregate(
            [
             { $unwind: "$contents"},
@@ -172,14 +173,9 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                   //'contents.flow_id': flows[0]._id  //fijarse como hacer para comparar elementos de arrays
               }
             }
-            ,
+            
             //{ $sort : {"contenidos.order":1 }},
             //{$group: {"_id":"$_id", "contenidos": {$push:"$contents._id"}}},
-              { 
-                  $project: {
-                    contents:"$contents"
-                  }
-              }
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
