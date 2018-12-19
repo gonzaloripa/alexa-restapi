@@ -159,7 +159,7 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
 
 
 // GETS THE NOTICES OF ONE USER IN ORDER 
-router.get('/noticesByOrder/:flow/:name', function (req, res) {
+router.get('/contentsByOrder/:flow/:name', function (req, res) {
 
     Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
       Model.Flow.aggregate(
@@ -167,7 +167,7 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
             { $unwind: "$contents"},
             { $match: {
                   'nombreConjunto': req.params.flow,
-                  'user':UserId
+                  'user':userId
                   //contents: {$elemMatch: {_id: flows[0]} }
                   //'contents.flow_id': flows[0]._id  //fijarse como hacer para comparar elementos de arrays
               }
