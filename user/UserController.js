@@ -193,7 +193,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                         } 
                       }
               }
-            },/*
+            },
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
@@ -204,7 +204,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                  }
                }
             },
-            { $unwind: '$combinedC'},
+            { $unwind: '$combinedC'},/*
             { $lookup: {
                 from: 'infocontents',
                 localField: 'combinedC',
@@ -214,7 +214,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             },*/
             {
               $project:{
-                contenidos:'$cont',
+                contenidos:'$combinedC',
                 _id:0
               }
             }
