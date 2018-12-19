@@ -161,20 +161,20 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
 // GETS THE NOTICES OF ONE USER IN ORDER 
 router.get('/contentsByOrder/:flow/:name', function (req, res) {
 
-    //Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
-      //console.log(userId)
+    Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+      console.log(userId)
       Model.Flow.aggregate(
            [
            { $lookup: {
                 from: 'users',
                 pipeline: [
-                  { $match: { name: req.params.name } },
+                  { $match: { _id: userId } },
                   { $project: { _id: 1 } }
                   ],
                 as: 'userid'
               }
             },
-            { $match: { nombreConjunto: req.params.flow, user:'$userid'}},
+            { $match: { nombreConjunto: req.params.flow, '$userid':userId}},
             { $lookup: {
                 from: 'contents',
                 localField: 'contents',
