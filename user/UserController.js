@@ -269,7 +269,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
                 contenidos: {$push: '$contents'}
               }
             },
-            { $unwind: '$contenidos'},*/
+            { $unwind: '$contenidos'},
             { $match: { $contents: {$elemMatch: {category:req.params.category }}} },
             { $group: {
                 _id: '$_id',
@@ -300,7 +300,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
             },*/
             {
               $project:{
-                contenidos:'$cont',
+                contenidos:'$contents',
                 _id:0
               }
             }
