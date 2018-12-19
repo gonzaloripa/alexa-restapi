@@ -181,7 +181,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             { $unwind: '$contents' },
             { $group: {
                 _id: '$_id',
-                contenidos: {$push: {'$contents.category'}}
+                contenidos: {$push: '$contents'}
               }
             },
             { $unwind: '$contenidos'},
