@@ -44,6 +44,7 @@ router.post('/newUser', function (req, res) {
             { kind: 'SingleContent', identificador: 'infocielo', categoria:'Portada', content:contents[2]._id },
             { kind: 'SiblingContent', identificador: 'infocielo-hermanos', categoria:'Portada', siblings: ids }
           ],function(err,contents){
+            console.log("--diferent ",contents)
             const idC = contents.map((elem) => { return elem._id } );
             var flows = [{
               _id: new mongoose.Types.ObjectId,
