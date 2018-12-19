@@ -176,19 +176,37 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             { $unwind: '$contents' },
             { $group: {
                 _id: '$_id',
-                contenidos: {$push: '$contents._id'}
+                contenidos: {$push: '$contents'}
+              }
+            },
+            { $unwind: '$contenidos'},
+            {
+               $addFields: 
+               { cont:
+                  {
+                    $cond: { if: { '$contenidos.kind': [ "$eq", 'SingleContent' ] }, then: { $add: { '$contenidos.content'}}
+                      , else: {$addToSet: { cont: { $each: '$contenidos.siblings' } } } }
+                  }
+               } 
+            },
+            { $unwind: '$cont'},
+            { $lookup: {
+                from: 'infocontents',
+                localField: 'cont',
+                foreignField: '_id',
+                as: 'infocontents'
               }
             },
             {
               $project:{
-                contenidos:'$contenidos',
+                contenidos:'$infocontents',
                 _id:0
               }
             }
            ])
         .exec(function (err,result) {
-            console.log("-Contents id %s ",result)
-              res.status(200).send(result);
+            console.log("-Contents id %s ",result[0].contenidos)
+              res.status(200).send(result[0].contenidos);
         });
         
 });  
