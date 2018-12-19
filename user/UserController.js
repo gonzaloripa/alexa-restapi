@@ -165,16 +165,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
       console.log(userId)
       Model.Flow.aggregate(
            [
-           { $lookup: {
-                from: 'users',
-                pipeline: [
-                  { $match: { _id: userId } },
-                  { $project: { _id: 1 } }
-                  ],
-                as: 'userid'
-              }
-            },
-            { $match: { nombreConjunto: req.params.flow, '$userid':userId}},
+            { $match: { nombreConjunto: req.params.flow, user:new mongoose.Types.ObjectId(userId._id) }},
             { $lookup: {
                 from: 'contents',
                 localField: 'contents',
