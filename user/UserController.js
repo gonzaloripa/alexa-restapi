@@ -181,14 +181,8 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             { $unwind: '$contents' },
             { $group: {
                 _id: '$_id',
-                contenidos: {$push: '$contents'}
-              }
-            },
-            { $unwind: '$contenidos'},
-            { $group: {
-                _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.kind', 'SingleContent' ] }, then: ['$contenidos.content'] , else: '$contenidos.siblings'  
+                    $cond: { if: { $eq: ['$contents.kind', 'SingleContent' ] }, then: ['$contents.content'] , else: '$contents.siblings'  
                            } 
                         } 
                       }
@@ -276,7 +270,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
               }
             },
             { $unwind: '$contenidos'},*/
-            { $match: {'$contents.category': req.params.category }},/*
+            { $match: {'$contents.category': req.params.category }},
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
@@ -285,7 +279,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
                         } 
                       }
               }
-            },
+            },/*
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
@@ -306,7 +300,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
             },*/
             {
               $project:{
-                contenidos:'$contents',
+                contenidos:'$cont',
                 _id:0
               }
             }
