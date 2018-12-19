@@ -166,7 +166,8 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
            [
             { $unwind: "$contents"},
             { $match: {
-                  'user_id': userId
+                  'nombreConjunto': req.params.flow,
+                  'user':UserId
                   //contents: {$elemMatch: {_id: flows[0]} }
                   //'contents.flow_id': flows[0]._id  //fijarse como hacer para comparar elementos de arrays
               }
@@ -181,11 +182,9 @@ router.get('/noticesByOrder/:flow/:name', function (req, res) {
               }
            ])
         .exec(function (err,result) {
-            console.log("-Contents id %s ",result.contents)
-
-
-              res.status(200).send(json);
-            });
+            console.log("-Contents id %s ",result)
+              res.status(200).send(result);
+        });
         
       });  
 
