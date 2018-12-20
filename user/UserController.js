@@ -375,7 +375,7 @@ router.post('/createFlow/user/:name', function (req, res) {
             ,function(err,userId){
               console.log(userId)
               //fijarse si cambiar find por aggregate
-              Model.Content.find({ identificador: { $in: req.body.contents }}, '_id identificador'
+              Model.Content.find({ user:userId, identificador: { $in: req.body.contents }}, '_id identificador'
               ,function(err,contents){
                   console.log(contents) //idContents= ["",""]
                   if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
@@ -385,15 +385,14 @@ router.post('/createFlow/user/:name', function (req, res) {
                     if(indice != -1) 
                       idContents.push( contents[indice]._id )
                   })
-
                   console.log(idContents);
+                  
                   Model.Flow.create({nombreConjunto:req.body.nombreConjunto, user:userId, contents:idContents}
                   ,function (err, flow) {      
                       console.log("----Flow: ",flow)
                       if (err) return res.status(500).send("No se pudo agregar el flow en la base");
-                      //res.status(200).send(flow);
-
-                      Model.findOneAndUpdate({_id:userId}, { $push: { flows: flow._id }} 
+                      
+                      Model.User.findOneAndUpdate({_id:userId}, { $push: { flows: flow._id }} 
                       ,function (err,user) {                                  
                         console.log("----Usuario:",user)
                         if (err) return res.status(500).send("No se pudo modificar al usuario en la base");
