@@ -374,7 +374,7 @@ router.put('/createFlow/user/:name', function (req, res) {
           Model.User.findOne({'name':req.params.name.toLowerCase()},'_id'
             ,function(err,userId){
               console.log(userId)
-              Model.Contents.find({ identificador: { $in: req.body.contents }}, '_id'
+              Model.Content.find({ identificador: { $in: req.body.contents }}, '_id'
               ,function(err,idContents){
                   console.log(idContents)
                   if (err | idContents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
