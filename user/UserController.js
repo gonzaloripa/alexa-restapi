@@ -292,7 +292,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
             },
             {
               $project:{
-                contenidos:'$cinfocontents',
+                contenidos:'$infocontents',
                 _id:0
               }
             }
