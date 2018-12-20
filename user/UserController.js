@@ -229,7 +229,6 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
         
   });
 })  
-
     /* 
         Model.Content.aggregate(
            [
@@ -306,74 +305,6 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
         });
         
   });
-/*
-Model.Flow.aggregate(
-           [
-            { $match: {user:new mongoose.Types.ObjectId(userId._id) }},
-            { $lookup: {
-                from: 'contents',
-                localField: 'contents',
-                foreignField: '_id',
-                as: 'contents'
-              }
-            },
-            { $unwind: '$contents' },
-            { $group: {
-                _id: '$_id',
-                contenidos: {$push: '$contents' }
-                                                                                                 
-              }
-            },
-            { $unwind: '$contenidos'},
-            //{ $match: { '$contenidos.categoria':req.params.category }},
-            { $group: {
-                _id: '$_id',
-                cont: { $push: {  
-                    $cond: { if: { $and: [ {$eq: ['$contenidos.kind', 'SingleContent' ]}, {$eq: ['$contenidos.categoria', req.params.category ]} ] }, then: ['$contenidos.content'] , else: '$contenidos.siblings'  
-                           } 
-                        } 
-                      }
-              }
-            },
-            {  $addFields:{
-                'combinedC':{
-                   $reduce: {
-                      input: '$cont',
-                      initialValue: [],
-                      in: { $concatArrays : ["$$value", "$$this"] }
-                   }
-                 }
-               }
-            },
-            { $unwind: '$combinedC'},
-            { $lookup: {
-                from: 'infocontents',
-                localField: 'combinedC',
-                foreignField: '_id',
-                as: 'infocontents'
-              }
-            },
-            {
-              $project:{
-                contenidos:'$infocontents',
-                _id:0
-              }
-            }
-           ])
-   Model.aggregate([
-    { $match: getCriteria},
-    { $project: {
-        contenidos: {$filter: {
-            input: '$contenidos',
-            as: 'item',
-            cond: {$eq: ['$$item.category', req.params.category]}
-        }}
-    }}
-    ]).then(function (result) {
-      console.log(result[0].contenidos); // [ { maxBalance: 98000 } ]
-      res.status(200).send(result[0].contenidos);
-    });*/
-  
 });
 
 //ADD A LIST OF SIBLING CONTENTS INTO THE COLLECTIONS CONTENT AND INFOCONTENT, WITHOUT ASSIGN A FLOW
@@ -435,7 +366,43 @@ router.post('/addContent/user/:name',function(req, res) {
       })
 });
 
+//CREATE A FLOW FOR A USER WITH THE CONTENTS IN ORDER: UPDATE COLLECTION 'CONTENTS'
+router.put('/updateListContents/user/:name', function (req, res) {
+      
+      //req.body = {nombreConjunto:"",[ {identificador:"",conjunto: true},{identificador},{identificador},{identificador:"",conjunto: true}] }
+        Model.User.findOne({'name':req.params.name.toLowerCase()})
+        .populate({ path: 'flows', 
+                    select: 'contents -_id',
+                    match: { nombreConjunto: { $eq: req.body.nombreConjunto }},
+        })
+        .exec(function(err,user){
+          console.log('Flows %s ',user.flows,user.flows.contents)    
+            //flows será un [] de 
+            if (err | user.flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+            res.status(200).send(user.flows);
+          });
 
+        /*
+              if (result.contenidos.length == 0){ //No existe el idConjunto
+                var updates = req.body.map((item,index)=>{
+                    console.log("item "+item.url+item.xpath+index)
+                    return Model.update({'name':req.params.name.toLowerCase()}, 
+                      {"$set": {
+                        'contenidos.$[elem].order': index, //item.order
+                        'contenidos.$[elem].state': "edited",
+                        'contenidos.$[elem].idConjunto': item.idConjunto
+                      }},{ "arrayFilters": [{$and:[{'elem.url':item.url},{'elem.xpath':item.xpath}]}]})       
+                });
+
+                Promise.all(updates).then((results)=>{
+                    console.log(results);
+                    res.status(200).send(req.body)
+                });
+              }else{
+                    res.status(404).send("Ya existe un contenido con ese idConjunto")
+              }
+            })*/
+});
 
 
 
