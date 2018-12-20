@@ -24,13 +24,16 @@ router.post('/newUser', function (req, res) {
     const array = [
                     {
                       url:"https://infocielo.com/",
-                      xpath:"//*[@id='noticias-destacadas-1']/div[1]/article/a"                    },
+                      xpath:"//*[@id='noticias-destacadas-1']/div[1]/article/a"
+                    },
                     {
                       url:"https://infocielo.com/",
-                      xpath:"//*[@id='columna1_y_2']/div/div[2]/article[7]/a"                    },
+                      xpath:"//*[@id='columna1_y_2']/div/div[2]/article[7]/a"
+                    },
                     {
                       url:"https://infocielo.com/politica",
-                      xpath:"//*[@id='paginator_content']/article[1]/a"                    }
+                      xpath:"//*[@id='paginator_content']/article[1]/a"
+                    }
                   ]
     var userId = new mongoose.Types.ObjectId;
     Model.InfoContent.insertMany(array
