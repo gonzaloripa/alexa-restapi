@@ -400,6 +400,8 @@ router.post('/addSiblingContents/user/:name',function(req, res) {
                 { kind: 'SiblingContent', user: userId,identificador: req.body.identificador , categoria:req.body.categoria, siblings: ids }
                 ,function(err,contents){
                   console.log("--contents ",contents)
+                  if (err) return res.status(500).send("No se pudieron asignar los contents para el usuario");
+                  res.status(200).send(contents);
                 })
           })
       })
@@ -426,6 +428,8 @@ router.post('/addContent/user/:name',function(req, res) {
                 { kind: 'SingleContent', user: userId, identificador: req.body.identificador , categoria:req.body.categoria, content: idContent }
                 ,function(err,contents){
                   console.log("--contents ",contents)
+                  if (err) return res.status(500).send("No se pudo asignar el content para el usuario");
+                  res.status(200).send(contents);
                 })
           })
       })
