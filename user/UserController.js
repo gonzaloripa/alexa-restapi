@@ -369,6 +369,22 @@ router.post('/addContent/user/:name',function(req, res) {
 //CREATE A FLOW FOR A USER WITH THE CONTENTS IN ORDER: UPDATE COLLECTION 'CONTENTS'
 router.put('/createFlow/user/:name', function (req, res) {
       
+        //req.body = {nombreConjunto:"",contents:[ "","",""]}
+          Model.User.findOne({'name':req.params.name.toLowerCase()},'_id'
+            ,function(err,userId){
+              console.log(userId)
+              Model.Contents.find({ identificador: { $in: req.body.contents }}, { _id:1 },
+              ,function(err,idContents){
+                  console.log(idContents)
+                  res.status(200).send(idContents);
+                  //Model.flow.create({nombreConjunto:req.body.nombreConjunto, user:userId, contents:[idContents]})
+              })
+          })
+});
+
+//UPDATE A FLOW FOR A USER WITH THE CONTENTS IN ORDER: UPDATE COLLECTION 'CONTENTS'
+router.put('/updateFlow/user/:name', function (req, res) {
+      
       //req.body = {nombreConjunto:"",[ {identificador:"",conjunto: true},{identificador},{identificador},{identificador:"",conjunto: true}] }
         Model.User.findOne({'name':req.params.name.toLowerCase()})
         .populate({ path: 'flows', 
@@ -376,10 +392,12 @@ router.put('/createFlow/user/:name', function (req, res) {
                     match: { nombreConjunto: { $eq: req.body.nombreConjunto }},
         })
         .exec(function(err,user){
-          console.log('Flows %s ',user.flows,user.flows.contents)    
+          console.log('Id contents of a flow %s ',user.flows,user.flows[0].contents)    
             //flows será un [] de 
-            if (err | user.flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-            res.status(200).send(user.flows);
+            if (err | user.flows[0].contents.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+            //res.status(200).send(user.flows);
+            Model.Contents.find()
+
           });
 
         /*
