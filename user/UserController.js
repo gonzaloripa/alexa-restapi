@@ -367,7 +367,7 @@ router.post('/addContent/user/:name',function(req, res) {
 });
 
 //CREATE A FLOW FOR A USER WITH THE CONTENTS IN ORDER: UPDATE COLLECTION 'CONTENTS'
-router.put('/updateListContents/user/:name', function (req, res) {
+router.put('/createFlow/user/:name', function (req, res) {
       
       //req.body = {nombreConjunto:"",[ {identificador:"",conjunto: true},{identificador},{identificador},{identificador:"",conjunto: true}] }
         Model.User.findOne({'name':req.params.name.toLowerCase()})
