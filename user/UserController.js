@@ -388,7 +388,7 @@ router.post('/addSiblingContents/user/:name',function(req, res) {
 
           //const ids = contents.filter((elem,index) => { if(index < 2) return elem._id } ); 
           const ids = [];
-          contents.forEach((cont) => return ids.push(cont._id) );
+          contents.forEach((cont) => ids.push(cont._id) );
           console.log("----ids:",ids)
 
           Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
@@ -428,7 +428,7 @@ router.post('/addContent/user/:name',function(req, res) {
       })
 });
 
-      
+
 
 
 
