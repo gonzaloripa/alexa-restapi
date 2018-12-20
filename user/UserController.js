@@ -391,7 +391,14 @@ router.post('/createFlow/user/:name', function (req, res) {
                   ,function (err, flow) {      
                       console.log("----Flow: ",flow)
                       if (err) return res.status(500).send("No se pudo agregar el flow en la base");
-                      res.status(200).send(flow);
+                      //res.status(200).send(flow);
+
+                      Model.findOneAndUpdate({_id:userId}, { $push: { flows: flow._id }} 
+                      ,function (err,user) {                                  
+                        console.log("----Usuario:",user)
+                        if (err) return res.status(500).send("No se pudo modificar al usuario en la base");
+                        res.status(200).send(flow);
+                      })
                   })
               })
           })
