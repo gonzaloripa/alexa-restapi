@@ -373,7 +373,7 @@ router.put('/createFlow/user/:name', function (req, res) {
           Model.User.findOne({'name':req.params.name.toLowerCase()},'_id'
             ,function(err,userId){
               console.log(userId)
-              Model.Contents.find({ identificador: { $in: req.body.contents }}, { _id:1 },
+              Model.Contents.find({ identificador: { $in: req.body.contents }}, { _id:1 }
               ,function(err,idContents){
                   console.log(idContents)
                   res.status(200).send(idContents);
