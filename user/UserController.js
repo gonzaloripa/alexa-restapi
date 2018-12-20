@@ -383,11 +383,11 @@ router.post('/createFlow/user/:name', function (req, res) {
                   req.body.contents.forEach((cont)=>{
                     let indice = contents.findIndex(c => c.identificador === cont)
                     if(indice != -1) 
-                      idContents.push( {_id:new mongoose.Types.ObjectId(contents[indice]._id)} )
+                      idContents.push( contents[indice]._id) )
                   })
 
                   console.log(idContents);
-                  Model.Flow.create({nombreConjunto:req.body.nombreConjunto, user:userId, contents:[idContents]}
+                  Model.Flow.create({nombreConjunto:req.body.nombreConjunto, user:userId, contents:idContents}
                   ,function (err, flow) {      
                       console.log("----Flow: ",flow)
                       if (err) return res.status(500).send("No se pudo agregar el flow en la base");
