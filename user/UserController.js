@@ -369,11 +369,12 @@ router.post('/addContent/user/:name',function(req, res) {
 //CREATE A FLOW FOR A USER WITH THE CONTENTS IN ORDER: UPDATE COLLECTION 'CONTENTS'
 router.put('/createFlow/user/:name', function (req, res) {
       
-        //req.body = {nombreConjunto:"",contents:[ "","",""]}
-        console.log(req.body)
+          //req.body = {nombreConjunto:"",contents:[ "","",""]}
+          console.log(req.body)
           Model.User.findOne({'name':req.params.name.toLowerCase()},'_id'
             ,function(err,userId){
               console.log(userId)
+              //fijarse si cambiar find por aggregate
               Model.Content.find({ identificador: { $in: req.body.contents }}, '_id identificador'
               ,function(err,contents){
                   console.log(contents) //idContents= ["",""]
@@ -385,8 +386,13 @@ router.put('/createFlow/user/:name', function (req, res) {
                       idContents.push(contents[indice]._id)
                   })
 
-                  res.status(200).send(idContents);
-                  //Model.flow.create({nombreConjunto:req.body.nombreConjunto, user:userId, contents:[idContents]})
+                  console.log(idContents);
+                  Model.flow.create({nombreConjunto:req.body.nombreConjunto, user:userId, contents:[idContents]},
+                  ,function (err, flow) {      
+                      console.log("----Flow: ",flow)
+                      if (err) return res.status(500).send("No se pudo agregar el flow en la base");
+                      res.status(200).send(flow);
+                  })
               })
           })
 });
