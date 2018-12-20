@@ -367,7 +367,7 @@ router.post('/addContent/user/:name',function(req, res) {
 });
 
 //CREATE A FLOW FOR A USER WITH THE CONTENTS IN ORDER: UPDATE COLLECTION 'CONTENTS'
-router.put('/createFlow/user/:name', function (req, res) {
+router.post('/createFlow/user/:name', function (req, res) {
       
           //req.body = {nombreConjunto:"",contents:[ "","",""]}
           console.log(req.body)
@@ -387,7 +387,7 @@ router.put('/createFlow/user/:name', function (req, res) {
                   })
 
                   console.log(idContents);
-                  Model.flow.create({nombreConjunto:req.body.nombreConjunto, user:userId, contents:[idContents]},
+                  Model.flow.create({nombreConjunto:req.body.nombreConjunto, user:userId, contents:[idContents]}
                   ,function (err, flow) {      
                       console.log("----Flow: ",flow)
                       if (err) return res.status(500).send("No se pudo agregar el flow en la base");
