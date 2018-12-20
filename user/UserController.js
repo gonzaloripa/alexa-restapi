@@ -374,10 +374,17 @@ router.put('/createFlow/user/:name', function (req, res) {
           Model.User.findOne({'name':req.params.name.toLowerCase()},'_id'
             ,function(err,userId){
               console.log(userId)
-              Model.Content.find({ identificador: { $in: req.body.contents }}, '_id'
-              ,function(err,idContents){
-                  console.log(idContents)
-                  if (err | idContents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
+              Model.Content.find({ identificador: { $in: req.body.contents }}, '_id identificador'
+              ,function(err,contents){
+                  console.log(contents) //idContents= ["",""]
+                  if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
+                  var idContents = [];
+                  req.body.contents.forEach((cont)=>{
+                    let indice = contents.findIndex(c => c.identificador === cont)
+                    if(indice != -1) 
+                      idContents.push(contents[indice]._id)
+                  })
+
                   res.status(200).send(idContents);
                   //Model.flow.create({nombreConjunto:req.body.nombreConjunto, user:userId, contents:[idContents]})
               })
