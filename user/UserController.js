@@ -45,8 +45,8 @@ router.post('/newUser', function (req, res) {
         console.log("----ids:",ids)
 
         Model.Content.create([
-            { kind: 'SingleContent', identificador: 'infocielo', categoria:'Portada', content:contents[2]._id },
-            { kind: 'SiblingContent', identificador: 'infocielo-hermanos', categoria:'Portada', siblings: ids }
+            { kind: 'SingleContent', user:userId, identificador: 'infocielo', categoria:'Portada', content:contents[2]._id },
+            { kind: 'SiblingContent', user:userId, identificador: 'infocielo-hermanos', categoria:'Portada', siblings: ids }
           ],function(err,contents){
             console.log("--diferent ",contents)
             const idC = contents.map((elem) => { return elem._id } );
@@ -259,7 +259,52 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
 
   Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
       console.log(userId)
-      Model.Flow.aggregate(
+      Model.Content.aggregate(
+           [
+            { $match: {user:new mongoose.Types.ObjectId(userId._id), categoria:req.params.category }},
+            //{ $match: { '$contenidos.categoria':req.params.category }},
+            { $group: {
+                _id: '$_id',
+                contenidos: { $push: {  
+                    $cond: { if: {$eq: ['kind', 'SingleContent' ]}, then: ['content'] , else: 'siblings'  
+                           } 
+                        } 
+                      }
+              }
+            },
+            {  $addFields:{
+                'combinedC':{
+                   $reduce: {
+                      input: '$contenidos',
+                      initialValue: [],
+                      in: { $concatArrays : ["$$value", "$$this"] }
+                   }
+                 }
+               }
+            },
+            { $unwind: '$combinedC'},
+            { $lookup: {
+                from: 'infocontents',
+                localField: 'combinedC',
+                foreignField: '_id',
+                as: 'infocontents'
+              }
+            },
+            {
+              $project:{
+                contenidos:'$infocontents',
+                _id:0
+              }
+            }
+           ])
+        .exec(function (err,result) {
+            console.log("-Contents id %s ",result)
+              res.status(200).send(result);
+        });
+        
+  });
+/*
+Model.Flow.aggregate(
            [
             { $match: {user:new mongoose.Types.ObjectId(userId._id) }},
             { $lookup: {
@@ -312,13 +357,6 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
               }
             }
            ])
-        .exec(function (err,result) {
-            console.log("-Contents id %s ",result)
-              res.status(200).send(result);
-        });
-        
-  });
-/*
    Model.aggregate([
     { $match: getCriteria},
     { $project: {
@@ -334,6 +372,69 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
     });*/
   
 });
+
+//ADD A LIST OF SIBLING CONTENTS INTO THE COLLECTIONS CONTENT AND INFOCONTENT, WITHOUT ASSIGN A FLOW
+router.post('/addSiblingContents/user/:name',function(req, res) {
+      
+      //req.body = {identificador:"",categoria:"",siblings:[{infoContent}]}
+      var infoArray = req.body.siblings
+      /* Controlar antes que si se repite la info, pueda crear un nuevo conjunto de hermanos, 
+      sin agregar la info */ 
+
+      Model.InfoContent.insertMany(infoArray
+      ,function(err,contents){
+          console.log("----Contents:",contents)
+          if (err) return res.status(500).send("No se pudieron asignar los contents para el usuario");
+
+          //const ids = contents.filter((elem,index) => { if(index < 2) return elem._id } ); 
+          const ids = [];
+          contents.forEach((cont) => return ids.push(cont._id) );
+          console.log("----ids:",ids)
+
+          Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+            console.log(userId)
+            Model.Content.create(
+                { kind: 'SiblingContent', user: userId,identificador: req.body.identificador , categoria:req.body.categoria, siblings: ids }
+                ,function(err,contents){
+                  console.log("--contents ",contents)
+                })
+          })
+      })
+});
+
+//ADD A CONTENT INTO THE COLLECTIONS INFOCONTENT AND CONTENT OF A USER, WITHOUT ASSIGN A FLOW
+router.post('/addContent/user/:name',function(req, res) {
+      
+      //req.body = {identificador:"",categoria:"",content:{}}
+      var content = req.body.content
+      //Controlar antes que no se repita la info 
+
+      Model.InfoContent.create(content
+      ,function(err,content){
+          console.log("----Contents:",content)
+          if (err) return res.status(500).send("No se pudo asignar el content para el usuario");
+
+          const idContent = content._id;
+          console.log("----id:",idContent)
+          
+          Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+            console.log(userId)
+            Model.Content.create(
+                { kind: 'SingleContent', user: userId, identificador: req.body.identificador , categoria:req.body.categoria, content: idContent }
+                ,function(err,contents){
+                  console.log("--contents ",contents)
+                })
+          })
+      })
+});
+
+      
+
+
+
+---------------------------------------------------------------------
+
+
 
 // GETS THE NOTICES OF ONE USER FILTER BY STATE(new/old)
 router.get('/contentsByState/:state/:name', function (req, res) {
