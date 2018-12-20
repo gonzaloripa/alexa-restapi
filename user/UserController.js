@@ -383,7 +383,7 @@ router.post('/createFlow/user/:name', function (req, res) {
                   req.body.contents.forEach((cont)=>{
                     let indice = contents.findIndex(c => c.identificador === cont)
                     if(indice != -1) 
-                      idContents.push(new mongoose.Types.ObjectId(contents[indice]._id))
+                      idContents.push( {_id:new mongoose.Types.ObjectId(contents[indice]._id)} )
                   })
 
                   console.log(idContents);
