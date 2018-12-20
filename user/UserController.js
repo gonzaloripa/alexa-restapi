@@ -263,7 +263,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
            [
             { $match: {user:new mongoose.Types.ObjectId(userId._id), categoria:req.params.category }},
             //{ $match: { '$contenidos.categoria':req.params.category }},
-            { $group: {
+            /*{ $group: {
                 _id: '$_id',
                 contenidos: { $push: {  
                     $cond: { if: {$eq: ['kind', 'SingleContent' ]}, then: ['content'] , else: 'siblings'  
@@ -295,7 +295,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
                 contenidos:'$infocontents',
                 _id:0
               }
-            }
+            }*/
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
