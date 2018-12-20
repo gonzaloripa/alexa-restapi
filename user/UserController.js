@@ -282,14 +282,14 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
                  }
                }
             },
-            { $unwind: '$combinedC'},/*
+            { $unwind: '$combinedC'},
             { $lookup: {
                 from: 'infocontents',
                 localField: 'combinedC',
                 foreignField: '_id',
                 as: 'infocontents'
               }
-            },*/
+            },
             {
               $project:{
                 contenidos:'$combinedC',
