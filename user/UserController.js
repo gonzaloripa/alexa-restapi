@@ -266,7 +266,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
             { $group: {
                 _id: '$_id',
                 contenidos: { $push: {  
-                    $cond: { if: {$eq: ['kind', 'SingleContent' ]}, then: ['content'] , else: 'siblings'  
+                    $cond: { if: {$eq: ['$kind', 'SingleContent' ]}, then: ['$content'] , else: '$siblings'  
                            } 
                         } 
                       }
