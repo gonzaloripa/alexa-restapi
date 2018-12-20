@@ -370,12 +370,14 @@ router.post('/addContent/user/:name',function(req, res) {
 router.put('/createFlow/user/:name', function (req, res) {
       
         //req.body = {nombreConjunto:"",contents:[ "","",""]}
+        console.log(req.body)
           Model.User.findOne({'name':req.params.name.toLowerCase()},'_id'
             ,function(err,userId){
               console.log(userId)
-              Model.Contents.find({ identificador: { $in: req.body.contents }}, { _id:1 }
+              Model.Contents.find({ identificador: { $in: req.body.contents }}, '_id'
               ,function(err,idContents){
                   console.log(idContents)
+                  if (err | idContents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
                   res.status(200).send(idContents);
                   //Model.flow.create({nombreConjunto:req.body.nombreConjunto, user:userId, contents:[idContents]})
               })
