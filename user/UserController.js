@@ -271,7 +271,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
                         } 
                       }
               }
-            },
+            },/*
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
@@ -289,10 +289,10 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
                 foreignField: '_id',
                 as: 'infocontents'
               }
-            },
+            },*/
             {
               $project:{
-                contenidos:'$infocontents',
+                contenidos:'$contenidos',
                 _id:0
               }
             }
