@@ -281,7 +281,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
                    }
                  }
                }
-            },
+            },/*
             { $unwind: '$combinedC'},
             { $lookup: {
                 from: 'infocontents',
@@ -289,10 +289,10 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
                 foreignField: '_id',
                 as: 'infocontents'
               }
-            },
+            },*/
             {
               $project:{
-                contenidos:'$infocontents',
+                contenidos:'$combinedC',
                 _id:0
               }
             }
