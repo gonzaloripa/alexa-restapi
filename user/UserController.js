@@ -85,11 +85,20 @@ router.post('/newUser', function (req, res) {
     })
 });
 
+
 // RETURNS ALL THE USERS IN THE DATABASE
 router.get('/', function (req, res) {
-    Model.user.find({}, function (err, users) {
+    Model.User.find({}, function (err, users) {
         if (err) return res.status(404).send("No se hallaron usuarios");
         res.status(200).send(users);
+    });
+});
+
+// RETURNS A USER FILTER BY NAME
+router.get('/:name', function (req, res) {
+    Model.User.find({ name:req.params.name }, function (err, user) {
+        if (err) return res.status(404).send("No se hallo ningún usuario con ese nombre");
+        res.status(200).send(user);
     });
 });
 

@@ -25,8 +25,8 @@ Flujo
 
 const mongoose = require('mongoose'); 
 var InfoContentSchema = new mongoose.Schema({
-    url: {type:String,required: true},
-    xpath: {type:String,lowercase: true, required:true},
+    url: {type:String,required: true, unique:true},
+    xpath: {type:String,lowercase: true, required:true, unique:true},
     metainfo: String
   });
 
