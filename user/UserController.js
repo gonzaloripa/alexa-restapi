@@ -244,7 +244,7 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
                         } 
                       }
               }
-            },
+            },/*
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
@@ -254,7 +254,7 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
                    }
                  }
                }
-            },/*
+            },
             { $unwind: '$combinedC'},
             { $lookup: {
                 from: 'infocontents',
@@ -265,14 +265,14 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
             },*/
             {
               $project:{
-                combinedC:1,
+                contenidos:1,
                 _id:0
               }
             }
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
-              res.status(200).send(result[0].combinedC);
+              res.status(200).send(result);
         })
         
   })
