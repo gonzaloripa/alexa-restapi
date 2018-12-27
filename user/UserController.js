@@ -193,7 +193,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                    }
                  }
                }
-            }/*,
+            },/*
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
@@ -203,21 +203,21 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                    }
                  }
                }
-            },
-            { $unwind: '$combinedC'},
+            },*/
+            { $unwind: '$combinedC'},/*
             { $lookup: {
                 from: 'infocontents',
                 localField: 'combinedC.',
                 foreignField: '_id',
                 as: 'infocontents'
               }
-            },
+            },*/
             {
               $project:{
-                contenidos:'$infocontents',
+                contenidos:'$combinedC',
                 _id:0
               }
-            }*/
+            }
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
