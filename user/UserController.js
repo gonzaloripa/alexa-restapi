@@ -244,7 +244,8 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
                         } 
                       }
               }
-            },
+            },            
+            { $unwind: '$contenidos'},
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
