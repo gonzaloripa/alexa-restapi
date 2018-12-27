@@ -183,9 +183,9 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                         } 
                       }
               }
-            }/*,
+            },
             {  $addFields:{
-                'combined':{
+                'combinedC':{
                    $reduce: {
                       input: '$cont',
                       initialValue: [],
@@ -193,7 +193,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                    }
                  }
                }
-            },
+            }/*,
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
