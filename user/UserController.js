@@ -239,8 +239,8 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
             { $group: {
                 _id: '$_id',
                 contenidos: { $push: {  
-                    $cond: { if: {$eq: ['$kind', 'SingleContent' ]}, then: ['$content'] , else: '$siblings'  
-                           } 
+                    $cond: { if: { $eq: ['$kind', 'SingleContent' ] }, then: [{contentId:'$content',identificador:'$identificador',categoria:'$categoria'}] , else: [{siblingsId:'$siblings', identificador:'$identificador', categoria:'$categoria'}]  
+                           }  
                         } 
                       }
               }
