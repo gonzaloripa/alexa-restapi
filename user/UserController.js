@@ -174,7 +174,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                 contenidos: {$push: '$contents'}
               }
             },
-            { $unwind: '$contenidos'}/*,
+            { $unwind: '$contenidos'},
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
@@ -183,7 +183,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                         } 
                       }
               }
-            },
+            },/*
             {  $addFields:{
                 'combined':{
                    $reduce: {
