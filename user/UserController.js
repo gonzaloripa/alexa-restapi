@@ -214,7 +214,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
             },*/
             {
               $project:{
-                contenidos:'$combinedC',
+                //contenidos:'$combinedC',
                 _id:0
               }
             }
