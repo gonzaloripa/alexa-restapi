@@ -152,6 +152,83 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
     })
 });
 
+
+// (ADMIN) GETS THE NOTICES OF ONE USER IN ORDER FILTERED BY FLOW
+router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
+
+    Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+      console.log(userId)
+      Model.Flow.aggregate(
+           [
+            { $match: { nombreConjunto: req.params.flow, user:new mongoose.Types.ObjectId(userId._id) }},
+            { $lookup: {
+                from: 'contents',
+                localField: 'contents',
+                foreignField: '_id',
+                as: 'contents'
+              }
+            },
+            { $unwind: '$contents' },
+            { $group: {
+                _id: '$_id',
+                contenidos: {$push: '$contents'}
+              }
+            },
+            { $unwind: '$contenidos'}/*,
+            { $group: {
+                _id: '$_id',
+                cont: { $push: {
+                    $cond: { if: { $eq: ['$contenidos.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.content',identificador:'$contenidos.identificador',categoria:'$contenidos.categoria'] , else: [{siblingsId:'$contenidos.siblings', identificador:'$contenidos.identificador', categoria:'$contenidos.categoria'}]  
+                           } 
+                        } 
+                      }
+              }
+            },
+            {  $addFields:{
+                'combined':{
+                   $reduce: {
+                      input: '$cont',
+                      initialValue: [],
+                      in: { $concatArrays : ["$$value", "$$this"] }
+                   }
+                 }
+               }
+            },
+            {  $addFields:{
+                'combinedC':{
+                   $reduce: {
+                      input: '$combined',
+                      initialValue: [],
+                      in: { $concatArrays : ["$$value", "$$this"] }
+                   }
+                 }
+               }
+            },
+            { $unwind: '$combinedC'},
+            { $lookup: {
+                from: 'infocontents',
+                localField: 'combinedC.',
+                foreignField: '_id',
+                as: 'infocontents'
+              }
+            },
+            {
+              $project:{
+                contenidos:'$infocontents',
+                _id:0
+              }
+            }*/
+           ])
+        .exec(function (err,result) {
+            console.log("-Contents id %s ",result)
+              res.status(200).send(result);
+        });
+        
+  });
+})  
+
+
+
 /* GETS THE CATEGORIES OF A SINGLE USER 
 router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
       
@@ -265,7 +342,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
         })*/
 
 
-// GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
+// GETS THE NOTICES OF ONE USER FILTERED BY CATEGORY
 router.get('/contentsByCategory/:category/:name', function (req, res) {
 
   Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
@@ -543,7 +620,7 @@ var getCriteria = {'name':req.params.name.toLowerCase()}; //{"userId":req.params
 
 // DELETES A USER FROM THE DATABASE
 router.delete('/:name', function (req, res) { //'/:usrid/:name'
-    Model.findOneAndRemove({"name":req.params.name.toLowerCase()}, function (err, user) { //{"userId":req.params.usrid,
+    Model.User.findOneAndRemove({"name":req.params.name.toLowerCase()}, function (err, user) { //{"userId":req.params.usrid,
         if (err) return res.status(500).send("There was a problem deleting the user.");
         res.status(200).send("User "+ req.params.name +" was deleted.");
     });
