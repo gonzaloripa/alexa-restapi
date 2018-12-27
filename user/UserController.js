@@ -265,6 +265,7 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
             },*/
             {
               $project:{
+                contenidos:1,
                 combinedC:1,
                 _id:0
               }
@@ -272,7 +273,7 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
-              res.status(200).send(result[0].combinedC);
+              res.status(200).send(result);
         })
         
   })
