@@ -227,6 +227,57 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
   });
 })  
 
+// (ADMIN) GETS THE NOTICES OF ONE USER FILTERED BY CATEGORY
+router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
+
+  Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+      console.log(userId)
+      Model.Content.aggregate(
+           [
+            { $match: {user:new mongoose.Types.ObjectId(userId._id), categoria:req.params.category }},
+            //{ $match: { '$contenidos.categoria':req.params.category }},
+            { $group: {
+                _id: '$_id',
+                contenidos: { $push: {  
+                    $cond: { if: {$eq: ['$kind', 'SingleContent' ]}, then: ['$content'] , else: '$siblings'  
+                           } 
+                        } 
+                      }
+              }
+            },
+            {  $addFields:{
+                'combinedC':{
+                   $reduce: {
+                      input: '$contenidos',
+                      initialValue: [],
+                      in: { $concatArrays : ["$$value", "$$this"] }
+                   }
+                 }
+               }
+            },/*
+            { $unwind: '$combinedC'},
+            { $lookup: {
+                from: 'infocontents',
+                localField: 'combinedC',
+                foreignField: '_id',
+                as: 'infocontents'
+              }
+            },*/
+            {
+              $project:{
+                combinedC:1,
+                _id:0
+              }
+            }
+           ])
+        .exec(function (err,result) {
+            console.log("-Contents id %s ",result)
+              res.status(200).send(result[0].combinedC);
+        })
+        
+  })
+});
+
 
 
 /* GETS THE CATEGORIES OF A SINGLE USER 
