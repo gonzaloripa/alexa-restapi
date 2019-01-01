@@ -555,9 +555,9 @@ router.put('/updateFlow/user/:name', function (req, res) {
             //flows será un [] de 
             if (err | user.flows[0].contents.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
             //res.status(200).send(user.flows);
-            Model.Contents.find()
+            //Model.Contents.find()
 
-          });
+          })
 
         /*
               if (result.contenidos.length == 0){ //No existe el idConjunto
