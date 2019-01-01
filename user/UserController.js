@@ -553,7 +553,7 @@ router.put('/updateFlow/user/:name', function (req, res) {
         .exec(function(err,user){
           console.log('Id contents of a flow %s ',user.flows)    
             //flows será un [] de 
-            if (err | user.flows[0].contents.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+            if (err | user.flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
             //res.status(200).send(user.flows);
             //Model.Contents.find()
 
