@@ -544,22 +544,37 @@ router.post('/createFlow/user/:name', function (req, res) {
 //UPDATE A FLOW FOR A USER WITH THE CONTENTS IN ORDER: UPDATE COLLECTION 'CONTENTS'
 router.put('/updateFlow/user/:name', function (req, res) {
       
-      //req.body = {nombreConjunto:"",[ {identificador:"",conjunto: true},{identificador},{identificador},{identificador:"",conjunto: true}] }
-        Model.User.findOne({'name':req.params.name.toLowerCase()})
-        .populate({ path: 'flows', 
+      //req.body = {nombreConjunto:"",contents:[ "","",""]}
+        Model.User.findOne({'name':req.params.name.toLowerCase()}, '_id', 
+        function(err,userId){
+          if (err | userId == "") return res.status(404).send("No se pudo hallar al usuario");
+
+          Model.Flow.findOneAndUpdate({user:userId, nombreConjunto:req.body.nombreConjunto}, {contents:req.body.contents}, function(e,flow){
+            console.log(flow)
+            if (err | flow == null) return res.status(404).send("No se pudo modificar el flujo");
+            res.status(200).send(req.body);
+          })
+        })
+});
+
+
+
+
+//---------------------------------------------------------------------
+
+
+         /*.populate({ path: 'flows', 
                     select: 'contents -_id',
                     match: { nombreConjunto: { $eq: req.body.nombreConjunto }},
         })
         .exec(function(err,user){
           console.log('Id contents of a flow %s ',user,user.flows)    
             //flows será un [] de 
-            if (err | user.flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-            //res.status(200).send(user.flows);
+            if (err | user.flows[0].contents.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+            res.status(200).send(user.flows[0].contents);
             //Model.Contents.find()
 
-          })
-
-        /*
+        })
               if (result.contenidos.length == 0){ //No existe el idConjunto
                 var updates = req.body.map((item,index)=>{
                     console.log("item "+item.url+item.xpath+index)
@@ -579,12 +594,6 @@ router.put('/updateFlow/user/:name', function (req, res) {
                     res.status(404).send("Ya existe un contenido con ese idConjunto")
               }
             })*/
-});
-
-
-
-//---------------------------------------------------------------------
-
 
 
 // GETS THE NOTICES OF ONE USER FILTER BY STATE(new/old)
