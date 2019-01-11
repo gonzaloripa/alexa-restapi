@@ -52,7 +52,7 @@ router.post('/newUser', function (req, res) {
             { kind: 'SiblingContent', user:userId, identificador: 'infocielo-hermanos', categoria:'Portada', siblings: ids }
           ],function(err,contents){
             console.log("--diferent ",contents)
-            const idC = contents.map((elem,index) => { return {id:elem._id,order:index } );
+            const idC = contents.map((elem,index) => { return {id:elem._id,order:index } } );
             const idC2 = [{id:contents[1]._id,order:contents[0].order},{ id:contents[0]._id,order:contents[1].order}]
             console.log("conj ", idC, idC2)
             var flows = [{
