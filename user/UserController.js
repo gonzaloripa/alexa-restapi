@@ -286,7 +286,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
       console.log(userId)
       Model.Flow.aggregate(
            [
-            { $match: { user:new mongoose.Types.ObjectId(userId._id) }},
+            { $match: { user:new mongoose.Types.ObjectId(userId._id) }}/*,
             { $lookup: {
                 from: 'contents',
                 localField: 'contents',
@@ -294,9 +294,9 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
                 as: 'contents'
               }
             },
-            { $unwind: '$contents' },/*
+            { $unwind: '$contents' },
             { $group: {
-                _id: '$_id',
+                _id: '$contents._id',
                 contenidos: {$push: '$contents'}
               }
             },
@@ -340,7 +340,6 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
             },*/
             {
               $project:{
-                contents:1,
                 _id:0
               }
             }
