@@ -286,7 +286,8 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
       console.log(userId)
       Model.Flow.aggregate(
            [
-            { $match: { user:new mongoose.Types.ObjectId(userId._id) }}/*,
+            { $match: { user:new mongoose.Types.ObjectId(userId._id) }},
+            { $sort: '$natural' }/*,
             { $lookup: {
                 from: 'contents',
                 localField: 'contents',
