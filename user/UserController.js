@@ -53,10 +53,8 @@ router.post('/newUser', function (req, res) {
           ],function(err,contents){
             console.log("--diferent ",contents)
             const idC = contents.map((elem) => { return elem._id } );
-            const idC2 = contents.sort((a, b) =>{
-                                        return b._id - a._id;
-                                      })
-            console.log(idC, idC2)
+            const idC2 = [contents[1]._id, contents[0]._id]
+            console.log("conj ", idC, idC2)
             var flows = [{
               _id: new mongoose.Types.ObjectId,
               user: userId,
