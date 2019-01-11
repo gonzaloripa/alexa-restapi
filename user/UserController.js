@@ -289,7 +289,6 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
       Model.Flow.aggregate(
            [
             { $match: { user:new mongoose.Types.ObjectId(userId._id) }},
-            { $sort: {'$natural':-1} },/*,
             { $lookup: {
                 from: 'contents',
                 localField: 'contents',
