@@ -279,6 +279,79 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
   })
 });
 
+// (ADMIN) GETS ALL THE NOTICES AND FLOWS OF ONE USER
+router.get('/admin/contentsAndFlows/:name', function (req, res) {
+
+    Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+      console.log(userId)
+      Model.Flow.aggregate(
+           [
+            { $match: { user:new mongoose.Types.ObjectId(userId._id) }},
+            { $lookup: {
+                from: 'contents',
+                localField: 'contents',
+                foreignField: '_id',
+                as: 'contents'
+              }
+            },
+            { $unwind: '$contents' },
+            { $group: {
+                _id: '$_id',
+                contenidos: {$push: '$contents'}
+              }
+            },
+            { $unwind: '$contenidos'},
+            { $group: {
+                _id: '$_id',
+                cont: { $push: {
+                    $cond: { if: { $eq: ['$contenidos.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.content',identificador:'$contenidos.identificador',categoria:'$contenidos.categoria'}] , else: [{siblingsId:'$contenidos.siblings', identificador:'$contenidos.identificador', categoria:'$contenidos.categoria'}]  
+                           } 
+                        } 
+                      }
+              }
+            },
+            {  $addFields:{
+                'combinedC':{
+                   $reduce: {
+                      input: '$cont',
+                      initialValue: [],
+                      in: { $concatArrays : ["$$value", "$$this"] }
+                   }
+                 }
+               }
+            },/*
+            {  $addFields:{
+                'combinedC':{
+                   $reduce: {
+                      input: '$combined',
+                      initialValue: [],
+                      in: { $concatArrays : ["$$value", "$$this"] }
+                   }
+                 }
+               }
+            },
+            { $unwind: '$combinedC'},/*
+            { $lookup: {
+                from: 'infocontents',
+                localField: 'combinedC.',
+                foreignField: '_id',
+                as: 'infocontents'
+              }
+            },*/
+            {
+              $project:{
+                combinedC:1,
+                _id:0
+              }
+            }
+           ])
+        .exec(function (err,result) {
+            console.log("-Contents id %s ",result)
+              res.status(200).send(result[0].combinedC);
+        });
+        
+  });
+})
 
 
 /* GETS THE CATEGORIES OF A SINGLE USER 
@@ -541,7 +614,7 @@ router.post('/createFlow/user/:name', function (req, res) {
           })
 });
 
-//UPDATE A FLOW FOR A USER WITH THE CONTENTS IN ORDER: UPDATE COLLECTION 'CONTENTS'
+//CHANGE THE ORDER OF THE CONTENTS OF A FLOW: UPDATE COLLECTION 'FLOWS'
 router.put('/updateFlow/user/:name', function (req, res) {
       
       //req.body = {nombreConjunto:"",contents:[ "","",""]}
