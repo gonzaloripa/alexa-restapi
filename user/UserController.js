@@ -56,6 +56,7 @@ router.post('/newUser', function (req, res) {
             const idC2 = contents.sort((a, b) =>{
                                         return b._id - a._id;
                                       })
+            console.log(idC, idC2)
             var flows = [{
               _id: new mongoose.Types.ObjectId,
               user: userId,
