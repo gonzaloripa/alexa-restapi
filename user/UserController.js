@@ -300,7 +300,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
                 contenidos: {$push: '$contents'}
               }
             },
-            { $unwind: '$contenidos'},
+            { $unwind: '$contenidos'},/*
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
@@ -340,9 +340,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
             },*/
             {
               $project:{
-                contents:1,
                 contenidos:1,
-                combinedC:1,
                 _id:0
               }
             }
