@@ -28,7 +28,7 @@ var InfoContentSchema = new mongoose.Schema({
     url: {type:String,required: true, unique:true},
     xpath: {type:String,lowercase: true, required:true, unique:true},
     metainfo: String
-  },{capped:1024});
+  });
 
 var InfoContent = mongoose.model('InfoContent', InfoContentSchema);
 
@@ -36,7 +36,7 @@ var contentSchema = new mongoose.Schema({
   user: {type: mongoose.Schema.Types.ObjectId, ref:'User'},
   identificador: {type: String, required:true},    
   categoria: String
-},{ capped:1024},{discriminatorKey: 'kind'});
+},{discriminatorKey: 'kind'});
 
 var Content = mongoose.model('Content', contentSchema);
 
@@ -63,7 +63,7 @@ const UserSchema = new mongoose.Schema({
   name: {type:String,required: true},
   password: String,
   flows: [{ type: mongoose.Schema.Types.ObjectId, ref:'Flow'}]
-},{capped:1024});
+});
 
 const User = mongoose.model('User', UserSchema);
 
