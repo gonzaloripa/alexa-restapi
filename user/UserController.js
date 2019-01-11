@@ -340,6 +340,8 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
             },*/
             {
               $project:{
+                contents:1,
+                contenidos:1,
                 combinedC:1,
                 _id:0
               }
