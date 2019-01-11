@@ -53,6 +53,9 @@ router.post('/newUser', function (req, res) {
           ],function(err,contents){
             console.log("--diferent ",contents)
             const idC = contents.map((elem) => { return elem._id } );
+            const idC2 = contents.sort((a, b) =>{
+                                        return b._id - a._id;
+                                      })
             var flows = [{
               _id: new mongoose.Types.ObjectId,
               user: userId,
@@ -62,7 +65,7 @@ router.post('/newUser', function (req, res) {
               _id: new mongoose.Types.ObjectId,
               user: userId,
               nombreConjunto:'Segundo',
-              contents: idC
+              contents: idC2
             }];
             Model.Flow.insertMany(flows    
             ,function (err, flows) {
