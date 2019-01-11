@@ -36,8 +36,7 @@ var contentSchema = new mongoose.Schema({
   user: {type: mongoose.Schema.Types.ObjectId, ref:'User'},
   identificador: {type: String, required:true},    
   categoria: String
-},
-  { capped:1024, discriminatorKey: 'kind'});
+},{ capped:1024},{discriminatorKey: 'kind'});
 
 var Content = mongoose.model('Content', contentSchema);
 
