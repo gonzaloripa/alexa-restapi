@@ -186,6 +186,9 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                       }
               }
             },
+            {           {
+              $sort:{ '$contenidos.order':1 }
+            },
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
@@ -195,9 +198,6 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                    }
                  }
                }
-            },
-            {
-              $sort:{ '$combinedC.order':1 }
             }
             ,/*
             {  $addFields:{
