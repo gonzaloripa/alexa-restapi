@@ -186,7 +186,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                       }
               }
             },
-            {           {
+            {           
               $sort:{ '$contenidos.order':1 }
             },
             {  $addFields:{
