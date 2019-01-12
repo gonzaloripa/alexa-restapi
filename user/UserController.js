@@ -180,7 +180,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.content',identificador:'$contenidos.identificador',categoria:'$contenidos.categoria'}] , else: [{siblingsId:'$contenidos.siblings', identificador:'$contenidos.identificador', categoria:'$contenidos.categoria'}]  
+                    $cond: { if: { $eq: ['$contenidos.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.content',identificador:'$contenidos.identificador',categoria:'$contenidos.categoria',order:'$contenidos.order'}] , else: [{siblingsId:'$contenidos.siblings', identificador:'$contenidos.identificador', categoria:'$contenidos.categoria',order:'$contenidos.order'}]  
                            } 
                         } 
                       }
@@ -195,7 +195,11 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                    }
                  }
                }
-            },/*
+            },
+            {
+              $sort:{ '$combinedC.order':1 }
+            }
+            ,/*
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
