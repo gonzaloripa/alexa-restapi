@@ -169,7 +169,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                 foreignField: '_id',
                 as: 'contents'
               }
-            },
+            },/*
             { $unwind: '$contents' },
             { $group: {
                 _id: '$_id',
@@ -217,14 +217,14 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
             },*/
             {
               $project:{
-                combinedC:1,
+                //combinedC:1,
                 _id:0
               }
             }
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
-              res.status(200).send(result[0].combinedC);
+              res.status(200).send(result);
         });
         
   });
