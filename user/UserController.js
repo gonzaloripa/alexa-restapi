@@ -171,12 +171,11 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
               }
             },
             { $unwind: '$contents' },
-            { $match: { '$contents.nombreConjunto': req.params.flow }},/*
             { $group: {
                 _id: '$_id',
                 contenidos: {$push: '$contents'}
               }
-            },
+            },/*
             { $unwind: '$contenidos'},
             { $group: {
                 _id: '$_id',
