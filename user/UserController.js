@@ -212,8 +212,8 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                    }
                  }
                }
-            }
-            ,/*
+            },
+            { $unwind: '$combinedC'},/*
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
