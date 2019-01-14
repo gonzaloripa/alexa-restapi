@@ -163,14 +163,14 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
       Model.Flow.aggregate(
            [
             { $match: { nombreConjunto: req.params.flow, user:new mongoose.Types.ObjectId(userId._id) }},
-            { $project: { 'contents.order':1 }}/*
+            { $project: { contents:1, nombreConjunto:1 }},
             { $lookup: {
                 from: 'contents',
                 localField: 'contents._id',
                 foreignField: '_id',
                 as: 'conj'
               }
-            },
+            },/*
             { $unwind: '$conj' },
             { $group: {
                 _id: '$_id',
@@ -215,13 +215,13 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                 foreignField: '_id',
                 as: 'infocontents'
               }
-            },
+            },*/
             {
               $project:{
                 //combinedC:1,
                 _id:0
               }
-            }*/
+            }
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
