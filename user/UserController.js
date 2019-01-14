@@ -170,7 +170,20 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                 foreignField: '_id',
                 as: 'conj'
               }
-            },/*
+            },
+            { $unwind: '$conj' },
+            { $project: 
+              {
+                'user':1,
+                'nombreConjunto':1,
+                'content':{
+                  '_id':'$contents._id',
+                  'order':'$contents.order',
+                  'info':'$conj'
+                }
+              } 
+            },
+            /*
             { $addFields: {"content": {"$mergeObjects": ["$contents", "$conj"]} } }, 
             /*{
                 $replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$conj", 0 ] }, "$$ROOT" ] } }
