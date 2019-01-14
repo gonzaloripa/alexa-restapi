@@ -160,13 +160,13 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
 
     Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
       console.log(userId)
-      Model.Content.aggregate(
+      Model.Flow.aggregate(
            [
-            { $match: { user:new mongoose.Types.ObjectId(userId._id) }},
+            { $match: { nombreConjunto: req.params.flow, user:new mongoose.Types.ObjectId(userId._id) }},
             { $lookup: {
-                from: 'flows',
-                localField: '_id',
-                foreignField: 'contents._id',
+                from: 'contents',
+                localField: 'contents',
+                foreignField: '_id',
                 as: 'contents'
               }
             },
@@ -177,7 +177,6 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
               }
             },
             { $unwind: '$contenidos'},
-            { $match: {'contenidos.nombreConjunto':req.params.flow }},/*
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
@@ -186,9 +185,6 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                         } 
                       }
               }
-            },/*
-            {           
-              $sort:{ '$cont.order':1 }
             },
             {  $addFields:{
                 'combinedC':{
@@ -221,13 +217,14 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
             },*/
             {
               $project:{
+                combinedC:1,
                 _id:0
               }
             }
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
-              res.status(200).send(result);
+              res.status(200).send(result[0].combinedC);
         });
         
   });
