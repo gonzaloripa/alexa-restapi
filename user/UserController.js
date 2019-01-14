@@ -170,6 +170,9 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                 foreignField: '_id',
                 as: 'conj'
               }
+            },
+            {
+                $replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$conj", 0 ] }, "$$ROOT" ] } }
             },/*
             { $unwind: '$conj' },
             { $group: {
@@ -218,6 +221,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
             },*/
             {
               $project:{
+                conj:0,
                 //combinedC:1,
                 _id:0
               }
