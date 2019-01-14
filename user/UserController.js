@@ -163,8 +163,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
       Model.Flow.aggregate(
            [
             { $match: { nombreConjunto: req.params.flow, user:new mongoose.Types.ObjectId(userId._id) }},
-            { $unwind: '$contents' },/*
-            { $project: { contents:1, nombreConjunto:1 }},
+            { $unwind: '$contents' },
             { $lookup: {
                 from: 'contents',
                 localField: 'contents._id',
@@ -172,7 +171,8 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                 as: 'conj'
               }
             },
-            {
+            { $addFields: {"content": {"$mergeObjects": ["$contents", "$conj"]} } }, 
+            /*{
                 $replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$conj", 0 ] }, "$$ROOT" ] } }
             },/*
             { $unwind: '$conj' },
