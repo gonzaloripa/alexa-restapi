@@ -185,7 +185,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                         } 
                       }
               }
-            },
+            },/*
             {           
               $sort:{ '$cont.order':1 }
             },
@@ -220,14 +220,14 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
             },*/
             {
               $project:{
-                combinedC:1,
+                cont:1,
                 _id:0
               }
             }
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
-              res.status(200).send(result[0].combinedC);
+              res.status(200).send(result[0].cont);
         });
         
   });
