@@ -170,7 +170,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                 foreignField: '_id',
                 as: 'conj'
               }
-            },
+            },/*
             { $addFields: {"content": {"$mergeObjects": ["$contents", "$conj"]} } }, 
             /*{
                 $replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$conj", 0 ] }, "$$ROOT" ] } }
