@@ -176,7 +176,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
               {
                 'user':1,
                 'nombreConjunto':1,
-                'content':{
+                'contenidos':{
                   '_id':'$contents._id',
                   'order':'$contents.order',
                   'info':'$conj'
@@ -187,18 +187,17 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
             { $addFields: {"content": {"$mergeObjects": ["$contents", "$conj"]} } }, 
             /*{
                 $replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$conj", 0 ] }, "$$ROOT" ] } }
-            },/*
-            { $unwind: '$conj' },
+            },
             { $group: {
                 _id: '$_id',
                 contenidos: {$push: '$conj'}
               }
             },
-            { $unwind: '$contenidos'},
+            { $unwind: '$contenidos'},*/
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.content',identificador:'$contenidos.identificador',categoria:'$contenidos.categoria', order:'$contents.order'}] , else: [{siblingsId:'$contenidos.siblings', identificador:'$contenidos.identificador', categoria:'$contenidos.categoria',order:'$contents.order'}]  
+                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.info.content',identificador:'$contenidos.info.identificador',categoria:'$contenidos.info.categoria', order:'$contenidos.order'}] , else: [{siblingsId:'$contenidos.info.siblings', identificador:'$contenidos.info.identificador', categoria:'$contenidos.info.categoria',order:'$contenidos.order'}]  
                            } 
                         } 
                       }
