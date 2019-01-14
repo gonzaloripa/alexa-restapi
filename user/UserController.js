@@ -170,8 +170,8 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                 as: 'contents'
               }
             },
-            { $unwind: '$contents' },/*
-            { $match: { nombreConjunto: req.params.flow }},/*
+            { $unwind: '$contents' },
+            { $match: { '$contents.nombreConjunto': req.params.flow }},/*
             { $group: {
                 _id: '$_id',
                 contenidos: {$push: '$contents'}
