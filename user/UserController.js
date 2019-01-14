@@ -220,14 +220,13 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
             },*/
             {
               $project:{
-                cont:1,
                 _id:0
               }
             }
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
-              res.status(200).send(result[0].cont);
+              res.status(200).send(result);
         });
         
   });
