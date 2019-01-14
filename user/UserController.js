@@ -177,7 +177,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
               }
             },
             { $unwind: '$contenidos'},
-            { $match: {nombreConjunto:req.params.flow }},/*
+            { $match: {'contenidos.nombreConjunto':req.params.flow }},/*
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
