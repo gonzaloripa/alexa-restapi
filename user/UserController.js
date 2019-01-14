@@ -160,17 +160,18 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
 
     Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
       console.log(userId)
-      Model.Flow.aggregate(
+      Model.Content.aggregate(
            [
-            { $match: { nombreConjunto: req.params.flow, user:new mongoose.Types.ObjectId(userId._id) }},
+            { $match: { user:new mongoose.Types.ObjectId(userId._id) }},
             { $lookup: {
-                from: 'contents',
-                localField: 'contents._id',
-                foreignField: '_id',
+                from: 'flows',
+                localField: '_id',
+                foreignField: 'contents._id',
                 as: 'contents'
               }
             },
-            { $unwind: '$contents' },/*
+            { $unwind: '$contents' },
+            { $match: { nombreConjunto: req.params.flow }},/*
             { $group: {
                 _id: '$_id',
                 contenidos: {$push: '$contents'}
