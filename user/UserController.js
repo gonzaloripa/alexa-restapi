@@ -163,24 +163,24 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
       Model.Flow.aggregate(
            [
             { $match: { nombreConjunto: req.params.flow, user:new mongoose.Types.ObjectId(userId._id) }},
-            /*{ $lookup: {
+            { $lookup: {
                 from: 'contents',
                 localField: 'contents._id',
                 foreignField: '_id',
-                as: 'contents'
-              }
-            },/*
-            { $unwind: '$contents' },
-            { $group: {
-                _id: '$_id',
-                contenidos: {$push: '$contents'}
+                as: 'conj'
               }
             },
-            { $unwind: '$contenidos'},
+            { $unwind: '$conj' },
+            { $group: {
+                _id: '$_id',
+                contenidos: {$push: '$conj'}
+              }
+            },
+            { $unwind: '$contenidos'},/*
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.content',identificador:'$contenidos.identificador',categoria:'$contenidos.categoria'}] , else: [{siblingsId:'$contenidos.siblings', identificador:'$contenidos.identificador', categoria:'$contenidos.categoria'}]  
+                    $cond: { if: { $eq: ['$contenidos.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.content',identificador:'$contenidos.identificador',categoria:'$contenidos.categoria', order:'$contents.order'}] , else: [{siblingsId:'$contenidos.siblings', identificador:'$contenidos.identificador', categoria:'$contenidos.categoria',order:'$contents.order'}]  
                            } 
                         } 
                       }
