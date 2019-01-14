@@ -235,14 +235,14 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
             {
               $project:{
                 //conj:0,
-                //combinedC:1,
+                combinedC:1,
                 _id:0
               }
             }
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
-              res.status(200).send(result);
+              res.status(200).send(result[0].combinedC);
         });
         
   });
