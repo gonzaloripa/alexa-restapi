@@ -163,7 +163,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
       Model.Flow.aggregate(
            [
             { $match: { nombreConjunto: req.params.flow, user:new mongoose.Types.ObjectId(userId._id) }},
-            { $lookup: {
+            /*{ $lookup: {
                 from: 'contents',
                 localField: 'contents._id',
                 foreignField: '_id',
