@@ -170,7 +170,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                 as: 'contents'
               }
             },
-            { $unwind: '$contents' },
+            { $unwind: '$contents' },/*
             { $group: {
                 _id: '$_id',
                 contenidos: {$push: '$contents'}
