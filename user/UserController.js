@@ -405,27 +405,32 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
 
     Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
       console.log(userId)
-      Model.Flow.aggregate(
-           [
+      Model.Flow.aggregate([
             { $match: { nombreConjunto: req.params.flow, user:new mongoose.Types.ObjectId(userId._id) }},
+            { $unwind: '$contents' },
             { $lookup: {
                 from: 'contents',
-                localField: 'contents',
+                localField: 'contents._id',
                 foreignField: '_id',
-                as: 'contents'
+                as: 'conj'
               }
             },
-            { $unwind: '$contents' },
-            { $group: {
-                _id: '$_id',
-                contenidos: {$push: '$contents'}
-              }
+            { $unwind: '$conj' },
+            { $project: 
+              {
+                'user':1,
+                'nombreConjunto':1,
+                'contenidos':{
+                  '_id':'$contents._id',
+                  'order':'$contents.order',
+                  'info':'$conj'
+                }
+              } 
             },
-            { $unwind: '$contenidos'},
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.kind', 'SingleContent' ] }, then: ['$contenidos.content'] , else: '$contenidos.siblings'  
+                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.info.content',identificador:'$contenidos.info.identificador',categoria:'$contenidos.info.categoria', order:'$contenidos.order'}] , else: [{siblingsId:'$contenidos.info.siblings', identificador:'$contenidos.info.identificador', categoria:'$contenidos.info.categoria',order:'$contenidos.order'}]  
                            } 
                         } 
                       }
@@ -441,26 +446,29 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                  }
                }
             },
-            { $unwind: '$combinedC'},
+            { $unwind: '$combinedC'},/*
             { $lookup: {
                 from: 'infocontents',
                 localField: 'combinedC',
                 foreignField: '_id',
                 as: 'infocontents'
               }
-            },
+            },*/
             {
               $project:{
-                contenidos:'$infocontents',
+                //conj:0,
+                //contenidos:'$infocontents',
                 _id:0
               }
+            },
+            { 
+              $sort: {'combinedC.order': 1 }
             }
            ])
-        .exec(function (err,result) {
-            console.log("-Contents id %s ",result)
+          .exec(function (err,result) {
+              console.log("-Contents id %s ",result)
               res.status(200).send(result);
-        });
-        
+          });   
   });
 })  
     /* 
