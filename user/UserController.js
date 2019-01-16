@@ -320,8 +320,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
             },
             { $unwind: '$conj' },
             { $project: 
-              { contents:1,
-                conj:1,
+              { 
                 'user':1,
                 'nombreConjunto':1,
                 'contenidos':{
@@ -342,7 +341,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
               }
             },
             { $unwind: '$contenidos'},
-            { $group: {
+            */{ $group: {
                 _id: '$_id',
                 cont: { $push: {
                     $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.info.content',identificador:'$contenidos.info.identificador',categoria:'$contenidos.info.categoria', order:'$contenidos.order'}] , else: [{siblingsId:'$contenidos.info.siblings', identificador:'$contenidos.info.identificador', categoria:'$contenidos.info.categoria',order:'$contenidos.order'}]  
@@ -379,14 +378,14 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
                 foreignField: '_id',
                 as: 'infocontents'
               }
-            },
+            },*/
             {
               $project:{
                 //conj:0,
                 combinedC:1,
                 _id:0
               }
-            },
+            }/*,
             { 
               $sort: {'combinedC.order': 1 }
             }*/
