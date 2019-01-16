@@ -430,7 +430,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.info.content',identificador:'$contenidos.info.identificador',categoria:'$contenidos.info.categoria', order:'$contenidos.order'}] , else: [{siblingsId:'$contenidos.info.siblings', identificador:'$contenidos.info.identificador', categoria:'$contenidos.info.categoria',order:'$contenidos.order'}]  
+                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.info.content',order:'$contenidos.order'}] , else: [{contentId:'$contenidos.info.siblings',order:'$contenidos.order'}]  
                            } 
                         } 
                       }
@@ -446,17 +446,17 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                  }
                }
             },
-            /*{ $unwind: '$combinedC'},/*
+            { $unwind: '$combinedC'},
             { $lookup: {
                 from: 'infocontents',
-                localField: 'combinedC',
+                localField: 'combinedC.contentId',
                 foreignField: '_id',
                 as: 'infocontents'
               }
-            },*/
+            },
             {
               $project:{
-                //conj:0,
+                infoContents:1,
                 combinedC:1,
                 _id:0
               }
@@ -467,7 +467,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
            ])
           .exec(function (err,result) {
               console.log("-Contents id %s ",result)
-              res.status(200).send(result[0].combinedC);
+              res.status(200).send(result);
           });   
   });
 })  
