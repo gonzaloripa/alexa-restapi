@@ -329,7 +329,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
                   'info':'$conj'
                 }
               } 
-            },
+            }/*
             /*
             { $addFields: {"content": {"$mergeObjects": ["$contents", "$conj"]} } }, 
             /*{
@@ -341,7 +341,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
               }
             },
             { $unwind: '$contenidos'},
-            */{ $group: {
+            /{ $group: {
                 _id: '$_id',
                 cont: { $push: {
                     $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.info.content',identificador:'$contenidos.info.identificador',categoria:'$contenidos.info.categoria', order:'$contenidos.order'}] , else: [{siblingsId:'$contenidos.info.siblings', identificador:'$contenidos.info.identificador', categoria:'$contenidos.info.categoria',order:'$contenidos.order'}]  
@@ -378,7 +378,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
                 foreignField: '_id',
                 as: 'infocontents'
               }
-            },*/
+            },
             {
               $project:{
                 //conj:0,
