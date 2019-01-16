@@ -536,7 +536,8 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
             },
             {
               $project:{
-                contenidos:'$infocontents',
+                infocontents:1,
+                //contenidos:'$infocontents',
                 _id:0
               }
             }
