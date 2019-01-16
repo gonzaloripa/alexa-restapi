@@ -379,6 +379,9 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
                 as: 'infocontents'
               }
             },*/
+            { $group: {
+                _id: '$combinedC.flujo',
+            },
             {
               $project:{
                 //conj:0,
