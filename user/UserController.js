@@ -446,17 +446,17 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                  }
                }
             },
-            { $unwind: '$combinedC'},/*
+            { $unwind: '$combinedC'},
             { $lookup: {
                 from: 'infocontents',
                 localField: 'combinedC.contentId',
                 foreignField: '_id',
                 as: 'infocontents'
               }
-            },*/
+            },
             {
               $project:{
-                //infoContents:1,
+                infoContents:1,
                 combinedC:1,
                 _id:0
               }
