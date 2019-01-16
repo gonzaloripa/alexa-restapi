@@ -383,7 +383,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
             { 
               $group:{
                 _id: '$combinedC.flujo',
-                flujo:'$combinedC.flujo',
+                //flujo:'$combinedC.flujo',
                 contenidos: {$push: { contentId: '$combinedC.contentId',
                                       categoria:'$combinedC.categoria',
                                       identificador:'$combinedC.identificador',
@@ -396,9 +396,9 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
               $project:{
                 //conj:0,
                 //nombreConjunto:1,
-                flujo:1,
+                //flujo:1,
                 contenidos:1,
-                _id:0
+                _id:1
               }
             }/*,
             { 
