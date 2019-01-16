@@ -344,7 +344,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
             */{ $group: {
                 _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.info.content',identificador:'$contenidos.info.identificador',categoria:'$contenidos.info.categoria', order:'$contenidos.order', flujo:'$nombreConjunto'}] , else: [{siblingsId:'$contenidos.info.siblings', identificador:'$contenidos.info.identificador', categoria:'$contenidos.info.categoria',order:'$contenidos.order',flujo:'$nombreConjunto'}]  
+                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.info.content',identificador:'$contenidos.info.identificador',categoria:'$contenidos.info.categoria', order:'$contenidos.order', flujo:'nombreConjunto'}] , else: [{siblingsId:'$contenidos.info.siblings', identificador:'$contenidos.info.identificador', categoria:'$contenidos.info.categoria',order:'$contenidos.order',flujo:'nombreConjunto'}]  
                            } 
                         } 
                       }
