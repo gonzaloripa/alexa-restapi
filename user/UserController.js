@@ -382,6 +382,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
             {
               $project:{
                 //conj:0,
+                nombreConjunto:1,
                 combinedC:1,
                 _id:0
               }
