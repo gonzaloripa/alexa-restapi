@@ -426,7 +426,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                   'info':'$conj'
                 }
               } 
-            },
+            },/*
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
@@ -463,7 +463,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             },
             { 
               $sort: {'cont.order': 1 }
-            }
+            }*/
            ])
           .exec(function (err,result) {
               console.log("-Contents id %s ",result)
