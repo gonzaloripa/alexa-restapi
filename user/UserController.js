@@ -460,10 +460,10 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 //combinedC:1,
                 _id:0
               }
-            }/*,
+            },
             { 
               $sort: {'cont.order': 1 }
-            }*/
+            }
            ])
           .exec(function (err,result) {
               console.log("-Contents id %s ",result)
