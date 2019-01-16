@@ -396,7 +396,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
                 //conj:0,
                 //nombreConjunto:1,
                 contenidos:1,
-                _id:0
+                _id:1
               }
             }/*,
             { 
