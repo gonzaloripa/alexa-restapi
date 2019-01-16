@@ -320,7 +320,8 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
             },
             { $unwind: '$conj' },
             { $project: 
-              {
+              { contents:1,
+                conj:1,
                 'user':1,
                 'nombreConjunto':1,
                 'contenidos':{
