@@ -329,7 +329,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
                   'info':'$conj'
                 }
               } 
-            },
+            }
             /*
             { $addFields: {"content": {"$mergeObjects": ["$contents", "$conj"]} } }, 
             /*{
@@ -340,7 +340,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
                 contenidos: {$push: '$conj'}
               }
             },
-            { $unwind: '$contenidos'},*/
+            { $unwind: '$contenidos'},
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
@@ -378,7 +378,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
                 foreignField: '_id',
                 as: 'infocontents'
               }
-            },*/
+            },
             {
               $project:{
                 //conj:0,
@@ -388,7 +388,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
             },
             { 
               $sort: {'combinedC.order': 1 }
-            }
+            }*/
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
