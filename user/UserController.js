@@ -426,7 +426,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                   'info':'$conj'
                 }
               } 
-            },/*
+            },
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
@@ -446,24 +446,24 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                  }
                }
             },
-            { $unwind: '$combinedC'},
+            { $unwind: '$combinedC'},/*
             { $lookup: {
                 from: 'infocontents',
                 localField: 'combinedC',
                 foreignField: '_id',
                 as: 'infocontents'
               }
-            },
+            },*/
             {
               $project:{
-                infoContents:1,
-                //combinedC:1,
+                //infoContents:1,
+                combinedC:1,
                 _id:0
               }
             },
             { 
               $sort: {'cont.order': 1 }
-            }*/
+            }
            ])
           .exec(function (err,result) {
               console.log("-Contents id %s ",result)
@@ -526,18 +526,18 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
                  }
                }
             },
-            { $unwind: '$combinedC'},
+            { $unwind: '$combinedC'},/*
             { $lookup: {
                 from: 'infocontents',
                 localField: 'combinedC',
                 foreignField: '_id',
                 as: 'infocontents'
               }
-            },
+            },*/
             {
               $project:{
-                infocontents:1,
-                //contenidos:'$infocontents',
+                //infocontents:1,
+                combinedC:1,
                 _id:0
               }
             }
