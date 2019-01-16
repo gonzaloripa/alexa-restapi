@@ -446,7 +446,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                  }
                }
             },
-            { $unwind: '$combinedC'},/*
+            /*{ $unwind: '$combinedC'},/*
             { $lookup: {
                 from: 'infocontents',
                 localField: 'combinedC',
@@ -467,7 +467,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
            ])
           .exec(function (err,result) {
               console.log("-Contents id %s ",result)
-              res.status(200).send(result);
+              res.status(200).send(result[0].combinedC);
           });   
   });
 })  
