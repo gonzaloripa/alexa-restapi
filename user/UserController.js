@@ -457,7 +457,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             {
               $project:{
                 //conj:0,
-                //contenidos:'$infocontents',
+                combinedC:1,
                 _id:0
               }
             },
