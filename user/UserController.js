@@ -344,7 +344,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
             */{ $group: {
                 _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{flujo:'$nombreConjunto',contenidos:{contentId:'$contenidos.info.content',identificador:'$contenidos.info.identificador',categoria:'$contenidos.info.categoria', order:'$contenidos.order'}}] , else: [{flujo:'$nombreConjunto',contenidos:{siblingsId:'$contenidos.info.siblings', identificador:'$contenidos.info.identificador', categoria:'$contenidos.info.categoria',order:'$contenidos.order'}}]  
+                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.info.content',identificador:'$contenidos.info.identificador',categoria:'$contenidos.info.categoria', order:'$contenidos.order',flujo:'$nombreConjunto'}] , else: [{siblingsId:'$contenidos.info.siblings', identificador:'$contenidos.info.identificador', categoria:'$contenidos.info.categoria',order:'$contenidos.order',flujo:'$nombreConjunto'}]  
                            } 
                         } 
                       }
@@ -378,19 +378,19 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
                 foreignField: '_id',
                 as: 'infocontents'
               }
-            },
+            },*/
 
-            { $group: 
-              {
+            { 
+              $group:{
                 _id: '$combinedC.flujo',
-                contenidos:'$combinedC'
+                contenidos: {$push: '$combinedC'}
               }
-            },    */        
+            },            
             {
               $project:{
                 //conj:0,
                 //nombreConjunto:1,
-                combinedC:1,
+                contenidos:1,
                 _id:0
               }
             }/*,
