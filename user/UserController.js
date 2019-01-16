@@ -329,7 +329,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
                   'info':'$conj'
                 }
               } 
-            }
+            },
             /*
             { $addFields: {"content": {"$mergeObjects": ["$contents", "$conj"]} } }, 
             /*{
