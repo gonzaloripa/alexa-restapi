@@ -379,6 +379,11 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
                 as: 'infocontents'
               }
             },*/
+
+            { $group: {
+                _id: '$combinedC.flujo'
+              }
+            },            
             {
               $project:{
                 //conj:0,
@@ -386,11 +391,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
                 combinedC:1,
                 _id:0
               }
-            },            
-            { $group: {
-                _id: '$combinedC.flujo'
-              }
-            },/*,
+            }/*,
             { 
               $sort: {'combinedC.order': 1 }
             }*/
