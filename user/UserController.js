@@ -380,15 +380,17 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
               }
             },*/
 
-            { $group: {
-                _id: '$combinedC.flujo'
+            { $group: 
+              {
+                _id: '$combinedC.flujo',
+                contenidos:'$combinedC'
               }
             },            
             {
               $project:{
                 //conj:0,
                 //nombreConjunto:1,
-                combinedC:1,
+                contenidos:1,
                 _id:0
               }
             }/*,
