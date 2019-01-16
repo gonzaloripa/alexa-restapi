@@ -392,7 +392,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
-              res.status(200).send(result.combinedC);
+              res.status(200).send(result);
         });
         
   });
