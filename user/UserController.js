@@ -729,10 +729,10 @@ router.post('/createFlow/user/:name', function (req, res) {
                   console.log(contents) //idContents= ["",""]
                   if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
                   var idContents = [];
-                  req.body.contents.forEach((cont)=>{
+                  req.body.contents.forEach((cont,index)=>{
                     let indice = contents.findIndex(c => c.identificador === cont)
                     if(indice != -1) 
-                      idContents.push( contents[indice]._id )
+                      idContents.push( { _id:contents[indice]._id, order:index } )
                   })
                   console.log(idContents);
                   
@@ -759,11 +759,24 @@ router.put('/updateFlow/user/:name', function (req, res) {
         Model.User.findOne({'name':req.params.name.toLowerCase()}, '_id', 
         function(err,userId){
           if (err | userId == "") return res.status(404).send("No se pudo hallar al usuario");
-
-          Model.Flow.findOneAndUpdate({user:userId, nombreConjunto:req.body.nombreConjunto}, {contents:req.body.contents}, function(e,flow){
-            console.log(flow)
-            if (err | flow == null) return res.status(404).send("No se pudo modificar el flujo");
-            res.status(200).send(req.body);
+          
+          Model.Content.find({ user:userId, identificador: { $in: req.body.contents }}, '_id identificador'
+          ,function(err,contents){
+              console.log(contents) //idContents= ["",""]
+              if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
+              var idContents = [];
+              req.body.contents.forEach((cont,index)=>{
+              let indice = contents.findIndex(c => c.identificador === cont)
+              if(indice != -1) 
+                idContents.push( { _id:contents[indice]._id, order:index } )
+              })
+              console.log(idContents);  
+            
+              Model.Flow.findOneAndUpdate({user:userId, nombreConjunto:req.body.nombreConjunto}, {contents:idContents}, function(e,flow){
+                console.log(flow)
+                if (err | flow == null) return res.status(404).send("No se pudo modificar el flujo");
+                res.status(200).send(req.body);
+              })
           })
         })
 });
