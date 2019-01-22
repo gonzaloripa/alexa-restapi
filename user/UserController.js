@@ -27,10 +27,10 @@ myEmitter.on('event', () => {
   ready = true
 })
 
-router.get('/initRequest/:url/:path', function(req,response){
+router.get('/initRequest/', function(req,response){
   response.send("Llego el aviso")
   
-  fetch("http://localhost:8080/contents/getBodyContent?url="+url+"&path="+path)
+  fetch("http://localhost:8080/contents/getBodyContent?url="+req.query.url+"&path="+req.query.path)
     .then(res => {
         console.log("devuelve "+res.ok)
         if(res.ok)
