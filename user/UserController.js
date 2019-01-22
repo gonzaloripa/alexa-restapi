@@ -15,8 +15,17 @@ router.use(bodyParser.json());
            category:"Politica"
           };*/  
 //var userId ='amzn1.ask.account.AEM7C7O3S3FKO4J77F7YYBP5CXPUVG4VHEW4MM77YUETWFCQAMJE4PTXRJCZAJTWC2FKIP3MEVBILLNA2TK7VDHVBHBDA7ZSFLFRYWYE2U4WBV64CWFAKL74DHSBJ3KHY2VPD6HY7G5AWN5XUUIQCJYOQ3VAMD32MKA63PW5ZEDG5F2AXOIL5VNSGPKZZDY3IFDK4V75RD4CKYY';
+const EventEmitter = require('events');
+class MyEmitter extends EventEmitter {}
 
+const myEmitter = new MyEmitter();
 var contents = []
+var ready = false;
+
+myEmitter.on('event', () => {
+  console.log('The first content is ready')
+  ready = true
+})
 
 router.get('/initRequest/:url/:path', function(req,response){
   response.send("Llego el aviso")
@@ -29,16 +38,22 @@ router.get('/initRequest/:url/:path', function(req,response){
     })
     .then(json => {                
         console.log('body:', json); 
-        contents.push(json)    
+        contents.push(json)
+        myEmitter.emit('event')    
     })
 })
+
 
 
 router.get('/getFirstContent', async (req,response)=>{
   //var url="https://infocielo.com/"
   //var path="//*[@id='modulo_especial_2']/div[2]/article/a"
-  
-  response.send(await contents[0])    
+  if(ready){
+    ready = false
+    response.send(contents[0]) 
+  }
+  else
+    resonse.send("The content is not ready yet")   
   //response.send(array)
 })
 
