@@ -16,28 +16,29 @@ router.use(bodyParser.json());
           };*/  
 //var userId ='amzn1.ask.account.AEM7C7O3S3FKO4J77F7YYBP5CXPUVG4VHEW4MM77YUETWFCQAMJE4PTXRJCZAJTWC2FKIP3MEVBILLNA2TK7VDHVBHBDA7ZSFLFRYWYE2U4WBV64CWFAKL74DHSBJ3KHY2VPD6HY7G5AWN5XUUIQCJYOQ3VAMD32MKA63PW5ZEDG5F2AXOIL5VNSGPKZZDY3IFDK4V75RD4CKYY';
 
-router.get('/initRequest', function(req,response){
+var contents = []
+
+router.get('/initRequest/:url/:path', function(req,response){
   response.send("Llego el aviso")
-  setTimeout(()=>{
-    console.log("---Despues del timeout")
-  },6000)
-})
-
-
-router.get('/getFirstContent/:url/:path', function(req,response){
-  //var url="https://infocielo.com/"
-  //var path="//*[@id='modulo_especial_2']/div[2]/article/a"
-
+  
   fetch("http://localhost:8080/contents/getBodyContent?url="+url+"&path="+path)
     .then(res => {
         console.log("devuelve "+res.ok)
         if(res.ok)
-            return res.json()
+          return res.json()
     })
     .then(json => {                
         console.log('body:', json); 
-        response.send(json)    
+        contents.push(json)    
     })
+})
+
+
+router.get('/getFirstContent', async (req,response)=>{
+  //var url="https://infocielo.com/"
+  //var path="//*[@id='modulo_especial_2']/div[2]/article/a"
+  
+  response.send(await contents[0])    
   //response.send(array)
 })
 
