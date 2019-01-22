@@ -53,7 +53,7 @@ router.get('/getFirstContent', async (req,response)=>{
     response.send(contents[0]) 
   }
   else
-    resonse.send("The content is not ready yet")   
+    response.send("The content is not ready yet")   
   //response.send(array)
 })
 
