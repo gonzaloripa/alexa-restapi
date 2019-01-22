@@ -7,9 +7,9 @@
     "start ": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "engines" : { 
-    "node" : "8.10.0",
-    "npm":"5.7.1"
+  "engines": {
+    "node": "8.10.0",
+    "npm": "5.7.1"
   },
   "author": "",
   "license": "ISC",
@@ -17,7 +17,7 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.3",
     "http-auth": "^3.2.3",
-    "mongoose": "^5.3.16",    
+    "mongoose": "^5.3.16",
     "node-fetch": "^2.2.0"
   }
 }

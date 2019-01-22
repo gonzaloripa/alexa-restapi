@@ -1,7 +1,7 @@
 // app.js: for configuring the app
 var express = require('express');
 var app = express();
-var db = require('./db');
+//var db = require('./db');
 
 var UserController = require('./user/UserController');
 var allowCrossDomain = function(req, res, next) {

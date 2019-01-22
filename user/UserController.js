@@ -4,16 +4,74 @@ const express = require('express');
 const router = express.Router();//Se usa para crear un subconjunto de rutas
 const bodyParser = require('body-parser');
 //const fetch = require('node-fetch');
+const fetch = require('node-fetch');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
-const Model = require('./Model');
+//const Model = require('./Model');
 
     /*var obj = req.body.noticia;{url:'https://diariohoy.net',
            xpath:"body/div[1]/div[1]/div[1]/div[2]/section[1]/article[1]/a[1]/h2[1]",
            category:"Politica"
           };*/  
 //var userId ='amzn1.ask.account.AEM7C7O3S3FKO4J77F7YYBP5CXPUVG4VHEW4MM77YUETWFCQAMJE4PTXRJCZAJTWC2FKIP3MEVBILLNA2TK7VDHVBHBDA7ZSFLFRYWYE2U4WBV64CWFAKL74DHSBJ3KHY2VPD6HY7G5AWN5XUUIQCJYOQ3VAMD32MKA63PW5ZEDG5F2AXOIL5VNSGPKZZDY3IFDK4V75RD4CKYY';
+
+router.get('/initRequest', function(req,response){
+  response.send("Llego el aviso")
+  setTimeout(()=>{
+    console.log("---Despues del timeout")
+  },6000)
+})
+
+
+router.get('/getFirstContent/:url/:path', function(req,response){
+  //var url="https://infocielo.com/"
+  //var path="//*[@id='modulo_especial_2']/div[2]/article/a"
+
+  fetch("http://localhost:8080/contents/getBodyContent?url="+url+"&path="+path)
+    .then(res => {
+        console.log("devuelve "+res.ok)
+        if(res.ok)
+            return res.json()
+    })
+    .then(json => {                
+        console.log('body:', json); 
+        response.send(json)    
+    })
+  //response.send(array)
+})
+
+router.get('/getContents', function(req,response){
+  var a = []
+  var itemsProcessed = 0;
+  var url="https://infocielo.com/"
+  var path="//*[@id='modulo_especial_2']/div[2]/article/a"
+  var x = [1,2,3,4,5,6]
+  
+  function callback () { 
+    console.log(a);
+    response.send(a) 
+  }
+
+        x.forEach(async(item,index,array)=>{
+          await fetch("http://localhost:8080/contents/getBodyContent?url="+url+"&path="+path)
+          .then(res => {
+              console.log("devuelve "+res.ok)
+              if(res.ok)
+                  return res.json()
+          })
+          .then(json => {                
+              //console.log('body:', json); 
+              a[index]= json
+              itemsProcessed++;
+              if(itemsProcessed === array.length) {
+                callback();
+              }
+          })
+        })
+
+  //response.send(array)
+})
 
 // CREATES A NEW USER
 router.post('/newUser', function (req, res) {
