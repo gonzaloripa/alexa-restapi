@@ -66,7 +66,7 @@ router.get('/getFirstContent', async (req,response)=>{
     response.status(200).send(contents[0]) 
   }
   else{
-    response.status(504)send("The content is not ready yet")   
+    response.status(504).send("The content is not ready yet")   
   }
 })
 
