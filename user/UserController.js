@@ -3,18 +3,13 @@ const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();//Se usa para crear un subconjunto de rutas
 const bodyParser = require('body-parser');
-//const fetch = require('node-fetch');
 const fetch = require('node-fetch');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
-//const Model = require('./Model');
-
-    /*var obj = req.body.noticia;{url:'https://diariohoy.net',
-           xpath:"body/div[1]/div[1]/div[1]/div[2]/section[1]/article[1]/a[1]/h2[1]",
-           category:"Politica"
-          };*/  
+const Model = require('./Model');
 //var userId ='amzn1.ask.account.AEM7C7O3S3FKO4J77F7YYBP5CXPUVG4VHEW4MM77YUETWFCQAMJE4PTXRJCZAJTWC2FKIP3MEVBILLNA2TK7VDHVBHBDA7ZSFLFRYWYE2U4WBV64CWFAKL74DHSBJ3KHY2VPD6HY7G5AWN5XUUIQCJYOQ3VAMD32MKA63PW5ZEDG5F2AXOIL5VNSGPKZZDY3IFDK4V75RD4CKYY';
+
 const EventEmitter = require('events');
 class MyEmitter extends EventEmitter {}
 
@@ -32,8 +27,22 @@ myEmitter.on('secondEvent', () => {
   ready = true
 })
 
+
+
+//--------------------------  ROUTES -----------------------------------
+
+/* SKILL
+* 
+* Ver si agregar un request (o manejarlo desde la skill) para que, 
+* una vez obtenidos todos los contents, 
+* solo los ordene por el criterio que diga el usuario, 
+* sin tener que mandar request todo el tiempo a esta API para obtener por Nightmare 
+* los mismos contents. (asociar info con criterios en un map) 
+*
+*/
+
 router.get('/initRequest/', function(req,response){
-  response.send("Llego el aviso")
+  response.status(200).send("Llego el aviso")
   
   fetch("http://localhost:8080/contents/getBodyContent?url="+req.query.url+"&path="+req.query.path)
     .then(res => {
@@ -54,22 +63,22 @@ router.get('/getFirstContent', async (req,response)=>{
 
   if(ready == true){
     ready = false
-    response.send(contents[0]) 
+    response.status(200).send(contents[0]) 
   }
   else{
-    response.send("The content is not ready yet")   
+    response.status(504)send("The content is not ready yet")   
   }
 })
 
-router.get('/nextRequest/', function(req,response){
-  response.send("Llego el aviso")
+router.post('/nextRequest/', function(req,response){
+  //req.body = [{},{}]
+  response.status(200).send("Llego el aviso")
   
   contents.pop();
-  var result = []
   var itemsProcessed = 0;
   var url="https://infocielo.com/"
   var path="//*[@id='modulo_especial_2']/div[2]/article/a"
-  var cont = [1,2,3,4,5,6]
+  var cont = req.body
   
   /*function callback () { 
     console.log(result);
@@ -77,16 +86,16 @@ router.get('/nextRequest/', function(req,response){
     myEmitter.emit('initEvent')  
   }*/
 
-  cont.forEach(async(item,index,array)=>{
+  cont.forEach(async(content,index,array)=>{
 
-    await fetch("http://localhost:8080/contents/getBodyContent?url="+url+"&path="+path)
+    await fetch("http://localhost:8080/contents/getBodyContent?url="+content.url+"&path="+content.xpath)
     .then(res => {
         console.log("devuelve "+res.ok)
         if(res.ok)
           return res.json()
     })
     .then(json => {                
-        result[index]= json
+        contents[index]= json
         itemsProcessed++;
         if(itemsProcessed === array.length) 
           myEmitter.emit('secondEvent')  
@@ -97,10 +106,10 @@ router.get('/nextRequest/', function(req,response){
 router.get('/getContents', function(req,response){
   if(ready == true){
     ready = false
-    response.send(contents) 
+    response.status(200).send(contents) 
   }
   else{
-    response.send("The contents are not ready yet")   
+    response.status(504).send("The contents are not ready yet")   
   }
 })
 
