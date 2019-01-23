@@ -51,7 +51,7 @@ router.get('/initRequest/', function(req,response){
           return res.json()
     })
     .then(json => {                
-        console.log('body:', json); 
+        console.log('body:', json); //json={contenido,host,title,intro} 
         contents.push(json)
         myEmitter.emit('initEvent')    
     })
@@ -74,11 +74,11 @@ router.post('/nextRequest/', function(req,response){
   //req.body = [{},{}]
   response.status(200).send("Llego el aviso")
   
-  contents.pop();
+  contents=[];
   var itemsProcessed = 0;
   var url="https://infocielo.com/"
   var path="//*[@id='modulo_especial_2']/div[2]/article/a"
-  var cont = req.body
+  var cont = req.body //cont= [{url,xpath,_id},{}]
   
   /*function callback () { 
     console.log(result);
@@ -87,7 +87,7 @@ router.post('/nextRequest/', function(req,response){
   }*/
 
   cont.forEach(async(content,index,array)=>{
-
+                       //nightmare-herokuapp
     await fetch("http://localhost:8080/contents/getBodyContent?url="+content.url+"&path="+content.xpath)
     .then(res => {
         console.log("devuelve "+res.ok)
@@ -95,7 +95,7 @@ router.post('/nextRequest/', function(req,response){
           return res.json()
     })
     .then(json => {                
-        contents[index]= json
+        contents[index]= json //json={contenido,host,title,intro}
         itemsProcessed++;
         if(itemsProcessed === array.length) 
           myEmitter.emit('secondEvent')  
@@ -111,6 +111,12 @@ router.get('/getContents', function(req,response){
   else{
     response.status(504).send("The contents are not ready yet")   
   }
+})
+
+//Obtener cantidad de contenidos por flujo del usuario
+router.get('/getCountContents/:flow/:user',function(req,response){
+  Model.Flow.find()
+  response.status(200).send(count)
 })
 
 // CREATES A NEW USER
@@ -667,6 +673,9 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             },
             { 
               $sort: {'cont.order': 1 }
+            },
+            {
+              $limit:2
             }
            ])
           .exec(function (err,result) {
