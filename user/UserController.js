@@ -113,12 +113,6 @@ router.get('/getContents', function(req,response){
   }
 })
 
-//Obtener cantidad de contenidos por flujo del usuario
-router.get('/getCountContents/:flow/:user',function(req,response){
-  Model.Flow.find()
-  response.status(200).send(count)
-})
-
 // CREATES A NEW USER
 router.post('/newUser', function (req, res) {
   	var name = req.body.name.toLowerCase(); //'gonza'
@@ -673,9 +667,6 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             },
             { 
               $sort: {'cont.order': 1 }
-            },
-            {
-              $limit:2
             }
            ])
           .exec(function (err,result) {
