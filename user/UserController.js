@@ -22,8 +22,13 @@ const myEmitter = new MyEmitter();
 var contents = []
 var ready = false;
 
-myEmitter.on('event', () => {
+myEmitter.on('initEvent', () => {
   console.log('The first content is ready')
+  ready = true
+})
+
+myEmitter.on('secondEvent', () => {
+  console.log('The contents are ready')
   ready = true
 })
 
@@ -39,7 +44,7 @@ router.get('/initRequest/', function(req,response){
     .then(json => {                
         console.log('body:', json); 
         contents.push(json)
-        myEmitter.emit('event')    
+        myEmitter.emit('initEvent')    
     })
 })
 
@@ -48,12 +53,13 @@ router.get('/initRequest/', function(req,response){
 router.get('/getFirstContent', async (req,response)=>{
   //var url="https://infocielo.com/"
   //var path="//*[@id='modulo_especial_2']/div[2]/article/a"
-  if(ready){
+  if(ready == true){
     ready = false
     response.send(contents[0]) 
   }
-  else
+  else{
     response.send("The content is not ready yet")   
+  }
   //response.send(array)
 })
 
