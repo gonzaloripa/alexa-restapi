@@ -51,8 +51,7 @@ router.get('/initRequest/', function(req,response){
 
 
 router.get('/getFirstContent', async (req,response)=>{
-  //var url="https://infocielo.com/"
-  //var path="//*[@id='modulo_especial_2']/div[2]/article/a"
+
   if(ready == true){
     ready = false
     response.send(contents[0]) 
@@ -60,39 +59,49 @@ router.get('/getFirstContent', async (req,response)=>{
   else{
     response.send("The content is not ready yet")   
   }
-  //response.send(array)
 })
 
-router.get('/getContents', function(req,response){
-  var a = []
+router.get('/nextRequest/', function(req,response){
+  response.send("Llego el aviso")
+  
+  contents.pop();
+  var result = []
   var itemsProcessed = 0;
   var url="https://infocielo.com/"
   var path="//*[@id='modulo_especial_2']/div[2]/article/a"
-  var x = [1,2,3,4,5,6]
+  var cont = [1,2,3,4,5,6]
   
-  function callback () { 
-    console.log(a);
-    response.send(a) 
+  /*function callback () { 
+    console.log(result);
+    //response.send(result)
+    myEmitter.emit('initEvent')  
+  }*/
+
+  cont.forEach(async(item,index,array)=>{
+
+    await fetch("http://localhost:8080/contents/getBodyContent?url="+url+"&path="+path)
+    .then(res => {
+        console.log("devuelve "+res.ok)
+        if(res.ok)
+          return res.json()
+    })
+    .then(json => {                
+        result[index]= json
+        itemsProcessed++;
+        if(itemsProcessed === array.length) 
+          myEmitter.emit('secondEvent')  
+    })
+  })
+})
+
+router.get('/getContents', function(req,response){
+  if(ready == true){
+    ready = false
+    response.send(contents) 
   }
-
-        x.forEach(async(item,index,array)=>{
-          await fetch("http://localhost:8080/contents/getBodyContent?url="+url+"&path="+path)
-          .then(res => {
-              console.log("devuelve "+res.ok)
-              if(res.ok)
-                  return res.json()
-          })
-          .then(json => {                
-              //console.log('body:', json); 
-              a[index]= json
-              itemsProcessed++;
-              if(itemsProcessed === array.length) {
-                callback();
-              }
-          })
-        })
-
-  //response.send(array)
+  else{
+    response.send("The contents are not ready yet")   
+  }
 })
 
 // CREATES A NEW USER
