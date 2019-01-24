@@ -41,7 +41,7 @@ myEmitter.on('secondEvent', () => {
 *
 */
 
-router.get('/initRequest/', function(req,response){
+router.get('/getFirstContent', function(req,response){
   response.status(200).send("Llego el aviso")
   
   fetch("https://alexa-nightmare.herokuapp.com/contents/getBodyContent?url="+req.query.url+"&path="+req.query.path)
@@ -53,7 +53,8 @@ router.get('/initRequest/', function(req,response){
     .then(json => {                
         console.log('body:', json); //json={contenido,host,title,intro} 
         contents.push(json)
-        myEmitter.emit('initEvent')    
+        response.status(200).send(json) 
+        //myEmitter.emit('initEvent')    
     })
 })
 
