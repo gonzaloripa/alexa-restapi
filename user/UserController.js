@@ -47,10 +47,10 @@ router.get('/getFirstContent', function(req,response){
     .then(res => {
         console.log("devuelve "+res.ok)
         if(res.ok)
-          return res.json()
-    }).then((body)=>{
+          response.status(200).send(res)
+    /*}).then((body)=>{
         console.log(body)
-        response.status(200).send(body)
+        response.status(200).send(body)*/
     })
 })
 
