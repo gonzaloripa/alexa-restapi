@@ -41,9 +41,9 @@ myEmitter.on('secondEvent', () => {
 *
 */
 
-router.get('/getFirstContent', function(req,response){
+router.get('/getFirstContent', async function(req,response){
   
-  fetch("https://alexa-nightmare.herokuapp.com/contents/getBodyContent?url="+req.query.url+"&path="+req.query.path)
+  await fetch("https://alexa-nightmare.herokuapp.com/contents/getBodyContent?url="+req.query.url+"&path="+req.query.path)
     .then(res => {
         console.log("devuelve "+res.ok)
         if(res.ok)
@@ -58,7 +58,7 @@ router.get('/getFirstContent', function(req,response){
 })
 
 
-
+/*
 router.get('/getFirstContent', async (req,response)=>{
 
   if(ready == true){
@@ -69,7 +69,7 @@ router.get('/getFirstContent', async (req,response)=>{
     response.status(504).send("The content is not ready yet")   
   }
 })
-
+*/
 router.post('/nextRequest/', function(req,response){
   //req.body = [{},{}]
   response.status(200).send("Llego el aviso")
