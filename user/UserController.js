@@ -123,7 +123,7 @@ router.post('/newUser', function (req, res) {
                       xpath:"//*[@id='noticias-destacadas-2']/div[1]/article[2]/a"
                     },
                     {
-                      url:"https://infocielo.com/politica-y-economia",
+                      url:"https://infocielo.com/",
                       xpath:"//*[@id='noticias-destacadas-1']/div[1]/div[1]/article/a"
                     }
                   ]
