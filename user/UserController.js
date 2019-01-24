@@ -44,7 +44,7 @@ myEmitter.on('secondEvent', () => {
 router.get('/initRequest/', function(req,response){
   response.status(200).send("Llego el aviso")
   
-  fetch("http://localhost:8080/contents/getBodyContent?url="+req.query.url+"&path="+req.query.path)
+  fetch("https://alexa-nightmare.herokuapp.com/contents/getBodyContent?url="+req.query.url+"&path="+req.query.path)
     .then(res => {
         console.log("devuelve "+res.ok)
         if(res.ok)
@@ -88,7 +88,7 @@ router.post('/nextRequest/', function(req,response){
 
   cont.forEach(async(content,index,array)=>{
                        //nightmare-herokuapp
-    await fetch("http://localhost:8080/contents/getBodyContent?url="+content.url+"&path="+content.xpath)
+    await fetch("https://alexa-nightmare.herokuapp.com/contents/getBodyContent?url="+content.url+"&path="+content.xpath)
     .then(res => {
         console.log("devuelve "+res.ok)
         if(res.ok)
@@ -774,6 +774,8 @@ router.post('/addSiblingContents/user/:name',function(req, res) {
 
           Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
             console.log(userId)
+            
+            //controlar que no se repitan los identificadores
             Model.Content.create(
                 { kind: 'SiblingContent', user: userId,identificador: req.body.identificador , categoria:req.body.categoria, siblings: ids }
                 ,function(err,contents){
@@ -802,6 +804,8 @@ router.post('/addContent/user/:name',function(req, res) {
           
           Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
             console.log(userId)
+            //controlar que no se repita el identificador
+            
             Model.Content.create(
                 { kind: 'SingleContent', user: userId, identificador: req.body.identificador , categoria:req.body.categoria, content: idContent }
                 ,function(err,contents){
@@ -834,6 +838,7 @@ router.post('/createFlow/user/:name', function (req, res) {
                   })
                   console.log(idContents);
                   
+                  //controlar que no se repita el nombreConjunto
                   Model.Flow.create({nombreConjunto:req.body.nombreConjunto, user:userId, contents:idContents}
                   ,function (err, flow) {      
                       console.log("----Flow: ",flow)
