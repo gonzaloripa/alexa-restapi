@@ -41,9 +41,9 @@ myEmitter.on('secondEvent', () => {
 *
 */
 
-router.get('/getFirstContent', async function(req,response){
+router.get('/getFirstContent', function(req,response){
   
-  await fetch("https://alexa-nightmare.herokuapp.com/contents/getBodyContent?url="+req.query.url+"&path="+req.query.path)
+  fetch("https://alexa-nightmare.herokuapp.com/contents/getBodyContent?url="+req.query.url+"&path="+req.query.path)
     .then(res => {
         console.log("devuelve "+res.ok)
         if(res.ok)
@@ -123,7 +123,7 @@ router.post('/newUser', function (req, res) {
                       xpath:"//*[@id='noticias-destacadas-2']/div[1]/article[2]/a"
                     },
                     {
-                      url:"https://infocielo.com/politica-y-economia/",
+                      url:"https://infocielo.com/politica-y-economia",
                       xpath:"//*[@id='noticias-destacadas-1']/div[1]/div[1]/article/a"
                     }
                   ]
