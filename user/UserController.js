@@ -47,13 +47,7 @@ router.get('/getFirstContent', async function(req,response){
     .then(res => {
         console.log("devuelve "+res.ok)
         if(res.ok)
-          return res.json()
-    })
-    .then(json => {                
-        console.log('body:', json); //json={contenido,host,title,intro} 
-        contents.push(json)
-        response.status(200).send(json) 
-        //myEmitter.emit('initEvent')    
+          response.status(200).send(res)
     })
 })
 
