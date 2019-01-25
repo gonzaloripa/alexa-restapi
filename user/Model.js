@@ -22,7 +22,7 @@ identif      identif
 Flujo
 [Cont_id]
 */
-//capped: true
+
 const mongoose = require('mongoose'); 
 var InfoContentSchema = new mongoose.Schema({
     url: {type:String,required: true, unique:true},
