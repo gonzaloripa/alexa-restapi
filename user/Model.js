@@ -22,7 +22,7 @@ identif      identif
 Flujo
 [Cont_id]
 */
-capped: true
+//capped: true
 const mongoose = require('mongoose'); 
 var InfoContentSchema = new mongoose.Schema({
     url: {type:String,required: true, unique:true},
@@ -34,7 +34,7 @@ var InfoContent = mongoose.model('InfoContent', InfoContentSchema);
 
 var contentSchema = new mongoose.Schema({
   user: {type: mongoose.Schema.Types.ObjectId, ref:'User'},
-  identificador: {type: String, required:true},    
+  identificador: {type: String, required:true, unique:true},    
   categoria: String
 },{discriminatorKey: 'kind'});
 
@@ -42,7 +42,7 @@ var Content = mongoose.model('Content', contentSchema);
 
 
 var flowSchema = new mongoose.Schema({ user: {type: mongoose.Schema.Types.ObjectId, ref:'User'}, 
-                                      nombreConjunto: { type:String,required:true }, //nombreFlujo
+                                      nombreConjunto: { type:String,required:true, unique:true}, //nombreFlujo
                                       contents: [{ id:{type: mongoose.Schema.Types.ObjectId, ref:'Content'}, order:Number }] }); //contents: [contentSchema]
 // flowSchema.path('contents')` gets the mongoose `DocumentArray`
 //var docArray = flowSchema.path('contents');
@@ -60,7 +60,7 @@ var Flow = mongoose.model('Flow', flowSchema);
 
 const UserSchema = new mongoose.Schema({  
   //userId: {type:String},
-  name: {type:String,required: true},
+  name: {type:String,required: true, unique:true},
   password: String,
   flows: [{ type: mongoose.Schema.Types.ObjectId, ref:'Flow'}]
 });
