@@ -85,6 +85,7 @@ router.post('/nextRequest/', function(req,response){
     //response.send(result)
     myEmitter.emit('initEvent')  
   }*/
+  console.log("body ",cont)
 
   cont.forEach(async(content,index,array)=>{
                        //nightmare-herokuapp
