@@ -78,7 +78,7 @@ router.post('/nextRequest/', function(req,response){
   var itemsProcessed = 0;
   var url="https://infocielo.com/"
   var path="//*[@id='modulo_especial_2']/div[2]/article/a"
-  var cont = req.body //cont= [{url,xpath,_id},{}]
+  var cont = req.body.contenidos //cont= [{url,xpath,_id},{}]
   
   /*function callback () { 
     console.log(result);
