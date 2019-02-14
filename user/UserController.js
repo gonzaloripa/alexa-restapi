@@ -97,6 +97,7 @@ router.post('/nextRequest/', function(req,response){
     })
     .then(json => {                
         contents[index]= json //json={contenido,host,title,intro}
+        console.log("contents ",contents)
         itemsProcessed++;
         if(itemsProcessed === array.length) 
           myEmitter.emit('secondEvent')  
