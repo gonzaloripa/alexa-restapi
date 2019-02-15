@@ -124,15 +124,15 @@ router.post('/newUser', function (req, res) {
     const array = [
                     {
                       url:"https://infocielo.com/",
+                      xpath:"//*[@id='noticias-destacadas-2']/div[1]/div[1]/article/a"
+                    },
+                    {
+                      url:"https://infocielo.com/",
+                      xpath:"//*[@id='noticias-destacadas-2']/div[1]/div[2]/article/a"
+                    },
+                    {
+                      url:"https://infocielo.com/",
                       xpath:"//*[@id='modulo_especial_2']/div[2]/article/a"
-                    },
-                    {
-                      url:"https://infocielo.com/",
-                      xpath:"//*[@id='noticias-destacadas-2']/div[1]/article[2]/a"
-                    },
-                    {
-                      url:"https://infocielo.com/",
-                      xpath:"//*[@id='noticias-destacadas-1']/div[1]/div[1]/article/a"
                     }
                   ]
     var userId = new mongoose.Types.ObjectId;
