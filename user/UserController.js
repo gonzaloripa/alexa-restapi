@@ -227,7 +227,7 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
         //flows será un [] de 
         if (err | userId == null) return res.status(404).send("No se hallaron flujos para ese usuario");
 
-        Model.Flow.find({'user': userId})//,{'contents.categoria -_id -contents.kind'},
+        /*Model.Flow.find({'user': userId})//,{'contents.categoria -_id -contents.kind'},
         .populate({path:'contents',select:'categoria'})
         //.select('contents.categoria -_id')
         .exec(function(err,flow){
@@ -242,16 +242,12 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
                   console.log(elem)
                   idC.push(elem._id)})
               });
-              console.log(idC)
-              Model.Content.distinct('categoria',{'_id': {$in:idC }},function(err,resul){
+              console.log(idC)*/
+              Model.Content.distinct('categoria',{'user': userId},function(err,resul){
                 if (err | resul.length == 0) return res.status(404).send("No se hallaron categorias para ese usuario");
                 res.status(200).send(resul);
-              })
-            }catch(error){
-              res.status(404).send("Ocurrio un error al obtener las categorias");
-            }    
+              })  
         })
-    })
 });
 
 
