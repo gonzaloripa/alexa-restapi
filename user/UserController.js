@@ -399,6 +399,62 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
   })
 });
 
+// (ADMIN) GETS THE NOTICES OF ONE USER FILTERED BY CATEGORY
+router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
+
+  Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+      console.log(userId)
+      Model.Content.findOne({user:new mongoose.Types.ObjectId(userId._id)})
+      .select('categoria -_id')
+      .limit(1)
+      .exec(function(err,category){
+          Model.Content.aggregate(
+           [
+            { $match: {user:new mongoose.Types.ObjectId(userId._id), categoria:category }},
+            //{ $match: { '$contenidos.categoria':req.params.category }},
+            { $group: {
+                _id: '$_id',
+                contenidos: { $push: {  
+                    $cond: { if: { $eq: ['$kind', 'SingleContent' ] }, then: [{contentId:'$content',identificador:'$identificador',categoria:'$categoria'}] , else: [{siblingsId:'$siblings', identificador:'$identificador', categoria:'$categoria'}]  
+                           }  
+                        } 
+                      }
+              }
+            },            
+            { $unwind: '$contenidos'},/*
+            {  $addFields:{
+                'combinedC':{
+                   $reduce: {
+                      input: '$contenidos',
+                      initialValue: [],
+                      in: { $concatArrays : ["$$value", "$$this"] }
+                   }
+                 }
+              
+            { $unwind: '$combinedC'},
+            { $lookup: {
+                from: 'infocontents',
+                localField: 'combinedC',
+                foreignField: '_id',
+                as: 'infocontents'
+              }
+            },*/
+            {
+              $project:{
+                contenidos:1,
+                //combinedC:1,
+                _id:0
+              }
+            }
+           ])
+        .exec(function (err,result) {
+            console.log("-Contents id %s ",result)
+              res.status(200).send(result);
+        })
+      })        
+  })
+});
+
 // (ADMIN) GETS ALL THE NOTICES AND FLOWS OF ONE USER
 router.get('/admin/contentsAndFlows/:name', function (req, res) {
   Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
@@ -856,7 +912,7 @@ router.post('/createFlow/user/:name', function (req, res) {
 //CHANGE THE ORDER OF THE CONTENTS OF A FLOW: UPDATE COLLECTION 'FLOWS'
 router.put('/updateFlow/user/:name', function (req, res) {
       
-      //req.body = {nombreConjunto:"",contents:[ "","",""]}
+      //req.body = {nombreConjunto:"",contents:[ identificador1,"",""]}
         Model.User.findOne({'name':req.params.name.toLowerCase()}, '_id', 
         function(err,userId){
           if (err | userId == "") return res.status(404).send("No se pudo hallar al usuario");
