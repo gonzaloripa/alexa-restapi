@@ -404,10 +404,11 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
 
   Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
       console.log(userId)
-      Model.Content.findOne({user:new mongoose.Types.ObjectId(userId._id)})
+      Model.Content.find({user:new mongoose.Types.ObjectId(userId._id)})
       .select('categoria -_id')
       .limit(1)
       .exec(function(err,category){
+        console.log(category)
           Model.Content.aggregate(
            [
             { $match: {user:new mongoose.Types.ObjectId(userId._id), categoria:category }},
