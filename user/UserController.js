@@ -89,7 +89,7 @@ router.post('/nextRequest/', function(req,response){
 
   cont.forEach(async(content,index,array)=>{
                        //nightmare-herokuapp
-    await fetch("https://alexa-nightmare.herokuapp.com/contents/getBodyContent?url="+cont[index].infocontents[0].url+"&path="+cont[index].infocontents[0].xpath)
+    await fetch("https://headless-chrome-alexa.herokuapp.com/getBodyContent?url="+cont[index].infocontents[0].url+"&path="+cont[index].infocontents[0].xpath)
     .then(res => {
         console.log("devuelve "+res.ok)
         if(res.ok)
