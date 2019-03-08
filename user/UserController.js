@@ -565,6 +565,82 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
         
   });
 })
+
+// (ADMIN) GETS ALL THE NOTICES AND FLOWS OF ONE USER
+router.get('/admin/getContents/:name', function (req, res) {
+  Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+      console.log(userId)
+      Model.Flow.aggregate(
+           [
+            { $match: { user:new mongoose.Types.ObjectId(userId._id) }},
+            { $unwind: '$contents' },
+            { $lookup: {
+                from: 'contents',
+                localField: 'contents._id',
+                foreignField: '_id',
+                as: 'conj'
+              }
+            },
+            { $unwind: '$conj' },
+            { $project: 
+              { 
+                'user':1,
+                'nombreConjunto':1,
+                'contenidos':{
+                  '_id':'$contents._id',
+                  'order':'$contents.order',
+                  'info':'$conj'
+                }
+              } 
+            },/*
+            /*
+            { $addFields: {"content": {"$mergeObjects": ["$contents", "$conj"]} } }, 
+            /*{
+                $replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$conj", 0 ] }, "$$ROOT" ] } }
+            },
+            { $group: {
+                _id: '$_id',
+                contenidos: {$push: '$conj'}
+              }
+            },
+            { $unwind: '$contenidos'},
+            */{ $group: {
+                _id: '$_id',
+                cont: { $push: {
+                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.info.content',identificador:'$contenidos.info.identificador',categoria:'$contenidos.info.categoria', order:'$contenidos.order',flujo:'$nombreConjunto'}] , else: [{contentId:'$contenidos.info.siblings', identificador:'$contenidos.info.identificador', categoria:'$contenidos.info.categoria',order:'$contenidos.order',flujo:'$nombreConjunto'}]  
+                           } 
+                        } 
+                      }
+              }
+            },
+            {  $addFields:{
+                'combinedC':{
+                   $reduce: {
+                      input: '$cont',
+                      initialValue: [],
+                      in: { $concatArrays : ["$$value", "$$this"] }
+                   }
+                 }
+               }
+            },
+            { $unwind: '$combinedC'},
+            {
+              $project:{
+                //conj:0,
+                //nombreConjunto:1,
+                //flujo:1,
+                contenidos:1,
+                _id:1
+              }
+            }
+           ])
+        .exec(function (err,result) {
+            console.log("-Contents id %s ",result)
+              res.status(200).send(result);
+        });
+        
+  });
+})
 /*
     Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
       console.log(userId)
