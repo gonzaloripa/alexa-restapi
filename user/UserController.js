@@ -808,7 +808,7 @@ router.post('/createFlow/user/:name', function (req, res) {
                   console.log(idContents);
                   
                   //controlar que no se repita el nombreConjunto
-                  Model.Flow.create({nombreConjunto:req.body.nombreConjunto, user:userId, contents:idContents}
+                  Model.Flow.create({nombreConjunto:req.body.nombreConjunto,pattern:req.body.pattern, user:userId, contents:idContents}
                   ,function (err, flow) {      
                       console.log("----Flow: ",flow)
                       if (err) return res.status(500).send("No se pudo agregar el flow en la base");
