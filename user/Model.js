@@ -43,6 +43,7 @@ var Content = mongoose.model('Content', contentSchema);
 
 var flowSchema = new mongoose.Schema({ user: {type: mongoose.Schema.Types.ObjectId, ref:'User'}, 
                                       nombreConjunto: { type:String,required:true, unique:true}, //nombreFlujo
+                                      pattern:{ type:String,required:true},
                                       contents: [{ id:{type: mongoose.Schema.Types.ObjectId, ref:'Content'}, order:Number }] }); //contents: [contentSchema]
 // flowSchema.path('contents')` gets the mongoose `DocumentArray`
 //var docArray = flowSchema.path('contents');

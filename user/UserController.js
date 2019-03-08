@@ -159,11 +159,13 @@ router.post('/newUser', function (req, res) {
               _id: new mongoose.Types.ObjectId,
               user: userId,
               nombreConjunto:'Primero',
+              pattern:'Read only titles',
               contents: idC
             },{
               _id: new mongoose.Types.ObjectId,
               user: userId,
               nombreConjunto:'Segundo',
+              pattern:'Read introduction and content',
               contents: idC2
             }];
             Model.Flow.insertMany(flows    
@@ -208,7 +210,7 @@ router.get('/:name', function (req, res) {
 router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
     
     Model.User.findOne({'name':req.params.name.toLowerCase()})
-    .populate({ path: 'flows', select: 'nombreConjunto -_id' })
+    .populate({ path: 'flows', select: 'nombreConjunto pattern -_id' })
     .exec(function(err,user){
       console.log('Flows %s ',user.flows)    
         //flows será un [] de 
