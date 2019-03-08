@@ -569,137 +569,23 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
 // (ADMIN) GETS ALL THE NOTICES AND FLOWS OF ONE USER
 router.get('/admin/getContents/:name', function (req, res) {
   Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
-      console.log(userId)
-      Model.Flow.aggregate(
+      Model.Content.aggregate(
            [
-            { $match: { user:new mongoose.Types.ObjectId(userId._id) }},
-            { $unwind: '$contents' },
-            { $lookup: {
-                from: 'contents',
-                localField: 'contents._id',
-                foreignField: '_id',
-                as: 'conj'
-              }
-            },
-            { $unwind: '$conj' },
-            { $project: 
-              { 
-                'user':1,
-                'nombreConjunto':1,
-                'contenidos':{
-                  '_id':'$contents._id',
-                  'order':'$contents.order',
-                  'info':'$conj'
-                }
-              } 
-            },/*
-            /*
-            { $addFields: {"content": {"$mergeObjects": ["$contents", "$conj"]} } }, 
-            /*{
-                $replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$conj", 0 ] }, "$$ROOT" ] } }
-            },
+            { $match: {user:new mongoose.Types.ObjectId(userId._id)}},
             { $group: {
                 _id: '$_id',
-                contenidos: {$push: '$conj'}
+                contenidos: { $push: {  
+                    $cond: { if: { $eq: ['$kind', 'SingleContent' ] }, then: [{contentId:'$content',identificador:'$identificador',categoria:'$categoria'}] , else: [{siblingsId:'$siblings', identificador:'$identificador', categoria:'$categoria'}]  
+                           }  
+                        } 
+                      }
               }
-            },
+            },            
             { $unwind: '$contenidos'},
-            */{ $group: {
-                _id: '$_id',
-                cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.info.content',identificador:'$contenidos.info.identificador',categoria:'$contenidos.info.categoria', order:'$contenidos.order',flujo:'$nombreConjunto'}] , else: [{contentId:'$contenidos.info.siblings', identificador:'$contenidos.info.identificador', categoria:'$contenidos.info.categoria',order:'$contenidos.order',flujo:'$nombreConjunto'}]  
-                           } 
-                        } 
-                      }
-              }
-            },
-            {  $addFields:{
-                'combinedC':{
-                   $reduce: {
-                      input: '$cont',
-                      initialValue: [],
-                      in: { $concatArrays : ["$$value", "$$this"] }
-                   }
-                 }
-               }
-            },
-            { $unwind: '$combinedC'},
             {
               $project:{
-                //conj:0,
-                //nombreConjunto:1,
-                //flujo:1,
                 contenidos:1,
-                _id:1
-              }
-            }
-           ])
-        .exec(function (err,result) {
-            console.log("-Contents id %s ",result)
-              res.status(200).send(result);
-        });
-        
-  });
-})
-/*
-    Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
-      console.log(userId)
-      Model.Flow.aggregate(
-           [
-            { $match: { user:new mongoose.Types.ObjectId(userId._id) }},
-            { $lookup: {
-                from: 'contents',
-                localField: 'contents',
-                foreignField: '_id',
-                as: 'contents'
-              }
-            },
-            { $unwind: '$contents' },
-            { $group: {
-                _id: '$contents._id',
-                contenidos: {$push: '$contents'}
-              }
-            },
-            { $unwind: '$contenidos'},/*
-            { $group: {
-                _id: '$_id',
-                cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.content',identificador:'$contenidos.identificador',categoria:'$contenidos.categoria'}] , else: [{siblingsId:'$contenidos.siblings', identificador:'$contenidos.identificador', categoria:'$contenidos.categoria'}]  
-                           } 
-                        } 
-                      }
-              }
-            },
-            {  $addFields:{
-                'combinedC':{
-                   $reduce: {
-                      input: '$cont',
-                      initialValue: [],
-                      in: { $concatArrays : ["$$value", "$$this"] }
-                   }
-                 }
-               }
-            },/*
-            {  $addFields:{
-                'combinedC':{
-                   $reduce: {
-                      input: '$combined',
-                      initialValue: [],
-                      in: { $concatArrays : ["$$value", "$$this"] }
-                   }
-                 }
-               }
-            },
-            { $unwind: '$combinedC'},
-            { $lookup: {
-                from: 'infocontents',
-                localField: 'combinedC.',
-                foreignField: '_id',
-                as: 'infocontents'
-              }
-            },
-            {
-              $project:{
+                //combinedC:1,
                 _id:0
               }
             }
@@ -707,33 +593,10 @@ router.get('/admin/getContents/:name', function (req, res) {
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
               res.status(200).send(result);
-        });
+        })
         
-  });*/
-
-
-/* GETS THE CATEGORIES OF A SINGLE USER 
-router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
-      
-    Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
-      Model.Content.find({'user_id':userId})
-      .select('idConjunto -_id')
-      .exec(function(err, flows) {
-        //flows será un [] de idConjunto
-        if (err | flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-        console.log("Flujos: ",flows)
-        res.status(200).send(flows);
-      });  
-    });
-
-    Model.distinct('contenidos.category',{'name':req.params.name.toLowerCase()}, function(err, result){ //{'userId':req.params.usrid,
-    if (err) return res.status(500).send("There was a problem finding the user.");
-      if (!result || result.length == 0) return res.status(200).send("");
-      console.log(result)
-      res.status(200).send(result);
-  });     
-});*/
-
+  })
+});
 
 // GETS THE NOTICES OF ONE USER IN ORDER FILTERED BY FLOW
 router.get('/contentsByOrder/:flow/:name', function (req, res) {
@@ -806,33 +669,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
           });   
   });
 })  
-    /* 
-        Model.Content.aggregate(
-           [
-            { $unwind: "$contents"},
-            { $match: {
-                  'user_id': userId,
-                  contents: {$elemMatch: {flow_id: flows[0]} }
-                  //'contents.flow_id': flows[0]._id  //fijarse como hacer para comparar elementos de arrays
-              }
-            }
-            ,
-            //{ $sort : {"contenidos.order":1 }},
-            {$group: {"_id":"$user_id", "contenidos": {$push:"$contents"}}},
-              { 
-                  $project: {
-                    contents:"$contenidos"
-                  }
-              }
-           ])
-        .exec(function (err,result) {
-          console.log(result); // [ { maxBalance: 98000 } ]
-
-          const newjson = json.concat(result[0].contents)
-          res.status(200).send(result[0].contents);
-        })*/
-
-
+  
 // GETS THE NOTICES OF ONE USER FILTERED BY CATEGORY
 router.get('/contentsByCategory/:category/:name', function (req, res) {
 
@@ -1015,7 +852,125 @@ router.put('/updateFlow/user/:name', function (req, res) {
         })
 });
 
+/* 
+        Model.Content.aggregate(
+           [
+            { $unwind: "$contents"},
+            { $match: {
+                  'user_id': userId,
+                  contents: {$elemMatch: {flow_id: flows[0]} }
+                  //'contents.flow_id': flows[0]._id  //fijarse como hacer para comparar elementos de arrays
+              }
+            }
+            ,
+            //{ $sort : {"contenidos.order":1 }},
+            {$group: {"_id":"$user_id", "contenidos": {$push:"$contents"}}},
+              { 
+                  $project: {
+                    contents:"$contenidos"
+                  }
+              }
+           ])
+        .exec(function (err,result) {
+          console.log(result); // [ { maxBalance: 98000 } ]
 
+          const newjson = json.concat(result[0].contents)
+          res.status(200).send(result[0].contents);
+        })*/
+
+
+/*
+    Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+      console.log(userId)
+      Model.Flow.aggregate(
+           [
+            { $match: { user:new mongoose.Types.ObjectId(userId._id) }},
+            { $lookup: {
+                from: 'contents',
+                localField: 'contents',
+                foreignField: '_id',
+                as: 'contents'
+              }
+            },
+            { $unwind: '$contents' },
+            { $group: {
+                _id: '$contents._id',
+                contenidos: {$push: '$contents'}
+              }
+            },
+            { $unwind: '$contenidos'},/*
+            { $group: {
+                _id: '$_id',
+                cont: { $push: {
+                    $cond: { if: { $eq: ['$contenidos.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.content',identificador:'$contenidos.identificador',categoria:'$contenidos.categoria'}] , else: [{siblingsId:'$contenidos.siblings', identificador:'$contenidos.identificador', categoria:'$contenidos.categoria'}]  
+                           } 
+                        } 
+                      }
+              }
+            },
+            {  $addFields:{
+                'combinedC':{
+                   $reduce: {
+                      input: '$cont',
+                      initialValue: [],
+                      in: { $concatArrays : ["$$value", "$$this"] }
+                   }
+                 }
+               }
+            },/*
+            {  $addFields:{
+                'combinedC':{
+                   $reduce: {
+                      input: '$combined',
+                      initialValue: [],
+                      in: { $concatArrays : ["$$value", "$$this"] }
+                   }
+                 }
+               }
+            },
+            { $unwind: '$combinedC'},
+            { $lookup: {
+                from: 'infocontents',
+                localField: 'combinedC.',
+                foreignField: '_id',
+                as: 'infocontents'
+              }
+            },
+            {
+              $project:{
+                _id:0
+              }
+            }
+           ])
+        .exec(function (err,result) {
+            console.log("-Contents id %s ",result)
+              res.status(200).send(result);
+        });
+        
+  });*/
+
+
+/* GETS THE CATEGORIES OF A SINGLE USER 
+router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
+      
+    Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+      Model.Content.find({'user_id':userId})
+      .select('idConjunto -_id')
+      .exec(function(err, flows) {
+        //flows será un [] de idConjunto
+        if (err | flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
+        console.log("Flujos: ",flows)
+        res.status(200).send(flows);
+      });  
+    });
+
+    Model.distinct('contenidos.category',{'name':req.params.name.toLowerCase()}, function(err, result){ //{'userId':req.params.usrid,
+    if (err) return res.status(500).send("There was a problem finding the user.");
+      if (!result || result.length == 0) return res.status(200).send("");
+      console.log(result)
+      res.status(200).send(result);
+  });     
+});*/
 
 
 //---------------------------------------------------------------------
