@@ -219,6 +219,25 @@ router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
       });
 });
 
+// GETS THE FIRST CATEGORY OF A SINGLE USER 
+router.get('/getFirstCategory/:name', function (req, res) { //'/categories/:usrid/:name'
+    
+    Model.User.findOne({'name':req.params.name.toLowerCase()})
+    .select('_id')
+    .exec(function(err,userId){
+        console.log('UserId %s ',userId)    
+        //flows será un [] de 
+        if (err | userId == null) return res.status(404).send("No se hallaron flujos para ese usuario");
+              Model.Content.find({'user': userId})
+              .select('categoria -_id')
+              .limit(1)
+              .exec(function(err,resul){
+                if (err | resul.length == 0) return res.status(404).send("No se hallaron categorias para ese usuario");
+                res.status(200).send(resul);
+              })  
+        })
+});
+
 // GETS THE CATEGORIES OF A SINGLE USER 
 router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
     
