@@ -70,14 +70,41 @@ router.get('/getFirstContent', async (req,response)=>{
 })
 */
 
+router.post('/nextTitle/', function(req,response){
+  //req.body = [{},{}]
+  response.status(200).send("Llego el aviso")
+  
+  contents=[];
+  var itemsProcessed = 0;
+  var cont = req.body.contenidos //cont= [{url,xpath,_id},{}]
+  
+  console.log("body ",cont[0].infocontents,cont[0].infocontents[0])
+
+  cont.forEach(async(content,index,array)=>{
+                       //nightmare-herokuapp
+    await fetch("https://headless-chrome-alexa.herokuapp.com/getTitle?url="+cont[index].infocontents[0].url+"&path="+cont[index].infocontents[0].xpath)
+    .then(res => {
+        console.log("devuelve "+res.ok)
+        if(res.ok)
+          return res.json()
+    })
+    .then(json => {                
+        contents[index]= json //json={title,intro}
+        console.log("titles ",contents)
+        itemsProcessed++;
+        if(itemsProcessed === array.length) 
+          myEmitter.emit('secondEvent')  
+    })
+  })
+})
+
+
 router.post('/nextRequest/', function(req,response){
   //req.body = [{},{}]
   response.status(200).send("Llego el aviso")
   
   contents=[];
   var itemsProcessed = 0;
-  var url="https://infocielo.com/"
-  var path="//*[@id='modulo_especial_2']/div[2]/article/a"
   var cont = req.body.contenidos //cont= [{url,xpath,_id},{}]
   
   /*function callback () { 
