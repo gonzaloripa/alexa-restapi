@@ -78,7 +78,7 @@ router.post('/nextTitle/', function(req,response){
   var itemsProcessed = 0;
   var cont = req.body.contenidos //cont= [{url,xpath,_id},{}]
   
-  console.log("body ",cont[0].infocontents,cont[0].infocontents[0])
+  console.log("body ",cont,cont[0].infocontents,cont[0].infocontents[0])
 
   cont.forEach(async(content,index,array)=>{
                        //nightmare-herokuapp
