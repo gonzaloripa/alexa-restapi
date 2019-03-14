@@ -15,6 +15,7 @@ class MyEmitter extends EventEmitter {}
 
 const myEmitter = new MyEmitter();
 var contents = []
+var failedContents = []
 var ready = false;
 
 
@@ -25,7 +26,8 @@ myEmitter.on('initEvent', () => {
 
 myEmitter.on('secondEvent', () => {
   console.log('The contents are ready')
-  ready = true
+  if( failedContents.length != contents.length )
+    ready = true
 })
 
 
@@ -73,7 +75,7 @@ router.get('/getFirstContent', async (req,response)=>{
 router.post('/nextTitle/', function(req,response){
   //req.body = [{},{}]
   response.status(200).send("Llego el aviso")
-  
+  failedContents=[]
   contents=[];
   var itemsProcessed = 0;
   var cont = req.body.contenidos //cont= [{url,xpath,_id},{}]
@@ -88,12 +90,16 @@ router.post('/nextTitle/', function(req,response){
         if(res.ok)
           return res.json()
     })
-    .then(json => {                
+    .then(json => {
+        if(!json)
+         failedContents.push(index) 
+                   
         contents[index]= json //json={title,intro}
         console.log("titles ",contents)
         itemsProcessed++;
         if(itemsProcessed === array.length) 
-          myEmitter.emit('secondEvent')  
+          myEmitter.emit('secondEvent')
+          
     })
   })
 })
@@ -102,7 +108,7 @@ router.post('/nextTitle/', function(req,response){
 router.post('/nextRequest/', function(req,response){
   //req.body = [{},{}]
   response.status(200).send("Llego el aviso")
-  
+  failedContents=[]
   contents=[];
   var itemsProcessed = 0;
   var cont = req.body.contenidos //cont= [{url,xpath,_id},{}]
@@ -112,7 +118,7 @@ router.post('/nextRequest/', function(req,response){
     //response.send(result)
     myEmitter.emit('initEvent')  
   }*/
-  console.log("body ",cont[0].infocontents,cont[0].infocontents[0])
+  console.log("body ",cont,cont[0].infocontents,cont[0].infocontents[0])
 
   cont.forEach(async(content,index,array)=>{
                        //nightmare-herokuapp
@@ -122,12 +128,16 @@ router.post('/nextRequest/', function(req,response){
         if(res.ok)
           return res.json()
     })
-    .then(json => {                
+    .then(json => {
+        if(!json)
+          failedContents.push(index)
+
         contents[index]= json //json={contenido,host,title,intro}
         console.log("contents ",contents)
         itemsProcessed++;
         if(itemsProcessed === array.length) 
-          myEmitter.emit('secondEvent')  
+          myEmitter.emit('secondEvent') 
+         
     })
   })
 })
@@ -138,7 +148,7 @@ router.get('/getContents', function(req,response){
     response.status(200).send(contents) 
   }
   else{
-    response.status(504).send("The contents are not ready yet")   
+    response.status(304).send("The contents are not ready")   
   }
 })
 
