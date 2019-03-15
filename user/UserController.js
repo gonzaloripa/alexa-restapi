@@ -84,27 +84,29 @@ router.post('/nextTitle/', function(req,response){
 
   //cont.forEach(async(content,index,array)=>{
                        //nightmare-herokuapp
-    await fetch("https://headless-chrome-alexa.herokuapp.com/getTitle?url="+cont.url+"&path="+cont.xpath)
-    .then(res => {
-        console.log("devuelve "+res.ok)
-        if(res.ok)
-          return res.json()
-    })
-    .then(async(json) => {
-        //if(!json)
-         //failedContents.push(index) 
-        content = json           
-        //contents[index]= json //json={title,intro}
-        console.log("content ",content)
-        myEmitter.emit('secondEvent')
-        /*itemsProcessed++;
-        if(itemsProcessed === array.length)
-          await fetch("https://headless-chrome-alexa.herokuapp.com/closeBrowser")
-          .then(res => {
-            myEmitter.emit('secondEvent')
-          }) 
-        */          
-    })
+    (async() => {
+      await fetch("https://headless-chrome-alexa.herokuapp.com/getTitle?url="+cont.url+"&path="+cont.xpath)
+      .then(res => {
+          console.log("devuelve "+res.ok)
+          if(res.ok)
+            return res.json()
+      })
+      .then(async(json) => {
+          //if(!json)
+           //failedContents.push(index) 
+          content = json           
+          //contents[index]= json //json={title,intro}
+          console.log("content ",content)
+          myEmitter.emit('secondEvent')
+          /*itemsProcessed++;
+          if(itemsProcessed === array.length)
+            await fetch("https://headless-chrome-alexa.herokuapp.com/closeBrowser")
+            .then(res => {
+              myEmitter.emit('secondEvent')
+            }) 
+          */          
+      })
+    })()
 })
 
 
