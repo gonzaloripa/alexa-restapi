@@ -151,7 +151,7 @@ router.post('/nextRequest/', function(req,response){
 router.get('/getContents', function(req,response){
   if(ready == true){
     ready = false
-    response.status(200).send(contents) 
+    response.status(200).send(content) 
   }
   else{
     response.status(304).send("The contents are not ready")   
