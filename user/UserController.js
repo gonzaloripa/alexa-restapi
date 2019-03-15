@@ -90,7 +90,7 @@ router.post('/nextTitle/', function(req,response){
         if(res.ok)
           return res.json()
     })
-    .then(json => {
+    .then(async(json) => {
         if(!json)
          failedContents.push(index) 
                    
