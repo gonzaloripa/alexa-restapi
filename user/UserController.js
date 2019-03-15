@@ -97,9 +97,11 @@ router.post('/nextTitle/', function(req,response){
         contents[index]= json //json={title,intro}
         console.log("titles ",contents)
         itemsProcessed++;
-        if(itemsProcessed === array.length) 
-          myEmitter.emit('secondEvent')
-          
+        if(itemsProcessed === array.length)
+          await fetch("https://headless-chrome-alexa.herokuapp.com/closeBrowser")
+          .then(res => {
+            myEmitter.emit('secondEvent')
+          })           
     })
   })
 })
