@@ -106,7 +106,7 @@ router.post('/nextTitle/', function(req,response){
             }) 
           */          
       })
-    })()
+    })();
 })
 
 
