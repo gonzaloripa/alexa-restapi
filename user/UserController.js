@@ -24,9 +24,10 @@ myEmitter.on('initEvent', () => {
   ready = true
 })
 
-myEmitter.on('secondEvent', () => {
+myEmitter.on('secondEvent', (content) => {
   console.log('The contents are ready')
   //if( failedContents.length != contents.length )
+  if(content != null)
     ready = true
 })
 
@@ -97,7 +98,7 @@ router.post('/nextTitle/', function(req,response){
           content = json           
           //contents[index]= json //json={title,intro}
           console.log("content ",content)
-          myEmitter.emit('secondEvent')
+          myEmitter.emit('secondEvent',content)
           /*itemsProcessed++;
           if(itemsProcessed === array.length)
             await fetch("https://headless-chrome-alexa.herokuapp.com/closeBrowser")
