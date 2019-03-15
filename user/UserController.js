@@ -10,6 +10,9 @@ router.use(bodyParser.json());
 const Model = require('./Model');
 //var userId ='amzn1.ask.account.AEM7C7O3S3FKO4J77F7YYBP5CXPUVG4VHEW4MM77YUETWFCQAMJE4PTXRJCZAJTWC2FKIP3MEVBILLNA2TK7VDHVBHBDA7ZSFLFRYWYE2U4WBV64CWFAKL74DHSBJ3KHY2VPD6HY7G5AWN5XUUIQCJYOQ3VAMD32MKA63PW5ZEDG5F2AXOIL5VNSGPKZZDY3IFDK4V75RD4CKYY';
 
+var session = require('express-session');
+router.use(session({secret:'ALEXA'}));
+
 const EventEmitter = require('events');
 class MyEmitter extends EventEmitter {}
 
@@ -45,39 +48,16 @@ myEmitter.on('secondEvent', (content) => {
 *
 */
 
-
-/*
-router.get('/getFirstContent', function(req,response){
-  
-  fetch("https://alexa-nightmare.herokuapp.com/contents/getBodyContent?url="+req.query.url+"&path="+req.query.path)
-    .then(res => {
-        console.log("devuelve "+res.ok)
-        if(res.ok)
-          return res.json()
-    }).then((body)=>{
-        console.log(body)
-        var result = JSON.stringify(body)
-        response.status(200).send(result)
-    })
-})
-
-router.get('/getFirstContent', async (req,response)=>{
-
-  if(ready == true){
-    ready = false
-    response.status(200).send(contents[0]) 
-  }
-  else{
-    response.status(504).send("The content is not ready yet")   
-  }
-})
-*/
+router.get('/prueba',function(req,res){
+    req.session.content = "NUEVO"
+    console.log(req.session)
+});
 
 router.post('/nextTitle/', function(req,response){
   //req.body = [{},{}]
   response.status(200).send("Llego el aviso")
   //failedContents=[]
-  content=null;
+  var content = req.session.content
   var itemsProcessed = 0;
   var cont = req.body.contenidos //cont= [{url,xpath,_id},{}]
   
@@ -152,7 +132,7 @@ router.post('/nextRequest/', function(req,response){
 router.get('/getContents', function(req,response){
   if(ready == true){
     ready = false
-    response.status(200).send(content) 
+    response.status(200).send(req.session.content) 
   }
   else{
     response.status(304).send("The contents are not ready")   
@@ -916,7 +896,34 @@ router.put('/updateFlow/user/:name', function (req, res) {
         })
 });
 
-/* 
+//---------------------------------------------------------------------
+
+/*
+router.get('/getFirstContent', function(req,response){
+  
+  fetch("https://alexa-nightmare.herokuapp.com/contents/getBodyContent?url="+req.query.url+"&path="+req.query.path)
+    .then(res => {
+        console.log("devuelve "+res.ok)
+        if(res.ok)
+          return res.json()
+    }).then((body)=>{
+        console.log(body)
+        var result = JSON.stringify(body)
+        response.status(200).send(result)
+    })
+})
+
+router.get('/getFirstContent', async (req,response)=>{
+
+  if(ready == true){
+    ready = false
+    response.status(200).send(contents[0]) 
+  }
+  else{
+    response.status(504).send("The content is not ready yet")   
+  }
+})
+
         Model.Content.aggregate(
            [
             { $unwind: "$contents"},
@@ -1035,9 +1042,6 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
       res.status(200).send(result);
   });     
 });*/
-
-
-//---------------------------------------------------------------------
 
 
          /*.populate({ path: 'flows', 
