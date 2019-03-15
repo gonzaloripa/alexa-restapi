@@ -14,7 +14,7 @@ const EventEmitter = require('events');
 class MyEmitter extends EventEmitter {}
 
 const myEmitter = new MyEmitter();
-var contents = []
+var content = null
 var failedContents = []
 var ready = false;
 
@@ -26,7 +26,7 @@ myEmitter.on('initEvent', () => {
 
 myEmitter.on('secondEvent', () => {
   console.log('The contents are ready')
-  if( failedContents.length != contents.length )
+  //if( failedContents.length != contents.length )
     ready = true
 })
 
@@ -75,36 +75,39 @@ router.get('/getFirstContent', async (req,response)=>{
 router.post('/nextTitle/', function(req,response){
   //req.body = [{},{}]
   response.status(200).send("Llego el aviso")
-  failedContents=[]
-  contents=[];
+  //failedContents=[]
+  content=null;
   var itemsProcessed = 0;
   var cont = req.body.contenidos //cont= [{url,xpath,_id},{}]
   
-  console.log("body ",cont,cont[0].infocontents,cont[0].infocontents[0])
+  console.log("body ",cont)
 
   cont.forEach(async(content,index,array)=>{
                        //nightmare-herokuapp
-    await fetch("https://headless-chrome-alexa.herokuapp.com/getTitle?url="+cont[index].infocontents[0].url+"&path="+cont[index].infocontents[0].xpath)
+    await fetch("https://headless-chrome-alexa.herokuapp.com/getTitle?url="+cont.url+"&path="+cont.xpath)
     .then(res => {
         console.log("devuelve "+res.ok)
         if(res.ok)
           return res.json()
     })
     .then(async(json) => {
-        if(!json)
-         failedContents.push(index) 
-                   
-        contents[index]= json //json={title,intro}
-        console.log("titles ",contents)
-        itemsProcessed++;
+        //if(!json)
+         //failedContents.push(index) 
+        content = json           
+        //contents[index]= json //json={title,intro}
+        console.log("content ",content)
+        myEmitter.emit('secondEvent')
+        /*itemsProcessed++;
         if(itemsProcessed === array.length)
           await fetch("https://headless-chrome-alexa.herokuapp.com/closeBrowser")
           .then(res => {
             myEmitter.emit('secondEvent')
-          })           
+          }) 
+        */          
     })
   })
 })
+
 
 
 router.post('/nextRequest/', function(req,response){
