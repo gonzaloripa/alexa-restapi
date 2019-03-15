@@ -84,14 +84,14 @@ router.post('/nextTitle/', function(req,response){
 
   //cont.forEach(async(content,index,array)=>{
                        //nightmare-herokuapp
-    (async() => {
-      await fetch("https://headless-chrome-alexa.herokuapp.com/getTitle?url="+cont.url+"&path="+cont.xpath)
+
+      fetch("https://headless-chrome-alexa.herokuapp.com/getTitle?url="+cont.url+"&path="+cont.xpath)
       .then(res => {
           console.log("devuelve "+res.ok)
           if(res.ok)
             return res.json()
       })
-      .then(async(json) => {
+      .then(json => {
           //if(!json)
            //failedContents.push(index) 
           content = json           
@@ -106,7 +106,7 @@ router.post('/nextTitle/', function(req,response){
             }) 
           */          
       })
-    })();
+
 })
 
 
