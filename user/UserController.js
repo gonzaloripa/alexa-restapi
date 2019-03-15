@@ -82,7 +82,7 @@ router.post('/nextTitle/', function(req,response){
   
   console.log("body ",cont)
 
-  cont.forEach(async(content,index,array)=>{
+  //cont.forEach(async(content,index,array)=>{
                        //nightmare-herokuapp
     await fetch("https://headless-chrome-alexa.herokuapp.com/getTitle?url="+cont.url+"&path="+cont.xpath)
     .then(res => {
@@ -105,7 +105,6 @@ router.post('/nextTitle/', function(req,response){
           }) 
         */          
     })
-  })
 })
 
 
