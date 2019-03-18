@@ -18,7 +18,7 @@ class MyEmitter extends EventEmitter {}
 
 const myEmitter = new MyEmitter();
 var content = null
-var failedContents = []
+//var failedContents = []
 var ready = false;
 
 
@@ -58,15 +58,13 @@ router.post('/nextTitle/', function(req,response){
   response.status(200).send("Llego el aviso")
   //failedContents=[]
   //var content = req.session.content
-  var itemsProcessed = 0;
   var cont = req.body.contenidos //cont= [{url,xpath,_id},{}]
   
   console.log("body ",cont)
 
   //cont.forEach(async(content,index,array)=>{
                        //nightmare-herokuapp
-
-      fetch("https://headless-chrome-alexa.herokuapp.com/getTitle?url="+cont.url+"&path="+cont.xpath)
+  fetch("https://headless-chrome-alexa.herokuapp.com/getTitle?url="+cont.url+"&path="+cont.xpath)
       .then(res => {
           console.log("devuelve "+res.ok)
           if(res.ok)
@@ -91,41 +89,21 @@ router.post('/nextTitle/', function(req,response){
 })
 
 
-
 router.post('/nextRequest/', function(req,response){
-  //req.body = [{},{}]
   response.status(200).send("Llego el aviso")
-  failedContents=[]
-  contents=[];
-  var itemsProcessed = 0;
   var cont = req.body.contenidos //cont= [{url,xpath,_id},{}]
+  console.log("body ",cont)
   
-  /*function callback () { 
-    console.log(result);
-    //response.send(result)
-    myEmitter.emit('initEvent')  
-  }*/
-  console.log("body ",cont,cont[0].infocontents,cont[0].infocontents[0])
-
-  cont.forEach(async(content,index,array)=>{
-                       //nightmare-herokuapp
-    await fetch("https://headless-chrome-alexa.herokuapp.com/getBodyContent?url="+cont[index].infocontents[0].url+"&path="+cont[index].infocontents[0].xpath)
+  await fetch("https://headless-chrome-alexa.herokuapp.com/getBodyContent?url="+con.url+"&path="+cont.xpath)
     .then(res => {
         console.log("devuelve "+res.ok)
         if(res.ok)
           return res.json()
     })
     .then(json => {
-        if(!json)
-          failedContents.push(index)
-
-        contents[index]= json //json={contenido,host,title,intro}
-        console.log("contents ",contents)
-        itemsProcessed++;
-        if(itemsProcessed === array.length) 
-          myEmitter.emit('secondEvent') 
-         
-    })
+        content = json //json={contenido,host,title,intro}
+        console.log("contents ",content)
+        myEmitter.emit('secondEvent',json) 
   })
 })
 
