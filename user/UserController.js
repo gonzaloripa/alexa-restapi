@@ -94,7 +94,7 @@ router.post('/nextRequest/', function(req,response){
   var cont = req.body.contenidos //cont= [{url,xpath,_id},{}]
   console.log("body ",cont)
   
-  await fetch("https://headless-chrome-alexa.herokuapp.com/getBodyContent?url="+con.url+"&path="+cont.xpath)
+  await fetch("https://headless-chrome-alexa.herokuapp.com/getBodyContent?url="+cont.url+"&path="+cont.xpath)
     .then(res => {
         console.log("devuelve "+res.ok)
         if(res.ok)
