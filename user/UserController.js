@@ -809,16 +809,11 @@ router.post('/addContent/user/:name',function(req, res) {
 
 //CREATE A FLOW FOR A USER WITH THE CONTENTS IN ORDER: UPDATE COLLECTION 'CONTENTS'
 router.post('/createFlow/user/:name', function (req, res) {
-          var contents = req.body.contents 
-          var contents2 = contents.map((content)=>{
-            let words = content.split(" ")
-            let cont = ""
-            for(let i=0; i < words.length ; i++ ){
-              cont += words[i].charAt(0).toUpperCase() + words[i].slice(1) + " "
-            }
-            return cont
+          
+          var contents = req.body.contents.map((content)=>{
+              return content.charAt(0).toUpperCase() + words[i].slice(1)
           })
-          contents = contents.concat(contents2)
+          
           //req.body = {nombreConjunto:"",contents:[ "","",""]}
           console.log(contents)
           Model.User.findOne({'name':req.params.name.toLowerCase()},'_id'
