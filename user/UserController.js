@@ -809,14 +809,23 @@ router.post('/addContent/user/:name',function(req, res) {
 
 //CREATE A FLOW FOR A USER WITH THE CONTENTS IN ORDER: UPDATE COLLECTION 'CONTENTS'
 router.post('/createFlow/user/:name', function (req, res) {
-      
+          var contents = req.body.contents 
+          var contents2 = contents.map((content)=>{
+            let words = content.split(" ")
+            let cont = ""
+            for(let i=0; i < words.length ; i++ ){
+              cont += words[i].charAt(0).toUpperCase() + words[i].slice(1) + " "
+            }
+            return cont
+          })
+          contents = contents.concat(contents2)
           //req.body = {nombreConjunto:"",contents:[ "","",""]}
-          console.log(req.body)
+          console.log(contents)
           Model.User.findOne({'name':req.params.name.toLowerCase()},'_id'
             ,function(err,userId){
               console.log(userId)
               //fijarse si cambiar find por aggregate
-              Model.Content.find({ user:userId, identificador: { $in: req.body.contents }}, '_id identificador'
+              Model.Content.find({ user:userId, identificador: { $in: contents }}, '_id identificador'
               ,function(err,contents){
                   console.log(contents) //idContents= ["",""]
                   if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
