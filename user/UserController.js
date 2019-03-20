@@ -316,7 +316,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.info.content',identificador:'$contenidos.info.identificador',categoria:'$contenidos.info.categoria', order:'$contenidos.order'}] , else: [{siblingsId:'$contenidos.info.siblings', identificador:'$contenidos.info.identificador', categoria:'$contenidos.info.categoria',order:'$contenidos.order'}]  
+                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.info.content',identificador:'$contenidos.info.identificador',categoria:'$contenidos.info.categoria',available:'$contenidos.info.available', order:'$contenidos.order'}] , else: [{siblingsId:'$contenidos.info.siblings', identificador:'$contenidos.info.identificador', categoria:'$contenidos.info.categoria',available:'$contenidos.info.available',order:'$contenidos.order'}]  
                            } 
                         } 
                       }
@@ -382,7 +382,7 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
             { $group: {
                 _id: '$_id',
                 contenidos: { $push: {  
-                    $cond: { if: { $eq: ['$kind', 'SingleContent' ] }, then: [{contentId:'$content',identificador:'$identificador',categoria:'$categoria'}] , else: [{siblingsId:'$siblings', identificador:'$identificador', categoria:'$categoria'}]  
+                    $cond: { if: { $eq: ['$kind', 'SingleContent' ] }, then: [{contentId:'$content',identificador:'$identificador',categoria:'$categoria',available:'$available'}] , else: [{siblingsId:'$siblings', identificador:'$identificador', categoria:'$categoria',available:'$available'}]  
                            }  
                         } 
                       }
@@ -439,7 +439,7 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
             { $group: {
                 _id: '$_id',
                 contenidos: { $push: {  
-                    $cond: { if: { $eq: ['$kind', 'SingleContent' ] }, then: [{contentId:'$content',identificador:'$identificador',categoria:'$categoria'}] , else: [{siblingsId:'$siblings', identificador:'$identificador', categoria:'$categoria'}]  
+                    $cond: { if: { $eq: ['$kind', 'SingleContent' ] }, then: [{contentId:'$content',identificador:'$identificador',categoria:'$categoria', available:'$available'}] , else: [{siblingsId:'$siblings', identificador:'$identificador', categoria:'$categoria', available:'$available'}]  
                            }  
                         } 
                       }
@@ -767,7 +767,7 @@ router.post('/addSiblingContents/user/:name',function(req, res) {
             
             //controlar que no se repitan los identificadores
             Model.Content.create(
-                { kind: 'SiblingContent', user: userId,identificador: req.body.identificador , categoria:req.body.categoria, siblings: ids }
+                { kind: 'SiblingContent', user: userId,identificador: req.body.identificador , categoria:req.body.categoria, available:true, siblings: ids }
                 ,function(err,contents){
                   console.log("--contents ",contents)
                   if (err) return res.status(500).send("No se pudieron asignar los contents para el usuario");
@@ -780,7 +780,7 @@ router.post('/addSiblingContents/user/:name',function(req, res) {
 //ADD A CONTENT INTO THE COLLECTIONS INFOCONTENT AND CONTENT OF A USER, WITHOUT ASSIGN A FLOW
 router.post('/addContent/user/:name',function(req, res) {
       
-      //req.body = {identificador:"",categoria:"",content:{}}
+      //req.body = {identificador:"",categoria:"",available:"",content:{}}
       var content = req.body.content
       //content.available:true
       //Controlar antes que no se repita la info 
@@ -798,7 +798,7 @@ router.post('/addContent/user/:name',function(req, res) {
             //controlar que no se repita el identificador
             
             Model.Content.create(
-                { kind: 'SingleContent', user: userId, identificador: req.body.identificador , categoria:req.body.categoria, content: idContent }
+                { kind: 'SingleContent', user: userId, identificador: req.body.identificador , categoria:req.body.categoria, available:true, content: idContent }
                 ,function(err,contents){
                   console.log("--contents ",contents)
                   if (err) return res.status(500).send("No se pudo asignar el content para el usuario");
@@ -821,7 +821,7 @@ router.post('/createFlow/user/:name', function (req, res) {
             ,function(err,userId){
               console.log(userId)
               //fijarse si cambiar find por aggregate
-              Model.Content.find({ user:userId, identificador: { $in: contentsCap }}, '_id identificador'
+              Model.Content.find({ user:userId, identificador: { $in: contentsCap }, available:true}, '_id identificador'
               ,function(err,contents){
                   console.log(contents) //idContents= ["",""]
                   if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
