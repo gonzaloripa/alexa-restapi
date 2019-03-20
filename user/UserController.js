@@ -782,6 +782,7 @@ router.post('/addContent/user/:name',function(req, res) {
       
       //req.body = {identificador:"",categoria:"",content:{}}
       var content = req.body.content
+      //content.available:true
       //Controlar antes que no se repita la info 
 
       Model.InfoContent.create(content

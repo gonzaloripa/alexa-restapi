@@ -35,7 +35,8 @@ var InfoContent = mongoose.model('InfoContent', InfoContentSchema);
 var contentSchema = new mongoose.Schema({
   user: {type: mongoose.Schema.Types.ObjectId, ref:'User'},
   identificador: {type: String, required:true, unique:true},    
-  categoria: String
+  categoria: String,
+  available: Boolean
 },{discriminatorKey: 'kind'});
 
 var Content = mongoose.model('Content', contentSchema);
