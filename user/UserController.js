@@ -810,12 +810,12 @@ router.post('/addContent/user/:name',function(req, res) {
 //CREATE A FLOW FOR A USER WITH THE CONTENTS IN ORDER: UPDATE COLLECTION 'CONTENTS'
 router.post('/createFlow/user/:name', function (req, res) {
           
-          var contents = req.body.contents.map((content)=>{
+          var contentsCap = req.body.contents.map((content)=>{
               return content.charAt(0).toUpperCase() + content.slice(1)
           })
           
           //req.body = {nombreConjunto:"",contents:[ "","",""]}
-          console.log(contents)
+          console.log(contentsCap)
           Model.User.findOne({'name':req.params.name.toLowerCase()},'_id'
             ,function(err,userId){
               console.log(userId)
@@ -825,7 +825,7 @@ router.post('/createFlow/user/:name', function (req, res) {
                   console.log(contents) //idContents= ["",""]
                   if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
                   var idContents = [];
-                  req.body.contents.forEach((cont,index)=>{
+                  contentsCap.forEach((cont,index)=>{
                     let indice = contents.findIndex(c => c.identificador === cont)
                     if(indice != -1) 
                       idContents.push( { _id:contents[indice]._id, order:index } )
