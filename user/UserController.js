@@ -836,7 +836,7 @@ router.post('/createFlow/user/:name', function (req, res) {
                       idContents.push( { _id:contents[indice]._id, order:index } )
                       console.log("id ",contents[indice]._id)
                       if(cont.data){
-                        var data;
+                        var data = {};
                         if(cont.data.metainfo) 
                           data.metainfo=cont.data.metainfo 
                         if(cont.data.read) 
