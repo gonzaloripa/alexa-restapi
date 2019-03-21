@@ -817,7 +817,7 @@ router.post('/createFlow/user/:name', function (req, res) {
           })
           
           //req.body = {nombreConjunto:"",contents:[ {identificador,idcontent,data:{}},"",""]}
-          console.log(contentsBody)
+          console.log(req.body.contents)
           Model.User.findOne({'name':req.params.name.toLowerCase()},'_id'
             ,function(err,userId){
               console.log(userId)
@@ -830,7 +830,7 @@ router.post('/createFlow/user/:name', function (req, res) {
                   //var storedContents = []
 
                   req.body.contents.forEach((cont,index)=>{
-                    let indice = contents.findIndex(c => c.identificador === cont.identificador)
+                    let indice = contents.findIndex(c => c.identificador == cont.identificador)
                     if(indice != -1){ 
                       idContents.push( { _id:contents[indice]._id, order:index } )
                       console.log("id ",contents[indice]._id)
