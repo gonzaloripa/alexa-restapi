@@ -851,6 +851,7 @@ router.post('/createFlow/user/:name', function (req, res) {
                         })
                         //storedContents.push(contents[indice])
                       }
+                    }
                   })
                   console.log(idContents);
                   //controlar que no se repita el nombreConjunto
