@@ -812,12 +812,12 @@ router.post('/addContent/user/:name',function(req, res) {
 router.post('/createFlow/user/:name', function (req, res) {
           
           var contentsBody = req.body.contents.map((content)=>{
-              return content.idContent
+              return content.idcontent
               //return content.idContent.charAt(0).toUpperCase() + content.idContent.slice(1)
           })
           
           //req.body = {nombreConjunto:"",contents:[ {identificador,idcontent,data:{}},"",""]}
-          console.log(contentsCap)
+          console.log(contentsBody)
           Model.User.findOne({'name':req.params.name.toLowerCase()},'_id'
             ,function(err,userId){
               console.log(userId)
@@ -832,7 +832,7 @@ router.post('/createFlow/user/:name', function (req, res) {
                   req.body.contents.forEach((cont,index)=>{
                     //let indice = contents.findIndex(c => c.identificador === cont.idContent)
                     //if(indice != -1){ 
-                      idContents.push( { _id:cont.idContent, order:index } )
+                      idContents.push( { _id:cont.idcontent, order:index } )
                       
                       if(cont.metainfo || cont.read || cont.next){
                         let metainfo = ""
@@ -844,7 +844,7 @@ router.post('/createFlow/user/:name', function (req, res) {
                           read = cont.read
                         if(cont.next)
                           next = cont.next
-                        Model.Content.update({_id: cont.idContent }
+                        Model.Content.update({_id: cont.idcontent }
                         ,{metainfo:metainfo,read:read,next:next}
                         ,function(err,resul){
                           console.log("Contenido modificado ",resul)
