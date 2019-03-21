@@ -824,7 +824,7 @@ router.post('/createFlow/user/:name', function (req, res) {
               //fijarse si cambiar find por aggregate
               Model.Content.find({ user:userId, identificador: { $in: contentsBody }, available:true}, '_id identificador',{lean:true}
               ,function(err,contents){
-                  console.log(contents) //idContents= ["",""]
+                  console.log("Stored contents ",contents) //idContents= ["",""]
                   if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
                   var idContents = [];
                   //var storedContents = []
@@ -833,7 +833,7 @@ router.post('/createFlow/user/:name', function (req, res) {
                     let indice = contents.findIndex(c => c.identificador === cont.identificador)
                     if(indice != -1){ 
                       idContents.push( { _id:contents[indice]._id, order:index } )
-                      
+                      console.log("id ",contents[indice]._id)
                       if(cont.metainfo || cont.read || cont.next){
                         let metainfo = ""
                         let read = ""
@@ -853,7 +853,7 @@ router.post('/createFlow/user/:name', function (req, res) {
                       }
                     }
                   })
-                  console.log(idContents);
+                  console.log("ids- ",idContents);
                   //controlar que no se repita el nombreConjunto
                   Model.Flow.create({nombreConjunto:req.body.nombreConjunto,pattern:req.body.pattern, user:userId, contents:idContents}
                   ,function (err, flow) {      
