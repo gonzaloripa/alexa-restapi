@@ -26,8 +26,7 @@ Flujo
 const mongoose = require('mongoose'); 
 var InfoContentSchema = new mongoose.Schema({
     url: {type:String,required: true},
-    xpath: {type:String,lowercase: true, required:true},
-    metainfo: String
+    xpath: {type:String,lowercase: true, required:true}
   });
 
 var InfoContent = mongoose.model('InfoContent', InfoContentSchema);
@@ -36,7 +35,10 @@ var contentSchema = new mongoose.Schema({
   user: {type: mongoose.Schema.Types.ObjectId, ref:'User'},
   identificador: {type: String, required:true, unique:true},    
   categoria: String,
-  available: Boolean
+  available: Boolean,
+  metainfo: String,
+  read: String,
+  next: String
 },{discriminatorKey: 'kind'});
 
 var Content = mongoose.model('Content', contentSchema);

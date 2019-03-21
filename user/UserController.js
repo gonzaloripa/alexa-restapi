@@ -812,7 +812,7 @@ router.post('/addContent/user/:name',function(req, res) {
 router.post('/createFlow/user/:name', function (req, res) {
           
           var contentsCap = req.body.contents.map((content)=>{
-              return content.charAt(0).toUpperCase() + content.slice(1)
+              return content.idContent.charAt(0).toUpperCase() + content.idContent.slice(1)
           })
           
           //req.body = {nombreConjunto:"",contents:[ "","",""]}
@@ -826,13 +826,32 @@ router.post('/createFlow/user/:name', function (req, res) {
                   console.log(contents) //idContents= ["",""]
                   if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
                   var idContents = [];
+                  var storedContents = []
+
                   contentsCap.forEach((cont,index)=>{
-                    let indice = contents.findIndex(c => c.identificador === cont)
-                    if(indice != -1) 
+                    let indice = contents.findIndex(c => c.identificador === cont.idContent)
+                    if(indice != -1){ 
                       idContents.push( { _id:contents[indice]._id, order:index } )
+                      if(cont.metainfo || cont.read || cont.next){
+                        let metainfo = ""
+                        let read = ""
+                        let next = ""
+                        if(cont.metainfo)
+                          metainfo = cont.metainfo
+                        if(cont.read)
+                          read = cont.read
+                        if(cont.next)
+                          next = cont.next
+                        Model.Content.update({_id: contents[indice]._id }
+                        ,{metainfo:metainfo,read:read,next:next}
+                        ,function(err,resul){
+                          console.log("Contenido modificado ",resul)
+                        })
+                        //storedContents.push(contents[indice])
+                      }
+                    }
                   })
                   console.log(idContents);
-                  
                   //controlar que no se repita el nombreConjunto
                   Model.Flow.create({nombreConjunto:req.body.nombreConjunto,pattern:req.body.pattern, user:userId, contents:idContents}
                   ,function (err, flow) {      
