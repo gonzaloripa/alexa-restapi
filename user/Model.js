@@ -36,9 +36,11 @@ var contentSchema = new mongoose.Schema({
   identificador: {type: String, required:true, unique:true},    
   categoria: String,
   available: Boolean,
-  metainfo: String,
-  read: String,
-  next: String
+  data:{
+    metainfo: String,
+    read: String,
+    next: String
+  }
 },{discriminatorKey: 'kind'});
 
 var Content = mongoose.model('Content', contentSchema);

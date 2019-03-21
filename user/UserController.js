@@ -836,17 +836,13 @@ router.post('/createFlow/user/:name', function (req, res) {
                       idContents.push( { _id:contents[indice]._id, order:index } )
                       console.log("id ",contents[indice]._id)
                       if(cont.data.metainfo || cont.data.read || cont.data.next){
-                        var metainfo = ""
-                        var read = ""
-                        var next = ""
-                        if(cont.data.metainfo)
-                          metainfo = cont.data.metainfo
-                        if(cont.data.read)
-                          read = cont.data.read
-                        if(cont.data.next)
-                          next = cont.data.next
+                        var data = {}
+                        (cont.data.metainfo)? data.metainfo : cont.data.metainfo
+                        (cont.data.read)? data.read : cont.data.read
+                        (cont.data.next)? data.next : cont.data.next
+
                         Model.Content.update({_id: contents[indice]._id }
-                        ,{metainfo:metainfo,read:read,next:next}
+                        ,{data:data}
                         ,function(err,resul){
                           console.log("Contenido modificado ",resul)
                         })
