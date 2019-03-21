@@ -812,7 +812,7 @@ router.post('/addContent/user/:name',function(req, res) {
 router.post('/createFlow/user/:name', function (req, res) {
           
           var contentsBody = req.body.contents.map((content)=>{
-              return content.idContent
+              return content
               //return content.idContent.charAt(0).toUpperCase() + content.idContent.slice(1)
           })
           
