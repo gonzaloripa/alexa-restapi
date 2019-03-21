@@ -812,7 +812,7 @@ router.post('/addContent/user/:name',function(req, res) {
 router.post('/createFlow/user/:name', function (req, res) {
           
           var contentsBody = req.body.contents.map((content)=>{
-              return (mongoose.Types.ObjectId(content.idcontent))
+              return content.idcontent
               //return content.idContent.charAt(0).toUpperCase() + content.idContent.slice(1)
           })
           
@@ -822,7 +822,7 @@ router.post('/createFlow/user/:name', function (req, res) {
             ,function(err,userId){
               console.log(userId)
               //fijarse si cambiar find por aggregate
-              Model.Content.find({ user:userId, _id: { $in: contentsBody }, available:true}, '_id identificador'
+              Model.Content.find({ user:userId, _id: { $in: contentsBody }, available:true}, '_id identificador',{lean:true}
               ,function(err,contents){
                   console.log(contents) //idContents= ["",""]
                   if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
