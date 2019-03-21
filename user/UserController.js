@@ -837,9 +837,12 @@ router.post('/createFlow/user/:name', function (req, res) {
                       console.log("id ",contents[indice]._id)
                       if(cont.data){
                         var data;
-                        (cont.data.metainfo)? data.metainfo : cont.data.metainfo
-                        (cont.data.read)? data.read : cont.data.read
-                        (cont.data.next)? data.next : cont.data.next
+                        if(cont.data.metainfo) 
+                          data.metainfo=cont.data.metainfo 
+                        if(cont.data.read) 
+                          data.read = cont.data.read
+                        if(cont.data.next)
+                          data.next = cont.data.next
 
                         Model.Content.update({_id: contents[indice]._id }
                         ,{data:data}
