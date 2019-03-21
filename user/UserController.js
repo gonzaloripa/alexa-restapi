@@ -812,8 +812,8 @@ router.post('/addContent/user/:name',function(req, res) {
 router.post('/createFlow/user/:name', function (req, res) {
           
           var contentsBody = req.body.contents.map((content)=>{
-              return content
-              //return content.idContent.charAt(0).toUpperCase() + content.idContent.slice(1)
+              //return content.identificador
+              return content.identificador.charAt(0).toUpperCase() + content.identificador.slice(1)
           })
           
           //req.body = {nombreConjunto:"",contents:[ {identificador,idcontent,data:{}},"",""]}
@@ -822,7 +822,7 @@ router.post('/createFlow/user/:name', function (req, res) {
             ,function(err,userId){
               console.log(userId)
               //fijarse si cambiar find por aggregate
-              Model.Content.find({ user:userId, _id: { $in: contentsBody }, available:true}, '_id identificador',{lean:true}
+              Model.Content.find({ user:userId, identificador: { $in: contentsBody }, available:true}, '_id identificador',{lean:true}
               ,function(err,contents){
                   console.log(contents) //idContents= ["",""]
                   if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
@@ -830,9 +830,9 @@ router.post('/createFlow/user/:name', function (req, res) {
                   //var storedContents = []
 
                   req.body.contents.forEach((cont,index)=>{
-                    //let indice = contents.findIndex(c => c.identificador === cont.idContent)
-                    //if(indice != -1){ 
-                      idContents.push( { _id:cont.idcontent, order:index } )
+                    let indice = contents.findIndex(c => c.identificador === cont.identificador)
+                    if(indice != -1){ 
+                      idContents.push( { _id:contents[indice]._id, order:index } )
                       
                       if(cont.metainfo || cont.read || cont.next){
                         let metainfo = ""
@@ -844,7 +844,7 @@ router.post('/createFlow/user/:name', function (req, res) {
                           read = cont.read
                         if(cont.next)
                           next = cont.next
-                        Model.Content.update({_id: cont.idcontent }
+                        Model.Content.update({_id: contents[indice]._id }
                         ,{metainfo:metainfo,read:read,next:next}
                         ,function(err,resul){
                           console.log("Contenido modificado ",resul)
