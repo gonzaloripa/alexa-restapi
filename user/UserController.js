@@ -811,27 +811,29 @@ router.post('/addContent/user/:name',function(req, res) {
 //CREATE A FLOW FOR A USER WITH THE CONTENTS IN ORDER: UPDATE COLLECTION 'CONTENTS'
 router.post('/createFlow/user/:name', function (req, res) {
           
-          var contentsCap = req.body.contents.map((content)=>{
-              return content.idContent.charAt(0).toUpperCase() + content.idContent.slice(1)
+          var contentsBody = req.body.contents.map((content)=>{
+              return content.idContent
+              //return content.idContent.charAt(0).toUpperCase() + content.idContent.slice(1)
           })
           
-          //req.body = {nombreConjunto:"",contents:[ "","",""]}
+          //req.body = {nombreConjunto:"",contents:[ {identificador,idcontent,data:{}},"",""]}
           console.log(contentsCap)
           Model.User.findOne({'name':req.params.name.toLowerCase()},'_id'
             ,function(err,userId){
               console.log(userId)
               //fijarse si cambiar find por aggregate
-              Model.Content.find({ user:userId, identificador: { $in: contentsCap }, available:true}, '_id identificador'
+              Model.Content.find({ user:userId, _id: { $in: contentsBody }, available:true}, '_id identificador'
               ,function(err,contents){
                   console.log(contents) //idContents= ["",""]
                   if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
                   var idContents = [];
-                  var storedContents = []
+                  //var storedContents = []
 
-                  contentsCap.forEach((cont,index)=>{
-                    let indice = contents.findIndex(c => c.identificador === cont.idContent)
-                    if(indice != -1){ 
-                      idContents.push( { _id:contents[indice]._id, order:index } )
+                  req.body.contents.forEach((cont,index)=>{
+                    //let indice = contents.findIndex(c => c.identificador === cont.idContent)
+                    //if(indice != -1){ 
+                      idContents.push( { _id:cont.idContent, order:index } )
+                      
                       if(cont.metainfo || cont.read || cont.next){
                         let metainfo = ""
                         let read = ""
@@ -842,14 +844,13 @@ router.post('/createFlow/user/:name', function (req, res) {
                           read = cont.read
                         if(cont.next)
                           next = cont.next
-                        Model.Content.update({_id: contents[indice]._id }
+                        Model.Content.update({_id: cont.idContent }
                         ,{metainfo:metainfo,read:read,next:next}
                         ,function(err,resul){
                           console.log("Contenido modificado ",resul)
                         })
                         //storedContents.push(contents[indice])
                       }
-                    }
                   })
                   console.log(idContents);
                   //controlar que no se repita el nombreConjunto
