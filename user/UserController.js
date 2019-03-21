@@ -829,8 +829,9 @@ router.post('/createFlow/user/:name', function (req, res) {
                   var idContents = [];
                   //var storedContents = []
 
-                  req.body.contents.forEach((cont,index)=>{
-                    let indice = contents.findIndex(c => c.identificador == cont.identificador)
+                  contentsBody.forEach((iden,index)=>{
+                    let indice = contents.findIndex(c => c.identificador == iden)
+                    let cont = req.body.contents[indice]
                     if(indice != -1){ 
                       idContents.push( { _id:contents[indice]._id, order:index } )
                       console.log("id ",contents[indice]._id)
