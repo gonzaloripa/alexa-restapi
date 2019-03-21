@@ -835,16 +835,16 @@ router.post('/createFlow/user/:name', function (req, res) {
                     if(indice != -1){ 
                       idContents.push( { _id:contents[indice]._id, order:index } )
                       console.log("id ",contents[indice]._id)
-                      if(cont.metainfo || cont.read || cont.next){
+                      if(cont.data.metainfo || cont.data.read || cont.data.next){
                         let metainfo = ""
                         let read = ""
                         let next = ""
                         if(cont.metainfo)
-                          metainfo = cont.metainfo
+                          metainfo = cont.data.metainfo
                         if(cont.read)
-                          read = cont.read
+                          read = cont.data.read
                         if(cont.next)
-                          next = cont.next
+                          next = cont.data.next
                         Model.Content.update({_id: contents[indice]._id }
                         ,{metainfo:metainfo,read:read,next:next}
                         ,function(err,resul){
