@@ -36,6 +36,7 @@ var contentSchema = new mongoose.Schema({
   identificador: {type: String, required:true, unique:true},    
   categoria: String,
   available: Boolean,
+  navegable: Boolean,
   data:{
     metainfo: String,
     read: String,

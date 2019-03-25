@@ -113,7 +113,7 @@ router.get('/getContents', function(req,response){
     response.status(200).send(content) 
   }
   else{
-    response.status(304).send("The contents are not ready")   
+    response.status(504).send("The contents are not ready")   
   }
 })
 
