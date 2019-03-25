@@ -36,12 +36,7 @@ var contentSchema = new mongoose.Schema({
   identificador: {type: String, required:true, unique:true},    
   categoria: String,
   available: Boolean,
-  navegable: Boolean,
-  data:{
-    metainfo: String,
-    read: String,
-    next: String
-  }
+  navegable: Boolean
 },{discriminatorKey: 'kind'});
 
 var Content = mongoose.model('Content', contentSchema);
@@ -50,7 +45,17 @@ var Content = mongoose.model('Content', contentSchema);
 var flowSchema = new mongoose.Schema({ user: {type: mongoose.Schema.Types.ObjectId, ref:'User'}, 
                                       nombreConjunto: { type:String,required:true, unique:true}, //nombreFlujo
                                       pattern:{ type:String,required:true},
-                                      contents: [{ id:{type: mongoose.Schema.Types.ObjectId, ref:'Content'}, order:Number }] }); //contents: [contentSchema]
+                                      contents: 
+                                      [
+                                        { id:{type: mongoose.Schema.Types.ObjectId, ref:'Content'}, 
+                                          order:Number,
+                                          data:{
+                                            metainfo: String,
+                                            read: String,
+                                            next: String
+                                          } 
+                                        }
+                                      ]}); //contents: [contentSchema]
 // flowSchema.path('contents')` gets the mongoose `DocumentArray`
 //var docArray = flowSchema.path('contents');
 

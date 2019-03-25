@@ -832,9 +832,7 @@ router.post('/createFlow/user/:name', function (req, res) {
                   contentsBody.forEach((iden,index)=>{
                     let indice = contents.findIndex(c => c.identificador == iden)
                     let cont = req.body.contents[indice]
-                    if(indice != -1){ 
-                      idContents.push( { _id:contents[indice]._id, order:index } )
-                      console.log("id ",contents[indice]._id)
+                    if(indice != -1){
                       if(cont.data){
                         var data = {};
                         if(cont.data.metainfo) 
@@ -843,14 +841,22 @@ router.post('/createFlow/user/:name', function (req, res) {
                           data.read = cont.data.read
                         if(cont.data.next)
                           data.next = cont.data.next
-
-                        Model.Content.update({_id: contents[indice]._id }
-                        ,{data:data}
-                        ,function(err,resul){
-                          console.log("Contenido modificado ",resul)
-                        })
                         //storedContents.push(contents[indice])
+                        idContents.push( 
+                        { 
+                          _id:contents[indice]._id
+                          , order:index
+                          , data: data  
+                        })
+                      }else{
+                        idContents.push( 
+                        { 
+                          _id:contents[indice]._id
+                          , order:index 
+                        })                              
                       }
+                      console.log("id ",contents[indice]._id)
+                      
                     }
                   })
                   console.log("ids- ",idContents);
