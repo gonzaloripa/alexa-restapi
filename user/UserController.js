@@ -674,7 +674,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 foreignField: '_id',
                 as: 'infoContents'
               }
-            },
+            },/*,
             { 
               $group:{
                 _id: '$combinedC',
@@ -687,7 +687,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                   }
                 }
               }
-            },
+            },*/
             {
               $project:{
                 _id:0
