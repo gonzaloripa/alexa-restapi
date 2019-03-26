@@ -690,6 +690,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             {
               $project:{
                 combinedC:1,
+                cont:1,
                 _id:0
               }
             },
