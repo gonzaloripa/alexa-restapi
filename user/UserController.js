@@ -680,7 +680,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 foreignField: '_id',
                 as: 'info'
               }
-            },
+            }/*,
             { $lookup: {
                 from: 'contents',
                 localField: 'combinedC',
@@ -688,15 +688,14 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 as: 'contentData'
               }
             }
-            /*,
+            */,
             { 
               $group:{
                 _id: '$combinedC',
-                //flujo:'$combinedC.flujo',
-                infocontents: 
+                contentData: 
                 {$push: 
-                  { url:'$infoContents.url',
-                    xpath:'$infoContents.xpath',
+                  { url:'$info.url',
+                    xpath:'$info.xpath',
                     data:'$cont.data'
                   }
                 }
@@ -704,15 +703,13 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             },
             {
               $project:{
-                combinedC:1,
-                infoContents:1,
-                cont:1,
+                contentData:1,
                 _id:0
               }
             },
             { 
               $sort: {'cont.order': 1 }
-            }*/
+            }
            ])
           .exec(function (err,result) {
               console.log("-Contents id %s ",result)
