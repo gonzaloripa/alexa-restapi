@@ -670,9 +670,10 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             { $unwind: '$combinedC'},
             {
               $project:{
-                combinedC:1
+                combinedC:1,
+                _id:0
               }
-            }/*,
+            },
             { $lookup: {
                 from: 'infocontents',
                 localField: '$combinedC',
