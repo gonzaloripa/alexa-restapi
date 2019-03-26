@@ -675,6 +675,18 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 _id:0
               }
             },
+            { 
+              $group:{
+                _id: '$combinedC',
+                contentData: 
+                {$push: 
+                  { url:'$info.url',
+                    xpath:'$info.xpath',
+                    data:'$cont.data'
+                  }
+                }
+              }
+            },
             { $lookup: {
                 from: 'infocontents',
                 localField: 'combinedC',
@@ -682,14 +694,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 as: 'info'
               }
             },
-            { $lookup: {
-                from: 'flows',
-                localField: 'combinedC',
-                foreignField: 'contents._id',
-                as: 'contentData'
-              }
-            }
-            ,/*
+            /*
             { 
               $group:{
                 _id: '$combinedC',
