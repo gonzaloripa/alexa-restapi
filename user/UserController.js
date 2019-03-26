@@ -698,6 +698,12 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             {
               $unwind:'$content'
             },
+            {
+              $project:{
+                content:1,
+                _id:0
+              }
+            },
             /*
             
                 from: 'infocontents',
