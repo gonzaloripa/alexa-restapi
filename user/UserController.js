@@ -659,7 +659,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
-                      input: '$cont',
+                      input: '$cont.contentId',
                       initialValue: [],
                       in: { $concatArrays : ["$$value", "$$this"] }
                    }
