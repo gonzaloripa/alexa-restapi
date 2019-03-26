@@ -668,25 +668,17 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                }
             },
             {
-              $unwind:'$combinedC.contentId'            
-            },/*
-            { 
-              $group:{
-                _id: '$_id',
-                //flujo:'$combinedC.flujo',
-                contenidos: {$push: { contentId:'$combinedC.contentId',
-                                      order:'$combinedC.order',
-                                      data:'$combinedC.data'
-                                    }
-                            }
-              }
+              $unwind:'$combinedC'            
             },
             {
               $project:{
                 combinedC:1,
-                cont:1
+                cont:1,
+                _id:0
               }
             },
+            
+
             /*
             
                 from: 'infocontents',
