@@ -651,7 +651,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: {contentId:['$contenidos.info.content'],order:'$contenidos.order',data:'$contenidos.data'} , else: {contentId:'$contenidos.info.siblings',order:'$contenidos.order',data:'$contenidos.data'}  
+                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:['$contenidos.info.content'],order:'$contenidos.order',data:'$contenidos.data'}] , else: [{contentId:'$contenidos.info.siblings',order:'$contenidos.order',data:'$contenidos.data'}]  
                            } 
                         } 
                       }
@@ -660,13 +660,16 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
-                      input: '$cont.contentId',
+                      input: '$cont',
                       initialValue: [],
                       in: { $concatArrays : ["$$value", "$$this"] }
                    }
                  }
                }
             },
+            {
+              $unwind:'$combinedC'            
+            }
             {
               $project:{
                 combinedC:1,
