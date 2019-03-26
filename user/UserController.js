@@ -666,10 +666,10 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                    }
                  }
                }
-            },/*
-            {
-              $unwind:'$combinedC'            
             },
+            {
+              $unwind:'$combinedC.contentId'            
+            },/*
             { 
               $group:{
                 _id: '$_id',
