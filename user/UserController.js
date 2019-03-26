@@ -647,7 +647,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                   'data':'$contents.data'
                 }
               } 
-            }/*,
+            },
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
@@ -656,7 +656,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                         } 
                       }
               }
-            },
+            }/*,
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
