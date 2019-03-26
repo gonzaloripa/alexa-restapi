@@ -659,7 +659,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
-                      input: '$cont.contentId',
+                      input: '$cont',
                       initialValue: [],
                       in: { $concatArrays : ["$$value", "$$this"] }
                    }
@@ -669,15 +669,27 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             { $unwind: '$combinedC'},
             { $lookup: {
                 from: 'infocontents',
-                localField: 'combinedC',
+                localField: '$combinedC.contentId',
                 foreignField: '_id',
-                as: 'infocontents'
+                as: 'infoContents'
+              }
+            },
+            { 
+              $group:{
+                _id: '$combinedC',
+                //flujo:'$combinedC.flujo',
+                infocontents: 
+                {$push: 
+                  { url:'$infoContents.url',
+                    xpath:'$infoContents.url',
+                    data:'$combinedC.data'
+                  }
+                }
               }
             },
             {
               $project:{
                 infocontents:1,
-                combinedC:1,
                 _id:0
               }
             },
