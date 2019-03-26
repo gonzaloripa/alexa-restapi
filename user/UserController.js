@@ -687,7 +687,6 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
               $group:{
                 _id:'$_id',
                 content:{
-                  $push:{
                     idcontent:'$dataContent._id',
                     infocontent:{
                       url:'$dataContent.url',
@@ -695,7 +694,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                     },
                     data:'$combinedC.data'
                   }
-                }
+                
               }
             },
             {
