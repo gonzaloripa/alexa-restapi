@@ -672,7 +672,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 from: 'infocontents',
                 localField: '$combinedC',
                 foreignField: '_id',
-                as: 'infoContents'
+                as: 'info'
               }
             }/*,
             { $lookup: {
