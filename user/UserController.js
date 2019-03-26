@@ -689,7 +689,10 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 content:{
                   $push:{
                     idcontent:'$dataContent._id',
-                    infocontent:'$dataContent',
+                    infocontent:{
+                      url:'$dataContent.url',
+                      xpath:'$dataContent.xpath'
+                    },
                     data:'$combinedC.data'
                   }
                 }
