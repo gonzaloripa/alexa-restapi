@@ -666,8 +666,8 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                    }
                  }
                }
-            },
-            { $unwind: '$combinedC'}/*,
+            }/*,
+            { $unwind: '$combinedC'},
             { $lookup: {
                 from: 'infocontents',
                 localField: '$combinedC',
