@@ -683,6 +683,16 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 dataContent:1
               }
             },
+            {
+              $group:{
+                _id:'$_id',
+                content:{
+                  idcontent:'$dataContent._id'
+                  infocontent:'$dataContent',
+                  data:'$combinedC.data'
+                }
+              }
+            }
 
 
             /*
@@ -707,7 +717,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
               }
             },*/
             { 
-              $sort: {'cont.order': 1 }
+              $sort: {'combinedC.order': 1 }
             }
            ])
           .exec(function (err,result) {
