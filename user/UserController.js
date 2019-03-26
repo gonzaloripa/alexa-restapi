@@ -647,7 +647,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                   'data':'$contents.data'
                 }
               } 
-            },
+            }/*,
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
@@ -687,7 +687,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                   }
                 }
               }
-            },*/
+            },
             {
               $project:{
                 combinedC:1,
@@ -698,7 +698,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             },
             { 
               $sort: {'cont.order': 1 }
-            }
+            }*/
            ])
           .exec(function (err,result) {
               console.log("-Contents id %s ",result)
