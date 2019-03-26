@@ -687,7 +687,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
               $group:{
                 _id:'$_id',
                 content:{
-                  idcontent:'$dataContent._id'
+                  idcontent:'$dataContent._id',
                   infocontent:'$dataContent',
                   data:'$combinedC.data'
                 }
