@@ -643,14 +643,15 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 'contenidos':{
                   '_id':'$contents._id',
                   'order':'$contents.order',
-                  'info':'$conj'
+                  'info':'$conj',
+                  'data':'$contents.data'
                 }
               } 
             },
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: {contentId:['$contenidos.info.content'],order:'$contenidos.order',data:'$contenidos.info.data'} , else: {contentId:'$contenidos.info.siblings',order:'$contenidos.order',data:'$contenidos.info.data'}  
+                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: {contentId:['$contenidos.info.content'],order:'$contenidos.order',data:'$contenidos.data'} , else: {contentId:'$contenidos.info.siblings',order:'$contenidos.order',data:'$contenidos.data'}  
                            } 
                         } 
                       }
