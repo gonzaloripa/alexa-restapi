@@ -666,47 +666,33 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                    }
                  }
                }
-            },
+            },/*
             {
               $unwind:'$combinedC'            
+            },
+            { 
+              $group:{
+                _id: '$_id',
+                //flujo:'$combinedC.flujo',
+                contenidos: {$push: { contentId:'$combinedC.contentId',
+                                      order:'$combinedC.order',
+                                      data:'$combinedC.data'
+                                    }
+                            }
+              }
             },
             {
               $project:{
                 combinedC:1,
-                cont:1,
-                _id:0
-              }
-            },/*
-            { 
-              $group:{
-                _id: '$combinedC',
-                contentData: 
-                {$push: 
-                  { url:'$info.url',
-                    xpath:'$info.xpath',
-                    data:'$cont.data'
-                  }
-                }
+                cont:1
               }
             },
-            { $lookup: {
+            /*
+            
                 from: 'infocontents',
                 localField: 'combinedC',
                 foreignField: '_id',
                 as: 'info'
-              }
-            },
-            /*
-            { 
-              $group:{
-                _id: '$combinedC',
-                contentData: 
-                {$push: 
-                  { url:'$info.url',
-                    xpath:'$info.xpath',
-                    data:'$cont.data'
-                  }
-                }
               }
             },
             {
