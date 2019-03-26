@@ -667,7 +667,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                  }
                }
             },
-            { $unwind: '$combinedC'},/*
+            { $unwind: '$combinedC'},
             { $lookup: {
                 from: 'infocontents',
                 localField: '$combinedC.contentId',
@@ -683,15 +683,14 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 {$push: 
                   { url:'$infoContents.url',
                     xpath:'$infoContents.xpath',
-                    data:'$combinedC.data'
+                    data:'$cont.data'
                   }
                 }
               }
-            },*/
+            },
             {
               $project:{
-                combinedC:1,
-                cont:1,
+                infocontents:1,
                 _id:0
               }
             },
