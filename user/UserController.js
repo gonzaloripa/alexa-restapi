@@ -799,8 +799,8 @@ router.put('/setContentUnavailable/:name',function(req, res) {
       
       Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',
         function(err,userId){
-            console.log(userId)
-            Model.Content.findOneAndUpdate({ kind: 'SingleContent', user: userId, content: content.idcontent, available:true}, 
+            console.log(userId,content)
+            Model.Content.findOneAndUpdate({ kind: 'SingleContent', user: userId, content: content.idcontent[0], available:true}, 
               { $set: { available: false }},
               function(err,content){
                   console.log("--content ",content)
