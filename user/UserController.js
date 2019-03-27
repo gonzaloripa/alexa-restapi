@@ -795,7 +795,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
 router.put('/setContentUnavailable/:name',function(req, res) {
       
       //req.body = {content:{idcontent:[""],infocontent:{url:[""],xpath:[""]},data:{next:"",read:"",metainfo:""}} }
-      var content = req.body.content
+      var content = req.body
       
       Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',
         function(err,userId){
