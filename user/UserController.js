@@ -700,7 +700,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                       url:'$dataContent.url',
                       xpath:'$dataContent.xpath'
                     },
-                    data:'$contenidos.data'
+                    data:'$combinedC.data'
                   }
                 }
               }
