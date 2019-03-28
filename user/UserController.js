@@ -657,7 +657,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:['$contenidos.info.content'],order:'$contenidos.order',data:'$contenidos.data',identificador:"$contenidos.info.identificador"}] , else: [{contentId:'$contenidos.info.siblings',order:'$contenidos.order',data:'$contenidos.data',identificador:"$contenidos.info.identificador"}]  
+                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:['$contenidos.info.content'],order:'$contenidos.order',data:'$contenidos.data',identificador:'$contenidos.info.identificador'}] , else: [{contentId:'$contenidos.info.siblings',order:'$contenidos.order',data:'$contenidos.data',identificador:'$contenidos.info.identificador'}]  
                            } 
                         } 
                       }
@@ -678,7 +678,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             },
             { $lookup: {
                 from: 'infocontents',
-                localField: 'combinedC.content',
+                localField: 'combinedC.contentId',
                 foreignField: '_id',
                 as: 'dataContent'
               }
