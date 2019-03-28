@@ -635,7 +635,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 as: 'conj'
               }
             },
-            { $unwind: '$conj' },
+            { $unwind: '$conj' }/*,
             { $match: { '$conj.available':true}},
             { $project: 
               {
@@ -728,10 +728,10 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 },
                 _id:0
               }
-            },*/
+            },
             { 
               $sort: {'combinedC.order': 1 }
-            }
+            }*/
            ])
           .exec(function (err,result) {
               console.log("-Contents id %s ",result)
