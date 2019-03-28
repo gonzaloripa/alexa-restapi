@@ -653,11 +653,11 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                   'data':'$contents.data'
                 }
               } 
-            },/*
+            },
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:['$contenidos.info.content'],order:'$contenidos.order',data:'$contenidos.data',identificador:""}] , else: [{contentId:'$contenidos.info.siblings',order:'$contenidos.order',data:'$contenidos.data'}]  
+                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:['$contenidos.info.content'],order:'$contenidos.order',data:'$contenidos.data',identificador:"$contenidos.info.identificador"}] , else: [{contentId:'$contenidos.info.siblings',order:'$contenidos.order',data:'$contenidos.data',identificador:"$contenidos.info.identificador"}]  
                            } 
                         } 
                       }
@@ -672,20 +672,20 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                    }
                  }
                }
-            },*/
+            },
             {
-              $unwind:'$contenidos'            
+              $unwind:'$combinedC'            
             },
             { $lookup: {
                 from: 'infocontents',
-                localField: 'contedidos._id',
+                localField: 'combinedC.content',
                 foreignField: '_id',
                 as: 'dataContent'
               }
             },
             {
               $project:{
-                contenidos:1,
+                combinedC:1,
                 dataContent:1
               }
             },
@@ -695,7 +695,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 content:{
                   $push:{
                     idcontent:'$dataContent._id',
-                    identificador:'$contenidos.info.identificador',
+                    identificador:'$combinedC.identificador',
                     infocontent:{
                       url:'$dataContent.url',
                       xpath:'$dataContent.xpath'
@@ -736,7 +736,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
               }
             },*/
             { 
-              $sort: {'contenidos.order': 1 }
+              $sort: {'combinedC.order': 1 }
             }
            ])
           .exec(function (err,result) {
