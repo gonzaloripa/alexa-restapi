@@ -653,11 +653,11 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                   'data':'$contents.data'
                 }
               } 
-            },
+            },/*
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:['$contenidos.info.content'],order:'$contenidos.order',data:'$contenidos.data'}] , else: [{contentId:'$contenidos.info.siblings',order:'$contenidos.order',data:'$contenidos.data'}]  
+                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:['$contenidos.info.content'],order:'$contenidos.order',data:'$contenidos.data',identificador:""}] , else: [{contentId:'$contenidos.info.siblings',order:'$contenidos.order',data:'$contenidos.data'}]  
                            } 
                         } 
                       }
@@ -672,20 +672,20 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                    }
                  }
                }
-            },
+            },*/
             {
-              $unwind:'$combinedC'            
+              $unwind:'$contenidos'            
             },
             { $lookup: {
                 from: 'infocontents',
-                localField: 'combinedC.contentId',
+                localField: 'contedidos._id',
                 foreignField: '_id',
                 as: 'dataContent'
               }
             },
             {
               $project:{
-                combinedC:1,
+                contenidos:1,
                 dataContent:1
               }
             },
@@ -695,11 +695,12 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 content:{
                   $push:{
                     idcontent:'$dataContent._id',
+                    identificador:'$contenidos.info.identificador',
                     infocontent:{
                       url:'$dataContent.url',
                       xpath:'$dataContent.xpath'
                     },
-                    data:'$combinedC.data'
+                    data:'$contenidos.data'
                   }
                 }
               }
@@ -735,7 +736,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
               }
             },*/
             { 
-              $sort: {'combinedC.order': 1 }
+              $sort: {'contenidos.order': 1 }
             }
            ])
           .exec(function (err,result) {
