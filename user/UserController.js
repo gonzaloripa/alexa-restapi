@@ -636,6 +636,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
               }
             },
             { $unwind: '$conj' },
+            { $match: { '$conj.available':true}},
             { $project: 
               {
                 'user':1,
@@ -746,7 +747,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
       console.log(userId)
       Model.Content.aggregate(
            [
-            { $match: {user:new mongoose.Types.ObjectId(userId._id), categoria:req.params.category }},
+            { $match: {user:new mongoose.Types.ObjectId(userId._id), categoria:req.params.category, avaiilable:true }},
             //{ $match: { '$contenidos.categoria':req.params.category }},
             { $group: {
                 _id: '$_id',
