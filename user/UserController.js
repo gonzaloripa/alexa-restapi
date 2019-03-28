@@ -747,7 +747,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
       console.log(userId)
       Model.Content.aggregate(
            [
-            { $match: {user:new mongoose.Types.ObjectId(userId._id), categoria:req.params.category, avaiilable:true }},
+            { $match: {user:new mongoose.Types.ObjectId(userId._id), categoria:req.params.category, available:true }},
             //{ $match: { '$contenidos.categoria':req.params.category }},
             { $group: {
                 _id: '$_id',
