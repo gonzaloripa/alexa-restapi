@@ -801,25 +801,20 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
 //MAKE A CONTENT UNAVAILABLE
 router.put('/setContentUnavailable/:name',function(req, res) {
       
-      //req.body = {content:{idcontent:[""],infocontent:{url:[""],xpath:[""]},data:{next:"",read:"",metainfo:""}} }
+      //req.body = {content:{identificador,idcontent:[""],infocontent:{url:[""],xpath:[""]},data:{next:"",read:"",metainfo:""}} }
       var content = req.body.contenidos
       
       Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',
         function(err,userId){
             console.log(userId,content)
 
-            Model.Content.findOne({ identificador:content.identificador, user: userId, available:true},'_id', 
-            function(err,contentId){
-              console.log(contentId)
-
-              Model.Content.findOneAndUpdate({ kind: 'SingleContent', user: userId, content: contentId, available:true}, 
+              Model.Content.findOneAndUpdate({ kind: 'SingleContent', user: userId, identificador: content.identificador, available:true}, 
               { $set: { available: false }},
               function(err,content){
                   console.log("--content ",content)
                   if (err) return res.status(500).send("No se pudo modificar el contenido");
                   res.status(200).send(content);
               })
-            })
       })
 });
 
