@@ -635,14 +635,14 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 as: 'conj'
               }
             },
-            { $unwind: '$conj' },
-            { $match: { available:true}},
-            {
-              $project:
+            { $unwind: '$conj' },            {
+              
+            {$project:
               {
                 conj:'$conj'
               }
-            }/*
+            },
+            { $match: { available:true}}/*
             { $project: 
               {
                 'user':1,
