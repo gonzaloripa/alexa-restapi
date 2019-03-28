@@ -808,7 +808,7 @@ router.put('/setContentUnavailable/:name',function(req, res) {
         function(err,userId){
             console.log(userId,content)
 
-            Model.Content.findOne({ identificador:content.identificador, user: userId, available:true},{'_id'}, 
+            Model.Content.findOne({ identificador:content.identificador, user: userId, available:true},'_id', 
             function(err,contentId){
               console.log(contentId)
 
