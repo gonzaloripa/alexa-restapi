@@ -64,7 +64,7 @@ router.post('/nextTitle/', function(req,response){
 
   //cont.forEach(async(content,index,array)=>{
                        //nightmare-herokuapp
-  fetch("https://headless-chrome-alexa.herokuapp.com/getTitle?url="+cont.url+"&path="+cont.xpath)
+  fetch("https://headless-chrome-alexa.herokuapp.com/getTitle?url="+cont.infocontent.url[0]+"&path="+cont.infocontent.xpath[0])
       .then(res => {
           console.log("devuelve "+res.ok)
           if(res.ok)
@@ -94,7 +94,7 @@ router.post('/nextRequest/', function(req,response){
   var cont = req.body.contenidos //cont= [{url,xpath,_id},{}]
   console.log("body ",cont)
   
-  fetch("https://headless-chrome-alexa.herokuapp.com/getBodyContent?url="+cont.url+"&path="+cont.xpath)
+  fetch("https://headless-chrome-alexa.herokuapp.com/getBodyContent?url="+cont.infocontent.url[0]+"&path="+cont.infocontent.xpath[0])
     .then(res => {
         console.log("devuelve "+res.ok)
         if(res.ok)
