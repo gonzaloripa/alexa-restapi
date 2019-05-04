@@ -788,8 +788,8 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
                     idcontent:'$infocontents._id',
                     identificador:'$infocontents.identificador',
                     infocontent:{
-                      url:'$infocontents.url',
-                      xpath:'$infocontents.xpath'
+                      url:['$infocontents.url'],
+                      xpath:['$infocontents.xpath']
                     }
                   },
                 //infocontents:1,
