@@ -784,7 +784,15 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
             },
             {
               $project:{
-                infocontents:1,
+                 content:{
+                    idcontent:'$infocontents._id',
+                    identificador:'$infocontents.identificador',
+                    infocontent:{
+                      url:'$infocontents.url',
+                      xpath:'$infocontents.xpath'
+                    }
+                  },
+                //infocontents:1,
                 //combinedC:1,
                 _id:0
               }
