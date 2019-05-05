@@ -786,7 +786,6 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
               $project:{
                  content:{
                     idcontent:'$infocontents._id',
-                    identificador:'$combinedC.identificador',
                     infocontent:{
                       url:['$infocontents.url'],
                       xpath:['$infocontents.xpath']
