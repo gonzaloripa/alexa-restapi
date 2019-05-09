@@ -8,17 +8,10 @@ const fetch = require('node-fetch');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 const Model = require('./Model');
-//var userId ='amzn1.ask.account.AEM7C7O3S3FKO4J77F7YYBP5CXPUVG4VHEW4MM77YUETWFCQAMJE4PTXRJCZAJTWC2FKIP3MEVBILLNA2TK7VDHVBHBDA7ZSFLFRYWYE2U4WBV64CWFAKL74DHSBJ3KHY2VPD6HY7G5AWN5XUUIQCJYOQ3VAMD32MKA63PW5ZEDG5F2AXOIL5VNSGPKZZDY3IFDK4V75RD4CKYY';
-
-//var session = require('express-session');
-//router.use(session({secret:'ALEXA'}));
-
 const EventEmitter = require('events');
 class MyEmitter extends EventEmitter {}
-
 const myEmitter = new MyEmitter();
 var content = null
-//var failedContents = []
 var ready = false;
 
 
@@ -34,8 +27,6 @@ myEmitter.on('secondEvent', (content) => {
     ready = true
 })
 
-
-
 //--------------------------  ROUTES -----------------------------------
 
 /* SKILL
@@ -47,23 +38,11 @@ myEmitter.on('secondEvent', (content) => {
 * los mismos contents. (asociar info con criterios en un map) 
 *
 */
-/*
-router.get('/prueba',function(req,res){
-    req.session.content = "NUEVO"
-    console.log(req.session)
-});
-*/
-router.post('/nextTitle/', function(req,response){
-  //req.body = [{},{}]
-  response.status(200).send("Llego el aviso")
-  //failedContents=[]
-  //var content = req.session.content
-  var cont = req.body.contenidos //cont= [{url,xpath,_id},{}]
-  
-  console.log("body ",cont)
 
-  //cont.forEach(async(content,index,array)=>{
-                       //nightmare-herokuapp
+router.post('/nextTitle/', function(req,response){
+  response.status(200).send("Llego el aviso")
+  var cont = req.body.contenidos //cont= [{url,xpath,_id},{}] 
+  console.log("body ",cont)
   fetch("https://headless-chrome-alexa.herokuapp.com/getTitle?url="+cont.infocontent.url[0]+"&path="+cont.infocontent.xpath[0])
       .then(res => {
           console.log("devuelve "+res.ok)
@@ -71,29 +50,17 @@ router.post('/nextTitle/', function(req,response){
             return res.json()
       })
       .then(json => {
-          //if(!json)
-           //failedContents.push(index) 
-          //contents[index]= json //json={title,intro}
           content = json
           console.log("content ",json)
-          myEmitter.emit('secondEvent',json)
-          /*itemsProcessed++;
-          if(itemsProcessed === array.length)
-            await fetch("https://headless-chrome-alexa.herokuapp.com/closeBrowser")
-            .then(res => {
-              myEmitter.emit('secondEvent')
-            }) 
-          */          
+          myEmitter.emit('secondEvent',json)       
       })
-
 })
 
 
 router.post('/nextRequest/', function(req,response){
   response.status(200).send("Llego el aviso")
   var cont = req.body.contenidos //cont= [{url,xpath,_id},{}]
-  console.log("body ",cont)
-  
+  console.log("body ",cont)  
   fetch("https://headless-chrome-alexa.herokuapp.com/getBodyContent?url="+cont.url[0]+"&path="+cont.xpath[0])
     .then(res => {
         console.log("devuelve "+res.ok)
@@ -119,9 +86,7 @@ router.get('/getContents', function(req,response){
 
 // CREATES A NEW USER
 router.post('/newUser', function (req, res) {
-  	var name = req.body.name.toLowerCase(); //'gonza'
-    //userId = req.body.userId
-
+  	var name = req.body.name.toLowerCase(); 
     // Create a new flow of contents with different kinds
     const array = [
                     {
@@ -142,8 +107,6 @@ router.post('/newUser', function (req, res) {
     ,function(err,contents){
         console.log("----Contents:",contents)
         if (err) return res.status(500).send("No se pudieron asignar los contents para el usuario creado");
-
-        //const ids = contents.filter((elem,index) => { if(index < 2) return elem._id } ); 
         const ids = []; 
         contents.forEach((elem,index) => { if(index < 2) ids.push(elem._id) } ); 
 
@@ -170,6 +133,7 @@ router.post('/newUser', function (req, res) {
               pattern:'Read introduction and content',
               contents: idC2
             }];
+
             Model.Flow.insertMany(flows    
             ,function (err, flows) {
               console.log('---Flow: ',flows);
@@ -178,10 +142,7 @@ router.post('/newUser', function (req, res) {
               console.log(idFlows)
 
               Model.User.create({name: name, _id:userId, flows: idFlows }//Hace el new y el save juntos
-              //userId: userId, 
-              //contenidos:array
-              ,function (err, user) {
-                          
+              ,function (err, user) {      
                 console.log("----Usuario:",user)
                 if (err) return res.status(500).send("No se pudo agregar al usuario en la base");
                 res.status(200).send(user);
@@ -215,7 +176,6 @@ router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
     .populate({ path: 'flows', select: 'nombreConjunto pattern -_id' })
     .exec(function(err,user){
       console.log('Flows %s ',user.flows)    
-        //flows será un [] de 
         if (err | user.flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
         res.status(200).send(user.flows);
       });
@@ -228,7 +188,6 @@ router.get('/getFirstCategory/:name', function (req, res) { //'/categories/:usri
     .select('_id')
     .exec(function(err,userId){
         console.log('UserId %s ',userId)    
-        //flows será un [] de 
         if (err | userId == null) return res.status(404).send("No se hallaron flujos para ese usuario");
               Model.Content.find({'user': userId})
               .select('categoria -_id')
@@ -247,7 +206,6 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
     .select('_id')
     .exec(function(err,userId){
         console.log('UserId %s ',userId)    
-        //flows será un [] de 
         if (err | userId == null) return res.status(404).send("No se hallaron flujos para ese usuario");
 
         /*Model.Flow.find({'user': userId})//,{'contents.categoria -_id -contents.kind'},
