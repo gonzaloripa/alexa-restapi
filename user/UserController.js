@@ -22,22 +22,11 @@ myEmitter.on('initEvent', () => {
 
 myEmitter.on('secondEvent', (content) => {
   console.log('The contents are ready')
-  //if( failedContents.length != contents.length )
   if(content != null)
     ready = true
 })
 
 //--------------------------  ROUTES -----------------------------------
-
-/* SKILL
-* 
-* Ver si agregar un request (o manejarlo desde la skill) para que, 
-* una vez obtenidos todos los contents, 
-* solo los ordene por el criterio que diga el usuario, 
-* sin tener que mandar request todo el tiempo a esta API para obtener por Nightmare 
-* los mismos contents. (asociar info con criterios en un map) 
-*
-*/
 
 router.post('/nextTitle/', function(req,response){
   response.status(200).send("Llego el aviso")
@@ -171,7 +160,6 @@ router.get('/:name', function (req, res) {
 
 // GETS THE FLOWS OF A SINGLE USER FROM THE DATABASE
 router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
-    
     Model.User.findOne({'name':req.params.name.toLowerCase()})
     .populate({ path: 'flows', select: 'nombreConjunto pattern -_id' })
     .exec(function(err,user){
@@ -183,7 +171,6 @@ router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
 
 // GETS THE FIRST CATEGORY OF A SINGLE USER 
 router.get('/getFirstCategory/:name', function (req, res) { //'/categories/:usrid/:name'
-    
     Model.User.findOne({'name':req.params.name.toLowerCase()})
     .select('_id')
     .exec(function(err,userId){
@@ -200,35 +187,17 @@ router.get('/getFirstCategory/:name', function (req, res) { //'/categories/:usri
 });
 
 // GETS THE CATEGORIES OF A SINGLE USER 
-router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
-    
+router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name' 
     Model.User.findOne({'name':req.params.name.toLowerCase()})
     .select('_id')
     .exec(function(err,userId){
         console.log('UserId %s ',userId)    
         if (err | userId == null) return res.status(404).send("No se hallaron flujos para ese usuario");
-
-        /*Model.Flow.find({'user': userId})//,{'contents.categoria -_id -contents.kind'},
-        .populate({path:'contents',select:'categoria'})
-        //.select('contents.categoria -_id')
-        .exec(function(err,flow){
-            try{
-              console.log('Categories %s ',flow)
-              if (err | flow[0].contents.length == 0) return res.status(404).send("No se hallaron categorias para ese usuario");
-
-              var idC = []; 
-              flow.map((f) => {
-                console.log("flujos ",f)
-                f.contents.map((elem) => {
-                  console.log(elem)
-                  idC.push(elem._id)})
-              });
-              console.log(idC)*/
-              Model.Content.distinct('categoria',{'user': userId},function(err,resul){
-                if (err | resul.length == 0) return res.status(404).send("No se hallaron categorias para ese usuario");
-                res.status(200).send(resul);
-              })  
-        })
+        Model.Content.distinct('categoria',{'user': userId},function(err,resul){
+          if (err | resul.length == 0) return res.status(404).send("No se hallaron categorias para ese usuario");
+          res.status(200).send(resul);
+        })  
+    })
 });
 
 
@@ -260,17 +229,6 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                 }
               } 
             },
-            /*
-            { $addFields: {"content": {"$mergeObjects": ["$contents", "$conj"]} } }, 
-            /*{
-                $replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$conj", 0 ] }, "$$ROOT" ] } }
-            },
-            { $group: {
-                _id: '$_id',
-                contenidos: {$push: '$conj'}
-              }
-            },
-            { $unwind: '$contenidos'},*/
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
@@ -289,29 +247,9 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
                    }
                  }
                }
-            },/*
-            { $unwind: '$combinedC'},/*
-            {  $addFields:{
-                'combinedC':{
-                   $reduce: {
-                      input: '$combined',
-                      initialValue: [],
-                      in: { $concatArrays : ["$$value", "$$this"] }
-                   }
-                 }
-               }
             },
-            { $unwind: '$combinedC'},/*
-            { $lookup: {
-                from: 'infocontents',
-                localField: 'combinedC.',
-                foreignField: '_id',
-                as: 'infocontents'
-              }
-            },*/
             {
               $project:{
-                //conj:0,
                 combinedC:1,
                 _id:0
               }
@@ -336,7 +274,6 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
       Model.Content.aggregate(
            [
             { $match: {user:new mongoose.Types.ObjectId(userId._id), categoria:req.params.category }},
-            //{ $match: { '$contenidos.categoria':req.params.category }},
             { $group: {
                 _id: '$_id',
                 contenidos: { $push: {  
@@ -345,29 +282,11 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
                         } 
                       }
               }
-            },            
-            { $unwind: '$contenidos'},/*
-            {  $addFields:{
-                'combinedC':{
-                   $reduce: {
-                      input: '$contenidos',
-                      initialValue: [],
-                      in: { $concatArrays : ["$$value", "$$this"] }
-                   }
-                 }
-              
-            { $unwind: '$combinedC'},
-            { $lookup: {
-                from: 'infocontents',
-                localField: 'combinedC',
-                foreignField: '_id',
-                as: 'infocontents'
-              }
-            },*/
+            },           
+            { $unwind: '$contenidos'},
             {
               $project:{
                 contenidos:1,
-                //combinedC:1,
                 _id:0
               }
             }
@@ -393,7 +312,6 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
           Model.Content.aggregate(
            [
             { $match: {user:new mongoose.Types.ObjectId(userId._id), categoria:category[0].categoria }},
-            //{ $match: { '$contenidos.categoria':req.params.category }},
             { $group: {
                 _id: '$_id',
                 contenidos: { $push: {  
@@ -403,28 +321,10 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
                       }
               }
             },            
-            { $unwind: '$contenidos'},/*
-            {  $addFields:{
-                'combinedC':{
-                   $reduce: {
-                      input: '$contenidos',
-                      initialValue: [],
-                      in: { $concatArrays : ["$$value", "$$this"] }
-                   }
-                 }
-              
-            { $unwind: '$combinedC'},
-            { $lookup: {
-                from: 'infocontents',
-                localField: 'combinedC',
-                foreignField: '_id',
-                as: 'infocontents'
-              }
-            },*/
+            { $unwind: '$contenidos'},
             {
               $project:{
                 contenidos:1,
-                //combinedC:1,
                 _id:0
               }
             }
@@ -463,19 +363,8 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
                   'info':'$conj'
                 }
               } 
-            },/*
-            /*
-            { $addFields: {"content": {"$mergeObjects": ["$contents", "$conj"]} } }, 
-            /*{
-                $replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$conj", 0 ] }, "$$ROOT" ] } }
             },
             { $group: {
-                _id: '$_id',
-                contenidos: {$push: '$conj'}
-              }
-            },
-            { $unwind: '$contenidos'},
-            */{ $group: {
                 _id: '$_id',
                 cont: { $push: {
                     $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.info.content',identificador:'$contenidos.info.identificador',categoria:'$contenidos.info.categoria', order:'$contenidos.order',flujo:'$nombreConjunto'}] , else: [{contentId:'$contenidos.info.siblings', identificador:'$contenidos.info.identificador', categoria:'$contenidos.info.categoria',order:'$contenidos.order',flujo:'$nombreConjunto'}]  
@@ -494,30 +383,10 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
                  }
                }
             },
-            { $unwind: '$combinedC'},/*
-            {  $addFields:{
-                'combinedC':{
-                   $reduce: {
-                      input: '$combined',
-                      initialValue: [],
-                      in: { $concatArrays : ["$$value", "$$this"] }
-                   }
-                 }
-               }
-            },
-            { $unwind: '$combinedC'},/*
-            { $lookup: {
-                from: 'infocontents',
-                localField: 'combinedC.',
-                foreignField: '_id',
-                as: 'infocontents'
-              }
-            },*/
-
+            { $unwind: '$combinedC'},
             { 
               $group:{
                 _id: '$combinedC.flujo',
-                //flujo:'$combinedC.flujo',
                 contenidos: {$push: { contentId: '$combinedC.contentId',
                                       categoria:'$combinedC.categoria',
                                       identificador:'$combinedC.identificador',
@@ -528,16 +397,10 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
             },            
             {
               $project:{
-                //conj:0,
-                //nombreConjunto:1,
-                //flujo:1,
                 contenidos:1,
                 _id:1
               }
-            }/*,
-            { 
-              $sort: {'combinedC.order': 1 }
-            }*/
+            }
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
@@ -566,7 +429,6 @@ router.get('/admin/getContents/:name', function (req, res) {
             {
               $project:{
                 contenidos:1,
-                //combinedC:1,
                 _id:0
               }
             }
@@ -672,27 +534,6 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 _id:0
               }
             },
-            /*
-            
-                from: 'infocontents',
-                localField: 'combinedC',
-                foreignField: '_id',
-                as: 'info'
-              }
-            },
-            {
-              $project:{
-                contents:{
-                  content:'$combinedC',
-                  infocontent:{ 
-                    url:'$info.url',
-                    xpath:'$info.xpath',
-                    data:'$cont.data'
-                  }
-                },
-                _id:0
-              }
-            },*/
             { 
               $sort: {'combinedC.order': 1 }
             }
@@ -712,7 +553,6 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
       Model.Content.aggregate(
            [
             { $match: {user:new mongoose.Types.ObjectId(userId._id), categoria:req.params.category, available:true }},
-            //{ $match: { '$contenidos.categoria':req.params.category }},
             { $group: {
                 _id: '$_id',
                 contenidos: { $push: {  
@@ -749,8 +589,6 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
                       xpath:['$infocontents.xpath']
                     }
                   },
-                //infocontents:1,
-                //combinedC:1,
                 _id:0
               }
             }
@@ -764,11 +602,9 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
 });
 
 //MAKE A CONTENT UNAVAILABLE
-router.put('/setContentUnavailable/:name',function(req, res) {
-      
+router.put('/setContentUnavailable/:name',function(req, res) {     
       //req.body = {content:{identificador,idcontent:[""],infocontent:{url:[""],xpath:[""]},data:{next:"",read:"",metainfo:""}} }
       var content = req.body.contenidos
-      
       Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',
         function(err,userId){
             console.log(userId,content)
@@ -786,7 +622,6 @@ router.put('/setContentUnavailable/:name',function(req, res) {
 
 //ADD A LIST OF SIBLING CONTENTS INTO THE COLLECTIONS CONTENT AND INFOCONTENT, WITHOUT ASSIGN A FLOW
 router.post('/addSiblingContents/user/:name',function(req, res) {
-      
       //req.body = {identificador:"",categoria:"",siblings:[{infoContent}]}
       var infoArray = req.body.siblings
       /* Controlar antes que si se repite la info, pueda crear un nuevo conjunto de hermanos, 
@@ -796,15 +631,13 @@ router.post('/addSiblingContents/user/:name',function(req, res) {
       ,function(err,contents){
           console.log("----Contents:",contents)
           if (err) return res.status(500).send("No se pudieron asignar los contents para el usuario");
-
           //const ids = contents.filter((elem,index) => { if(index < 2) return elem._id } ); 
           const ids = [];
           contents.forEach((cont) => ids.push(cont._id) );
           console.log("----ids:",ids)
 
           Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
-            console.log(userId)
-            
+            console.log(userId)           
             //controlar que no se repitan los identificadores
             Model.Content.create(
                 { kind: 'SiblingContent', user: userId,identificador: req.body.identificador , categoria:req.body.categoria, available:true, siblings: ids }
@@ -818,25 +651,21 @@ router.post('/addSiblingContents/user/:name',function(req, res) {
 });
 
 //ADD A CONTENT INTO THE COLLECTIONS INFOCONTENT AND CONTENT OF A USER, WITHOUT ASSIGN A FLOW
-router.post('/addContent/user/:name',function(req, res) {
-      
+router.post('/addContent/user/:name',function(req, res) {      
       //req.body = {identificador:"",categoria:"",available:"",content:{}}
       var content = req.body.content
-      //content.available:true
       //Controlar antes que no se repita la info 
 
       Model.InfoContent.create(content
       ,function(err,content){
           console.log("----Contents:",content)
-          if (err) return res.status(500).send("No se pudo asignar el content para el usuario");
-
+          if (err) return res.status(500).send("No se pudo asignar el content para el usuario")
           const idContent = content._id;
           console.log("----id:",idContent)
-          
+
           Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
             console.log(userId)
-            //controlar que no se repita el identificador
-            
+            //controlar que no se repita el identificador      
             Model.Content.create(
                 { kind: 'SingleContent', user: userId, identificador: req.body.identificador , categoria:req.body.categoria, available:true, content: idContent }
                 ,function(err,contents){
@@ -850,14 +679,13 @@ router.post('/addContent/user/:name',function(req, res) {
 
 //CREATE A FLOW FOR A USER WITH THE CONTENTS IN ORDER: UPDATE COLLECTION 'CONTENTS'
 router.post('/createFlow/user/:name', function (req, res) {
-          
+          console.log(req.body.contents)
           var contentsBody = req.body.contents.map((content)=>{
-              //return content.identificador
               return content.identificador.charAt(0).toUpperCase() + content.identificador.slice(1)
           })
           
           //req.body = {nombreConjunto:"",contents:[ {identificador,idcontent,data:{}},"",""]}
-          console.log(req.body.contents)
+          
           Model.User.findOne({'name':req.params.name.toLowerCase()},'_id'
             ,function(err,userId){
               console.log(userId)
@@ -867,8 +695,6 @@ router.post('/createFlow/user/:name', function (req, res) {
                   console.log("Stored contents ",contents) //idContents= ["",""]
                   if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
                   var idContents = [];
-                  //var storedContents = []
-
                   contentsBody.forEach((iden,index)=>{
                     let indice = contents.findIndex(c => c.identificador == iden)
                     let cont = req.body.contents[indice]
@@ -881,7 +707,6 @@ router.post('/createFlow/user/:name', function (req, res) {
                           data.read = cont.data.read
                         if(cont.data.next)
                           data.next = cont.data.next
-                        //storedContents.push(contents[indice])
                         idContents.push( 
                         { 
                           _id:contents[indice]._id
@@ -946,587 +771,4 @@ router.put('/updateFlow/user/:name', function (req, res) {
         })
 });
 
-//---------------------------------------------------------------------
-
-/*
-router.get('/getFirstContent', function(req,response){
-  
-  fetch("https://alexa-nightmare.herokuapp.com/contents/getBodyContent?url="+req.query.url+"&path="+req.query.path)
-    .then(res => {
-        console.log("devuelve "+res.ok)
-        if(res.ok)
-          return res.json()
-    }).then((body)=>{
-        console.log(body)
-        var result = JSON.stringify(body)
-        response.status(200).send(result)
-    })
-})
-
-router.get('/getFirstContent', async (req,response)=>{
-
-  if(ready == true){
-    ready = false
-    response.status(200).send(contents[0]) 
-  }
-  else{
-    response.status(504).send("The content is not ready yet")   
-  }
-})
-
-        Model.Content.aggregate(
-           [
-            { $unwind: "$contents"},
-            { $match: {
-                  'user_id': userId,
-                  contents: {$elemMatch: {flow_id: flows[0]} }
-                  //'contents.flow_id': flows[0]._id  //fijarse como hacer para comparar elementos de arrays
-              }
-            }
-            ,
-            //{ $sort : {"contenidos.order":1 }},
-            {$group: {"_id":"$user_id", "contenidos": {$push:"$contents"}}},
-              { 
-                  $project: {
-                    contents:"$contenidos"
-                  }
-              }
-           ])
-        .exec(function (err,result) {
-          console.log(result); // [ { maxBalance: 98000 } ]
-
-          const newjson = json.concat(result[0].contents)
-          res.status(200).send(result[0].contents);
-        })*/
-
-
-/*
-    Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
-      console.log(userId)
-      Model.Flow.aggregate(
-           [
-            { $match: { user:new mongoose.Types.ObjectId(userId._id) }},
-            { $lookup: {
-                from: 'contents',
-                localField: 'contents',
-                foreignField: '_id',
-                as: 'contents'
-              }
-            },
-            { $unwind: '$contents' },
-            { $group: {
-                _id: '$contents._id',
-                contenidos: {$push: '$contents'}
-              }
-            },
-            { $unwind: '$contenidos'},/*
-            { $group: {
-                _id: '$_id',
-                cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.kind', 'SingleContent' ] }, then: [{contentId:'$contenidos.content',identificador:'$contenidos.identificador',categoria:'$contenidos.categoria'}] , else: [{siblingsId:'$contenidos.siblings', identificador:'$contenidos.identificador', categoria:'$contenidos.categoria'}]  
-                           } 
-                        } 
-                      }
-              }
-            },
-            {  $addFields:{
-                'combinedC':{
-                   $reduce: {
-                      input: '$cont',
-                      initialValue: [],
-                      in: { $concatArrays : ["$$value", "$$this"] }
-                   }
-                 }
-               }
-            },/*
-            {  $addFields:{
-                'combinedC':{
-                   $reduce: {
-                      input: '$combined',
-                      initialValue: [],
-                      in: { $concatArrays : ["$$value", "$$this"] }
-                   }
-                 }
-               }
-            },
-            { $unwind: '$combinedC'},
-            { $lookup: {
-                from: 'infocontents',
-                localField: 'combinedC.',
-                foreignField: '_id',
-                as: 'infocontents'
-              }
-            },
-            {
-              $project:{
-                _id:0
-              }
-            }
-           ])
-        .exec(function (err,result) {
-            console.log("-Contents id %s ",result)
-              res.status(200).send(result);
-        });
-        
-  });*/
-
-
-/* GETS THE CATEGORIES OF A SINGLE USER 
-router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
-      
-    Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
-      Model.Content.find({'user_id':userId})
-      .select('idConjunto -_id')
-      .exec(function(err, flows) {
-        //flows será un [] de idConjunto
-        if (err | flows.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-        console.log("Flujos: ",flows)
-        res.status(200).send(flows);
-      });  
-    });
-
-    Model.distinct('contenidos.category',{'name':req.params.name.toLowerCase()}, function(err, result){ //{'userId':req.params.usrid,
-    if (err) return res.status(500).send("There was a problem finding the user.");
-      if (!result || result.length == 0) return res.status(200).send("");
-      console.log(result)
-      res.status(200).send(result);
-  });     
-});*/
-
-
-         /*.populate({ path: 'flows', 
-                    select: 'contents -_id',
-                    match: { nombreConjunto: { $eq: req.body.nombreConjunto }},
-        })
-        .exec(function(err,user){
-          console.log('Id contents of a flow %s ',user,user.flows)    
-            //flows será un [] de 
-            if (err | user.flows[0].contents.length == 0) return res.status(404).send("No se hallaron flujos para ese usuario");
-            res.status(200).send(user.flows[0].contents);
-            //Model.Contents.find()
-
-        })
-              if (result.contenidos.length == 0){ //No existe el idConjunto
-                var updates = req.body.map((item,index)=>{
-                    console.log("item "+item.url+item.xpath+index)
-                    return Model.update({'name':req.params.name.toLowerCase()}, 
-                      {"$set": {
-                        'contenidos.$[elem].order': index, //item.order
-                        'contenidos.$[elem].state': "edited",
-                        'contenidos.$[elem].idConjunto': item.idConjunto
-                      }},{ "arrayFilters": [{$and:[{'elem.url':item.url},{'elem.xpath':item.xpath}]}]})       
-                });
-
-                Promise.all(updates).then((results)=>{
-                    console.log(results);
-                    res.status(200).send(req.body)
-                });
-              }else{
-                    res.status(404).send("Ya existe un contenido con ese idConjunto")
-              }
-            })*/
-
-
-// GETS THE NOTICES OF ONE USER FILTER BY STATE(new/old)
-router.get('/contentsByState/:state/:name', function (req, res) {
-
-    var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};
-    Model.aggregate([
-    { $match: getCriteria},
-    { $project: {
-        contenidos: {$filter: {
-            input: '$contenidos',
-            as: 'item',
-            cond: {$eq: ['$$item.state', req.params.state]}
-        }}
-    }}
-    ]).then(function (result) {
-      console.log(result[0].contenidos); // [ { maxBalance: 98000 } ]
-      res.status(200).send(result[0].contenidos);
-    });
-
-});
-
-
-// GETS A SPECIFIC NOTICE OF ONE USER
-router.get('/maxOrder/:name', function (req, res) { //'/notice/:usrid/:name'
-
-    Model.aggregate([  
-      {$unwind : "$contenidos"},
-      {
-          "$match": {
-              "name": req.params.name.toLowerCase()
-          }
-      },
-      {
-          "$group" : {
-              "_id":"$_id",
-              "maxOrder" : {"$max" : "$contenidos.order"},
-              "contents": { $push: "$contenidos"}
-          }
-      },
-      { 
-          $project: {
-            contenidos:"$contents",
-            maxOrder:"$maxOrder"
-          }
-      }
-    ]).then(function (result){
-      console.log(result)
-      res.status(200).send(result);
-    })
-});
-
-
-/* GETS THE SETS OF CONTENTS OF ONE USER 
-router.get('/setsOfContents/:name', function (req, res) { //'/categories/:usrid/:name'
-    Model.distinct('contenidos.idConjunto',{'name':req.params.name.toLowerCase()}, function(err, result){ //{'userId':req.params.usrid,
-    if (err) return res.status(500).send("There was a problem finding the user.");
-      if (!result || result.length == 0) return res.status(200).send("");
-      console.log(result)
-      res.status(200).send(result);
-  });     
-});
-
- GETS THE NOTICES OF ONE USER FILTER BY CATEGORY
-router.get('/notices/:category/:name', function (req, res) { //'/notices/:category/:usrid/:name'
-
-var getCriteria = {'name':req.params.name.toLowerCase()}; //{"userId":req.params.usrid,
-
-   Model.aggregate([
-    { $match: getCriteria},
-    { $project: {
-        contenidos: {$filter: {
-            input: '$contenidos',
-            as: 'item',
-            cond: {$eq: ['$$item.category', req.params.category]}
-        }}
-    }}
-    ]).then(function (result) {
-      console.log(result[0].contenidos); // [ { maxBalance: 98000 } ]
-      res.status(200).send(result[0].contenidos);
-    });
-  
-});
-*/
-
-// DELETES A USER FROM THE DATABASE
-router.delete('/:name', function (req, res) { //'/:usrid/:name'
-    Model.User.findOneAndRemove({"name":req.params.name.toLowerCase()}, function (err, user) { //{"userId":req.params.usrid,
-        if (err) return res.status(500).send("There was a problem deleting the user.");
-        res.status(200).send("User "+ req.params.name +" was deleted.");
-    });
-});
-
-// DELETES A CONTENT FROM A USER 
-router.delete('/deleteContent/:name', function (req, res) { //'/:usrid/:name'
- 
-});
-
-//UPDATE THE STATE OF GROUP OF CONTENTS
-router.put('/updateContentsByState/user/:name', function (req, res) {
-
-        //var getCriteria = {'name':req.params.name.toLowerCase()}//,'contenidos.state':req.params.state};    
-        //console.log(result[0]);
-        Model.update({'name':req.params.name.toLowerCase(),'contenidos.state': 'new'}, 
-        {'$set': {
-          'contenidos.$[elem].state': 'edited'
-          }},{ "arrayFilters": [{ "elem.state": 'new' }], "multi": true }
-        ,(err,doc)=>{
-          //console.log("---contenido ",doc)
-          res.status(200).send(doc);
-        }) 
-});
-
-//UPDATE THE STATE OF A CONTENT 
-router.put('/updateContent/user/:name',function(req, res) {
-
-  Model.findOne({ name: req.params.name.toLowerCase()})//agregar password
-  .select({ contenidos: {$elemMatch: {url:req.body.url,xpath:req.body.xpath}}})
-  .exec((err, resul)=> { 
-    //console.log("---contenido ",resul)
-    var state = (resul.contenidos[0].state=='new')?'edited':'new';
-    Model.findOneAndUpdate({'contenidos._id':resul.contenidos[0]._id} ,{ $set: { 'contenidos.$.state': state }},(err,doc)=>{
-      //console.log("---contenido ",doc)
-      res.status(200).send(doc);
-    })
-  }) 
-});
-
-//UPDATE A LIST OF CONTENTS
-router.put('/updateListContents/user/:name', function (req, res) {
-      /*Model.aggregate([  
-      {$unwind : "$contenidos"},
-      {
-          "$match": {
-              "name": req.params.name.toLowerCase()
-          }
-      },
-      {
-          "$group" : {
-              "_id":"$_id",
-              "maxOrder" : {"$max" : "$contenidos.idConjunto"},
-              //"maxOrder" : {"$max" : "$contenidos.order"},
-              "contents": { $push: "$contenidos"}
-          }
-      },
-      { 
-          $project: {
-            contenidos:"$contents",
-            maxOrder:"$maxOrder"
-          }
-      }
-    ])
-    .then(function (result){
-       var idC
-       if(result.length > 0)
-         idC = result[0].maxOrder + 1
-       else
-         idC = 1
-      */
-      var criteria = { 'name': req.params.name.toLowerCase()}
-      Model.findOne(criteria)
-            .select({ contenidos: 
-                    {$elemMatch: 
-                      {
-                       idConjunto:req.body[0].idConjunto
-                      }
-                    }
-                   })
-            .exec((err, result)=> {
-              console.log("result "+result)
-              if (result.contenidos.length == 0){ //No existe el idConjunto
-                var updates = req.body.map((item,index)=>{
-                    console.log("item "+item.url+item.xpath+index)
-                    return Model.update({'name':req.params.name.toLowerCase()}, 
-                      {"$set": {
-                        'contenidos.$[elem].order': index, //item.order
-                        'contenidos.$[elem].state': "edited",
-                        'contenidos.$[elem].idConjunto': item.idConjunto
-                      }},{ "arrayFilters": [{$and:[{'elem.url':item.url},{'elem.xpath':item.xpath}]}]})       
-                });
-
-                Promise.all(updates).then((results)=>{
-                    console.log(results);
-                    res.status(200).send(req.body)
-                });
-              }else{
-                    res.status(404).send("Ya existe un contenido con ese idConjunto")
-              }
-            })
-});
-
-
-//ADD A LIST OF CONTENT INTO THE COLLECTION OF A USER
-router.put('/addListContent/user/:name',function(req, res) {
-      var functionContains = function(array,obj){
-        for (i = 0; i < array.length; i++) {
-                //console.log("  aver ",(array[i] == obj),array[i],obj)
-                if (array[i].xpath === obj.xpath && array[i].url === obj.url ) 
-                    return true
-            }
-            return false;
-      };
-
-      Model.aggregate([  
-      {$unwind : "$contenidos"},
-      {
-          "$match": {
-              "name": req.params.name.toLowerCase()
-          }
-      },
-      {
-          "$group" : {
-              "_id":"$_id",
-              //"maxOrder" : {"$max" : "$contenidos.order"},
-              "contents": { $push: "$contenidos"}
-          }
-      },
-      { 
-          $project: {
-            contenidos:"$contents"
-            //maxOrder:"$maxOrder"
-          }
-      }
-    ])
-    .then(function (result){
-      	var contBody = req.body;
-        var query = { 'name': req.params.name.toLowerCase()}//agregar password
-    
-       var contents = []
-       let promises = contBody.map((elem,index)=>{ 
-          console.log(elem,contBody)
-          if(result.length > 0){
-            if(!functionContains(result[0].contenidos,elem))//si no se repiten los contenidos
-             return contents.push(elem)
-          }
-          return contents.push(elem)
-       });
-       
-       Promise.all(promises).then((resultArray)=>{
-          console.log("res",resultArray)
-          if(contents.length == 0) return res.status(400).send("No puede haber contenidos con el mismo xpath o id de una misma pagina");      
-          Model.findOneAndUpdate(query,{$push : {contenidos: {$each: contents} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
-          //user contiene el usuario antes de ser actualizado
-          console.log('Actualizado ',user);
-          res.status(200).send(contents);
-        })
-       }).catch((err)=>{
-        console.log("error",err)
-       }) 
-    })     
-});
-
-//ADD A CONTENT INTO THE COLLECTION OF A USER
-router.put('/addContent/user/:name',function(req, res) {
-  //req.body.xpath:body/div[1]/div[1]/div[1]/div[2]/section[1]/article[1]/a[1]/h2[1]
-  //req.body.url: 'https://diariohoy.net'
-  //req.body.state = 'new'/'old'
-  
-  var criteria = { name: req.params.name.toLowerCase() };//agregar password
-  Model.findOne(criteria)
-  .select({ contenidos: 
-          {$elemMatch: 
-            {url:req.body.url,
-             xpath:req.body.xpath
-            }
-          }
-         })
-  .exec((err, docs)=> {
-    console.log(docs)
-    if(docs.contenidos.length > 0)
-      res.status(404).send("Ya existe el contenido para ese usuario");  
-    else{//Si no existe el contenido
-          Model.findOne(criteria)
-            .select({ contenidos: 
-                    {$elemMatch: 
-                      {url:req.body.url,
-                       idContent:req.body.idContent
-                      }
-                    }
-                   })
-            .exec((err, result)=> {
-              console.log(result)
-              if(result.contenidos.length > 0)
-                res.status(404).send("Ya existe el id");  
-              else{
-                Model.aggregate([  
-                  {$unwind : "$contenidos"},
-                  {
-                      "$match": {
-                          "name": req.params.name.toLowerCase()
-                      }
-                  },
-                  {
-                      "$group" : {
-                          "_id":"$_id",
-                          "maxOrder" : {"$max" : "$contenidos.order"}
-                      }
-                  }
-                ]).then(function (elem){
-                  console.log(elem)
-                  const content = req.body
-                  if(elem.length > 0)
-                    content.order = parseInt(elem[0].maxOrder) + 1
-                  else
-                    content.order = 0
-                  Model.findOneAndUpdate(criteria, { $push: { contenidos: content }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
-                    if(err) return res.status(500).send("There was a problem updating the user.");
-                    //user contiene el usuario antes de ser actualizado
-                    console.log('Actualizado ',content);
-                    
-                    res.status(200).send(content);
-                  })
-                })
-                
-              }
-            })
-      }
-  })
-});
-
 module.exports = router;
-
-
-
-
-/*addListContent
-
-var functionContains = function(array,obj){
-    for (i = 0; i < array.length; i++) {
-            //console.log("  aver ",(array[i] == obj),array[i],obj)
-            if (array[i].xpath === obj.xpath && array[i].url === obj.url) {
-                return true
-            }
-        }
-        return false;
-  };
-
-  var contBody = req.body;
-  var query = { 'name': req.params.name.toLowerCase()};//agregar password
-  
-  Model.find(query,{'contenidos._id':0}, 
-    function (err, result) {
-       console.log(result[0].contenidos)
-       var contents = []
-
-       var elemAnt = {idContent:""};
-       var elemAct;
-       
-       let promises = contBody.map((elem)=>{ 
-        if(!functionContains(result[0].contenidos,elem)){//si no se repiten los contenidos
-          return Model.aggregate([
-             {$unwind:"$contenidos"},
-             {$match:{"contenidos.idContent":elem.idContent, "contenidos.url":elem.url}},
-             {$project:{contenidos:1,_id:0}},
-             {$sort:{"contenidos.idInc":-1}},
-             {$limit: 1}
-             ])
-          .then(function (result) {
-            console.log(result[0]); 
-              
-              if(result[0])
-                elem.idInc = result[0].contenidos.idInc + 1 //.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
-              else 
-                elem.idInc = 1;
-              contents.push(elemAct);
-            })
-        }
-       });
-       Promise.all(promises).then((resultArray)=>{
-        console.log("res",resultArray)
-          Model.findOneAndUpdate(query,{$push : {contenidos: {$each: contents} }}, function (err,user) {//{url:req.body.url,xpath:req.body.xpath}
-          if(err) return res.status(500).send("There was a problem updating the user.");
-          //user contiene el usuario antes de ser actualizado
-          console.log('Actualizado ',user);
-                
-          res.status(200).send(contents);
-        })
-       }).catch((err)=>{
-        console.log("error",err)
-       })   
-    }) 
-
-
-
-
-
-addContent/user/name
-Model.aggregate([
-         {$unwind:"$contenidos"},
-         {$match:{"contenidos.idContent":req.body.idContent, "contenidos.url":req.body.url}},
-         {$project:{contenidos:1,_id:0}},
-         {$sort:{"contenidos.idInc":-1}},
-         {$limit: 1}
-         ])
-      .then(function (result) {
-        console.log(result[0]); 
-        var aux=req.body;
-          if(result[0])
-            aux.idInc = result[0].contenidos.idInc + 1 //.replace(/(\d+)/,function(j,a){return a- -1;}) //incrementa el valor del identificador
-          else
-            aux.idInc = 1   //aux.idContent+1
-
-
-
-*/
