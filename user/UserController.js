@@ -470,14 +470,14 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                   '_id':'$contents._id',
                   'order':'$contents.order',
                   'info':'$conj',
-                  'data':'$contents.data'
+                  'metadata':'$contents.metadata'
                 }
               } 
             },
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:['$contenidos.info.content'],order:'$contenidos.order',data:'$contenidos.data',identificador:'$contenidos.info.identificador'}] , else: [{contentId:'$contenidos.info.siblings',order:'$contenidos.order',data:'$contenidos.data',identificador:'$contenidos.info.identificador'}]  
+                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:['$contenidos.info.content'],order:'$contenidos.order',metadata:'$contenidos.metadata',identificador:'$contenidos.info.identificador'}] , else: [{contentId:'$contenidos.info.siblings',order:'$contenidos.order',metadata:'$contenidos.metadata',identificador:'$contenidos.info.identificador'}]  
                            } 
                         } 
                       }
@@ -520,7 +520,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                       url:'$dataContent.url',
                       xpath:'$dataContent.xpath'
                     },
-                    data:'$combinedC.data'
+                    metadata:'$combinedC.metadata'
                   }
                 }
               }
@@ -699,19 +699,19 @@ router.post('/createFlow/user/:name', function (req, res) {
                     let indice = contents.findIndex(c => c.identificador == iden)
                     let cont = req.body.contents[indice]
                     if(indice != -1){
-                      if(cont.data){
+                      if(cont.metadata){
                         var data = {};
-                        if(cont.data.metainfo) 
-                          data.metainfo=cont.data.metainfo 
-                        if(cont.data.read) 
-                          data.read = cont.data.read
-                        if(cont.data.next)
-                          data.next = cont.data.next
+                        if(cont.metadata.metaInfo) 
+                          data.metaInfo=cont.metadata.metaInfo 
+                        if(cont.metadata.pattern) 
+                          data.pattern = cont.metadata.pattern
+                        if(cont.metadata.next)
+                          data.next = cont.metadata.next
                         idContents.push( 
                         { 
                           _id:contents[indice]._id
                           , order:index
-                          , data: data  
+                          , metadata: data  
                         })
                       }else{
                         idContents.push( 

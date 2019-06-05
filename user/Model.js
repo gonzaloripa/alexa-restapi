@@ -49,9 +49,9 @@ var flowSchema = new mongoose.Schema({ user: {type: mongoose.Schema.Types.Object
                                       [
                                         { id:{type: mongoose.Schema.Types.ObjectId, ref:'Content'}, 
                                           order:Number,
-                                          data:{
-                                            metainfo: String,
-                                            read: String,
+                                          metadata:{
+                                            metaInfo: String,
+                                            pattern: String,
                                             next: String
                                           } 
                                         }
