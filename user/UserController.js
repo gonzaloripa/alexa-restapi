@@ -32,7 +32,7 @@ router.post('/nextTitle/', function(req,response){
   response.status(200).send("Llego el aviso")
   var cont = req.body.contenidos //cont= [{url,xpath,_id},{}] 
   console.log("body ",cont)
-  fetch("https://headless-chrome-alexa.herokuapp.com/getTitle?url="+cont.infocontent.url[0]+"&path="+cont.infocontent.xpath[0])
+  fetch("https://headless-chrome-alexa.herokuapp.com/getTitle?url="+cont.url[0]+"&path="+cont.xpath[0])
       .then(res => {
           console.log("devuelve "+res.ok)
           if(res.ok)
