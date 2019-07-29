@@ -49,7 +49,7 @@ router.post('/nextTitle/', function(req,response){
 router.post('/nextRequest/', function(req,response){
   response.status(200).send("Llego el aviso")
   var cont = req.body.contenidos //cont= [{url,xpath,_id},{}]
-  console.log("body ",cont)  
+  console.log("body ",cont, req.body)  
   fetch("https://headless-chrome-alexa.herokuapp.com/getBodyContent?url="+cont.url[0]+"&path="+cont.xpath[0])
     .then(res => {
         console.log("devuelve "+res.ok)
