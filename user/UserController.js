@@ -342,15 +342,15 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
                 foreignField: '_id',
                 as: 'dataContent'
               }
-            },/*
+            },
             {"$addFields":
               {"contenidos": 
-                {"$mergeObjects": ["$combinedC", "$dataContent.url"]}
+                {"$mergeObjects": ["$combinedC", "$dataContent"]}
               }
-            },*/
+            },
             {
               $project:{
-                //contenidos:1,
+                contenidos:1,
                 combinedC:1,
                 dataContent:1,
                 _id:0
