@@ -325,7 +325,7 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
                       }
               }
             },            
-            //{ $unwind: '$contenidos'},
+            { $unwind: '$contenidos'},
             { $lookup: {
                 from: 'infocontents',
                 localField: 'contenidos.contentId',
@@ -336,10 +336,6 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
             {
               $project:{
                 contenidos:1,
-                //'contents':{
-                  //'contenido':'$contenidos',
-                  //'data':'$dataContent.url',
-                //},
                 _id:0
               }
             }
