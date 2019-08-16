@@ -333,25 +333,21 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
                 as: 'dataContent'
               }
             },
-            { 
-              $group:{
-                _id: '$contenidos.contentId',
-                contenido: {$push: { content: '$contenidos',
-                                      url:'$dataContent.url'
-                                    }
-                            }
-              }
-            }, 
             {
               $project:{
-                contenido:1,
+                contents:{
+                  contenido:'$contenidos',
+                  url:'$dataContent.url'
+                },
                 _id:0
               }
             }
-           ])
+           ]){
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
-              res.status(200).send(result);
+              var res = {content:result[0]}
+              res.content.url = result[1]
+              res.status(200).send({content:result[0]});
         })
       })        
   })
