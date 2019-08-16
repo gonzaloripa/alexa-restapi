@@ -325,7 +325,7 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
                       }
               }
             },            
-            { $unwind: '$contenidos'},
+            //{ $unwind: '$contenidos'},
             { $lookup: {
                 from: 'infocontents',
                 localField: 'contenidos.contentId',
