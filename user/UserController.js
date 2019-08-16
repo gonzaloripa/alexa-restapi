@@ -335,10 +335,11 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
             },
             {
               $project:{
-                'contents':{
-                  'contenido':'$contenidos',
-                  'data':'$dataContent.url',
-                },
+                contenidos:1,
+                //'contents':{
+                  //'contenido':'$contenidos',
+                  //'data':'$dataContent.url',
+                //},
                 _id:0
               }
             }
