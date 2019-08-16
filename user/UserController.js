@@ -342,7 +342,7 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
                 _id:0
               }
             }
-           ]){
+           ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
               var res = {content:result[0]}
