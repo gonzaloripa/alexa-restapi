@@ -336,10 +336,7 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
             { 
               $group:{
                 _id: '$contenidos.contentId',
-                contenido: {$push: { contentId: '$contenidos.contentId',
-                                      categoria:'$contenidos.categoria',
-                                      identificador:'$contenidos.identificador',
-                                      available:'$contenidos.available',
+                contenido: {$push: { content: '$contenidos',
                                       url:'$dataContent.url'
                                     }
                             }
