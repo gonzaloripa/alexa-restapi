@@ -344,10 +344,16 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
               }
             },
             {"$addFields":
+              {"contenidos": { "$arrayToObject": 
+                {"$setUnion": [{"$objectToArray": "$combinedC"},{"$objectToArray": "$dataContent"}]}
+                }
+              }
+            },
+            /*{"$addFields":
               {"contenidos": 
                 {"$mergeObjects": ["$combinedC", "$dataContent"]}
               }
-            },
+            },*/
             {
               $project:{
                 contenidos:1,
