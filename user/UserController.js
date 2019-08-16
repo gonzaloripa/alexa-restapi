@@ -319,24 +319,33 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
             { $group: {
                 _id: '$_id',
                 contenidos: { $push: {  
-                    $cond: { if: { $eq: ['$kind', 'SingleContent' ] }, then: [{contentId:'$content',identificador:'$identificador',categoria:'$categoria', available:'$available'}] , else: [{siblingsId:'$siblings', identificador:'$identificador', categoria:'$categoria', available:'$available'}]  
+                    $cond: { if: { $eq: ['$kind', 'SingleContent' ] }, then: [{contentId:'$content',identificador:'$identificador',categoria:'$categoria', available:'$available'}] , else: [{contentId:'$siblings', identificador:'$identificador', categoria:'$categoria', available:'$available'}]  
                            }  
                         } 
                       }
               }
             },            
-            { $unwind: '$contenidos'},
+            {  $addFields:{
+                'combinedC':{
+                   $reduce: {
+                      input: '$contenidos',
+                      initialValue: [],
+                      in: { $concatArrays : ["$$value", "$$this"] }
+                   }
+                 }
+               }
+            },
+            { $unwind: '$combinedC'},/*
             { $lookup: {
                 from: 'infocontents',
                 localField: 'contenidos.contentId',
                 foreignField: '_id',
                 as: 'dataContent'
               }
-            },
+            },*/
             {
               $project:{
-                contenidos:1,
-                dataContent:1,
+                combinedC:1,
                 _id:0
               }
             }
