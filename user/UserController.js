@@ -335,17 +335,22 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
                  }
                }
             },
-            { $unwind: '$combinedC'},/*
+            { $unwind: '$combinedC'},
             { $lookup: {
                 from: 'infocontents',
-                localField: 'contenidos.contentId',
+                localField: 'combinedC.contentId',
                 foreignField: '_id',
                 as: 'dataContent'
               }
-            },*/
+            },
+            {"$addFields":
+              {"contenidos": 
+                {"$mergeObjects": ["$combinedC", "$dataContent.url"]}
+              }
+            },
             {
               $project:{
-                combinedC:1,
+                contenidos:1,
                 _id:0
               }
             }
