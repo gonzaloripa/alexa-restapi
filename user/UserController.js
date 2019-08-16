@@ -73,6 +73,9 @@ router.get('/getContents', function(req,response){
   }
 })
 
+
+//-------------- DB INTERACTION ---------------------------
+
 // CREATES A NEW USER
 router.post('/newUser', function (req, res) {
   	var name = req.body.name.toLowerCase(); 
@@ -268,7 +271,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
 
 // (ADMIN) GETS THE NOTICES OF ONE USER FILTERED BY CATEGORY
 router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
-
+  //Devolver tmb la url de la coleccion infoContent
   Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
       console.log(userId)
       Model.Content.aggregate(
@@ -301,6 +304,7 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
 
 // (ADMIN) GETS THE NOTICES OF ONE USER FILTERED BY CATEGORY
 router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
+  //Devolver tmb la url de la coleccion infoContent
 
   Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
       console.log(userId)
@@ -322,9 +326,17 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
               }
             },            
             { $unwind: '$contenidos'},
+            { $lookup: {
+                from: 'infocontents',
+                localField: 'contenidos.contentId',
+                foreignField: '_id',
+                as: 'dataContent'
+              }
+            },
             {
               $project:{
                 contenidos:1,
+                dataContent:1,
                 _id:0
               }
             }
