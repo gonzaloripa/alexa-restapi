@@ -358,8 +358,11 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
             },*/
             {
               $project:{
-                combinedC:1,
-                dataContent:1,
+                  contenidos: {
+                    $mergeObjects: ["$combinedC", "$dataContent"]
+                  },
+                  //combinedC:1,
+                  //dataContent:1,
                 _id:0
               }
             }
