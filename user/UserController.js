@@ -359,7 +359,7 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
             {
               $project:{
                   contenidos: {
-                    $mergeObjects: ["$combinedC", "$dataContent.url"]
+                    $mergeObjects: ["$combinedC", {url:"$dataContent.url"}]
                   },
                   //combinedC:1,
                   //dataContent:1,
