@@ -663,6 +663,22 @@ router.put('/setContentUnavailable/:name',function(req, res) {
       })
 });
 
+router.delete('/deleteContentUnavailable/:name',function(req,res){
+
+      var content = req.body.data.contenidos
+      Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',
+        function(err,userId){
+            console.log(userId,content)
+
+              Model.Content.findOneAndDelete({ kind: 'SingleContent', user: userId, identificador: content.identificador, url:content.url, available:false},
+              function(err,content){
+                  console.log("--content ",content)
+                  if (err) return res.status(500).send("No se pudo eliminar el contenido");
+                  res.status(200).send(content);
+              })
+      })
+})
+
 
 //ADD A LIST OF SIBLING CONTENTS INTO THE COLLECTIONS CONTENT AND INFOCONTENT, WITHOUT ASSIGN A FLOW
 router.post('/addSiblingContents/user/:name',function(req, res) {
