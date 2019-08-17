@@ -344,13 +344,6 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
               }
             },
             { $unwind: '$dataContent'},
-            {
-              $replaceRoot: { 
-                newRoot: { 
-                  $mergeObjects: [ { $arrayElemAt: [ "$dataContent", 0 ] }, "$$ROOT" ] 
-                } 
-              }
-            },
             /*
             {"$addFields":
               {"contenidos": { "$arrayToObject": 
@@ -365,7 +358,8 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
             },*/
             {
               $project:{
-                dataContent:0,
+                combinedC:1,
+                dataContent:1,
                 _id:0
               }
             }
