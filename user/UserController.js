@@ -342,7 +342,16 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
                 foreignField: '_id',
                 as: 'dataContent'
               }
-            },/*
+            },
+            { $unwind: '$dataContent'},
+            {
+              $replaceRoot: { 
+                newRoot: { 
+                  $mergeObjects: [ { $arrayElemAt: [ "$dataContent", 0 ] }, "$$ROOT" ] 
+                } 
+              }
+            },
+            /*
             {"$addFields":
               {"contenidos": { "$arrayToObject": 
                 {"$setUnion": [{"$objectToArray": "$combinedC"},{"$objectToArray": "$dataContent"}]}
@@ -356,7 +365,7 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
             },*/
             {
               $project:{
-                dataContent:1,
+                dataContent:0,
                 _id:0
               }
             }
