@@ -335,7 +335,7 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
                  }
                }
             },
-            { $unwind: '$combinedC'},
+            //{ $unwind: '$combinedC'},
             /*{ $lookup: {
                 from: 'infocontents',
                 localField: 'combinedC.contentId',
