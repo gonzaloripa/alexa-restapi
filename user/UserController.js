@@ -335,14 +335,14 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
                  }
                }
             },
-            //{ $unwind: '$combinedC'},
-            /*{ $lookup: {
+            { $unwind: '$combinedC'},
+            { $lookup: {
                 from: 'infocontents',
                 localField: 'combinedC.contentId',
                 foreignField: '_id',
                 as: 'dataContent'
               }
-            },
+            },/*
             {"$addFields":
               {"contenidos": { "$arrayToObject": 
                 {"$setUnion": [{"$objectToArray": "$combinedC"},{"$objectToArray": "$dataContent"}]}
@@ -356,7 +356,7 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
             },*/
             {
               $project:{
-                combinedC:1,
+                dataContent:1,
                 _id:0
               }
             }
