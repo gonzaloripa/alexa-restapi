@@ -286,10 +286,30 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
                       }
               }
             },           
-            { $unwind: '$contenidos'},
+            {  $addFields:{
+                'combinedC':{
+                   $reduce: {
+                      input: '$contenidos',
+                      initialValue: [],
+                      in: { $concatArrays : ["$$value", "$$this"] }
+                   }
+                 }
+               }
+            },
+            { $unwind: '$combinedC'},
+            { $lookup: {
+                from: 'infocontents',
+                localField: 'combinedC.contentId',
+                foreignField: '_id',
+                as: 'dataContent'
+              }
+            },
+            { $unwind: '$dataContent'},
             {
               $project:{
-                contenidos:1,
+                  contenidos: {
+                    $mergeObjects: ["$combinedC", {url:"$dataContent.url"}]
+                  },
                 _id:0
               }
             }
@@ -344,25 +364,11 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
               }
             },
             { $unwind: '$dataContent'},
-            /*
-            {"$addFields":
-              {"contenidos": { "$arrayToObject": 
-                {"$setUnion": [{"$objectToArray": "$combinedC"},{"$objectToArray": "$dataContent"}]}
-                }
-              }
-            },
-            /*{"$addFields":
-              {"contenidos": 
-                {"$mergeObjects": ["$combinedC", "$dataContent"]}
-              }
-            },*/
             {
               $project:{
                   contenidos: {
                     $mergeObjects: ["$combinedC", {url:"$dataContent.url"}]
                   },
-                  //combinedC:1,
-                  //dataContent:1,
                 _id:0
               }
             }
