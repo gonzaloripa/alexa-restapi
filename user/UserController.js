@@ -670,7 +670,7 @@ router.delete('/deleteContentUnavailable/:name',function(req,res){
         function(err,userId){
             console.log(userId,content)
 
-              Model.Content.findOneAndDelete({ kind: 'SingleContent', user: userId, identificador: content.identificador, url:content.url, available:false},
+              Model.Content.findOneAndDelete({ kind: 'SingleContent', user: userId, identificador: content.identificador, available:false},
               function(err,content){
                   console.log("--content ",content)
                   if (err) return res.status(500).send("No se pudo eliminar el contenido");
