@@ -670,11 +670,11 @@ router.delete('/deleteContentUnavailable/:name',function(req,res){
         function(err,userId){
             console.log(userId,content)
             Model.Content.remove({ kind: 'SingleContent', user: userId, identificador: content.identificador, available:false},
-            function(err,content){
-                console.log("--content delete ",content, content.deletedCount)
+            function(err,cont){
+                console.log("--content delete ",cont, cont.deletedCount)
 
-                Model.Flow.findOneAndUpdate({ user:userId , contents: { $elemMatch: {_id: content[0]._id} }}
-                ,{ $pull: {"contents": {_id:content[0]._id } } },
+                Model.Flow.findOneAndUpdate({ user:userId , contents: { $elemMatch: {_id: content.contentId} }}
+                ,{ $pull: {"contents": {_id:content.contentId } } },
                 function(err, result) {
                     console.log("Flow update - ",result)
                     if (err) return res.status(500).send("No se pudo eliminar el contenido");
