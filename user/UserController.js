@@ -663,18 +663,27 @@ router.put('/setContentUnavailable/:name',function(req, res) {
       })
 });
 
-router.delete('/deleteContentUnavailable/:name',function(req,res){
+router.get('/deleteContentUnavailable/:name',function(req,res){
       console.log("Entra en deleteContentUnavailable")
       var content = req.body
       Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',
         function(err,userId){
             console.log(userId,content)
-              
+            Model.Flow.find( { user:userId, contents: { $elemMatch: {_id: content._id} }}, 
+              function(err,flow){
+                console.log(flow)
+                res.status(200).send(flow)
+              }
+            )
+      })
+})
+
+            /*  
             Model.Content.remove({ kind: 'SingleContent', user: userId, identificador: content.identificador, available:false},
             function(err,content){
                 console.log("--content delete ",content, content.deletedCount)
 
-                Model.Flow.update( { user:userId, contents: { $elemMatch: {_id: content._id} }}, { $pullAll: {contents: [content._id] } },
+                Model.Flow.update( { user:userId, contents: { $elemMatch: {_id: content._id} }}, { $pull: {contents: {_id:content._id } } },
                 function(err, result) {
                     console.log("Flow update - ",result)
                     if (err) return res.status(500).send("No se pudo eliminar el contenido");
