@@ -673,7 +673,7 @@ router.delete('/deleteContentUnavailable/:name',function(req,res){
             function(err,content){
                 console.log("--content delete ",content, content.deletedCount)
 
-                Model.Flow.update( { user:userId, contents: { $elemMatch: {_id: content._id} }}, 
+                Model.Flow.update( { user:userId }, // contents: { $elemMatch: {_id: content._id} }}, 
                 { $pull: {"contents": {_id:content._id } } },
                 function(err, result) {
                     console.log("Flow update - ",result)
