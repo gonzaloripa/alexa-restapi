@@ -669,7 +669,7 @@ router.post('/deleteContentUnavailable/:name',function(req,res){
       Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',
         function(err,userId){
             console.log(userId,content)
-            Model.Flow.find( { user:userId, contents: { $elemMatch: {_id: content._id} }}, 
+            Model.Flow.find( { user:userId, contents: { $elemMatch: {_id: content.contentId} }}, 
               function(err,flow){
                 console.log(flow)
                 res.status(200).send(flow)
