@@ -669,15 +669,36 @@ router.delete('/deleteContentUnavailable/:name',function(req,res){
       Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',
         function(err,userId){
             console.log(userId,content)
+              
+            const res = await Model.Content.remove({ kind: 'SingleContent', user: userId, identificador: content.identificador, available:false},
+            function(err,content){
+                console.log("--content delete ",content, content.deletedCount)
 
-              Model.Content.findOneAndDelete({ kind: 'SingleContent', user: userId, identificador: content.identificador, available:false},
-              function(err,content){
-                  console.log("--content ",content)
-                  if (err) return res.status(500).send("No se pudo eliminar el contenido");
-                  res.status(200).send(content);
-              })
+                Model.Flow.update( { user:userId, contents: { $in: content._id }, { $pullAll: {contents: [content._id] } },
+                function(err, result) {
+                    console.log("Flow update - ",result)
+                    if (err) return res.status(500).send("No se pudo eliminar el contenido");
+                    if (result == null) res.status.(200).send("El contenido no figuraba en ningun flow")
+                    res.status(200).send(result);
+                })
+            })
       })
 })
+            /*
+                Model.Flow.update(
+                  { "_id" :"1", "contents._id": content._id }, 
+                  { "$set": { "contents.$": null }}, 
+                  function(err, result) {
+                    if (err) return res.status(500).send("No se pudo eliminar el contenido");
+                    res.status(200).send(result);
+                  })
+            /*  
+            Model.Content.findOneAndDelete({ kind: 'SingleContent', user: userId, identificador: content.identificador, available:false},
+            function(err,content){
+                console.log("--content ",content)
+                if (err) return res.status(500).send("No se pudo eliminar el contenido");
+                res.status(200).send(content);
+            })*/
 
 
 //ADD A LIST OF SIBLING CONTENTS INTO THE COLLECTIONS CONTENT AND INFOCONTENT, WITHOUT ASSIGN A FLOW

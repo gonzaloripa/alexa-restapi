@@ -39,6 +39,12 @@ var contentSchema = new mongoose.Schema({
   navegable: Boolean
 },{discriminatorKey: 'kind'});
 
+contentSchema.pre('remove', function(next) {
+
+    InfoContent.remove({_id: this._id}).exec();
+    next();
+});
+
 var Content = mongoose.model('Content', contentSchema);
 
 
