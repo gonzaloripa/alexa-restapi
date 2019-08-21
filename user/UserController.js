@@ -669,7 +669,7 @@ router.delete('/deleteContentUnavailable/:name',function(req,res){
       Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',
         function(err,userId){
             console.log(userId,content)
-            Model.Content.find({ kind: 'SingleContent', user: userId, identificador: content.identificador, available:false},
+            Model.Content.remove({ kind: 'SingleContent', user: userId, identificador: content.identificador, available:false},
             function(err,content){
                 console.log("--content delete ",content, content.deletedCount)
 
