@@ -678,7 +678,7 @@ router.delete('/deleteContentUnavailable/:name',function(req,res){
                 function(err, result) {
                     console.log("Flow update - ",result)
                     if (err) return res.status(500).send("No se pudo eliminar el contenido");
-                    if (result == null) return res.status.(200).send("El contenido no figuraba en ningun flow")
+                    if (result == null) return res.status(200).send("El contenido no figuraba en ningun flow")
                     res.status(200).send(result);
                 })
             })
