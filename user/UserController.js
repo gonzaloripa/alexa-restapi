@@ -674,7 +674,7 @@ router.delete('/deleteContentUnavailable/:name',function(req,res){
                 console.log("--content delete ",content, content.deletedCount)
 
                 Model.Flow.update( { user:userId, contents: { $elemMatch: {_id: content._id} }}, 
-                { $pull: {"contents": {_id:content._id } } },true,
+                { $pull: {"contents": {_id:content._id } } },
                 function(err, result) {
                     console.log("Flow update - ",result)
                     if (err) return res.status(500).send("No se pudo eliminar el contenido");
