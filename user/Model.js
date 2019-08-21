@@ -39,7 +39,7 @@ var contentSchema = new mongoose.Schema({
   navegable: Boolean
 },{discriminatorKey: 'kind'});
 
-contentSchema.pre('remove', function(next) {
+contentSchema.pre('remove', { query: true }, function(next) {
     console.log("Pre middleware - ")
     InfoContent.remove({_id: this._id}).exec();
     next();
