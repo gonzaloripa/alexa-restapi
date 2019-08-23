@@ -38,6 +38,7 @@ var contentSchema = new mongoose.Schema({
   available: Boolean,
   navegable: Boolean
 },{discriminatorKey: 'kind'});
+var Content = mongoose.model('Content', contentSchema);
 
 // The `contents` array can contain 2 different types of content: singleContent and siblingContent
 var SingleContent = Content.discriminator('SingleContent', singleContentSchema)
@@ -55,8 +56,6 @@ singleContentSchema.pre('remove', { query: true }, function(next) {
     InfoContent.remove({_id: this.content}).exec();
     next();
 });
-
-var Content = mongoose.model('Content', contentSchema);
 
 
 var flowSchema = new mongoose.Schema({ user: {type: mongoose.Schema.Types.ObjectId, ref:'User'}, 
