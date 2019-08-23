@@ -666,10 +666,10 @@ router.put('/setContentUnavailable/:name',function(req, res) {
 router.delete('/deleteContentUnavailable',function(req,res){
       console.log("Entra en deleteContentUnavailable")
       //var content = req.body.content
-      var contentId = req.query.id
+      var contentId = new mongoose.Types.ObjectId(req.query.id)
       Model.User.findOne({'name':req.query.name.toLowerCase()},'_id',
         function(err,userId){
-            console.log(userId,content)
+            console.log(userId,contentId)
             Model.SingleContent.findOneAndDelete({user: userId, _id:contentId, available:false},
             function(err,cont){
                 console.log("--content delete ", cont)
