@@ -667,7 +667,7 @@ router.delete('/deleteContentUnavailable',function(req,res){
       console.log("Entra en deleteContentUnavailable")
       //var content = req.body.content
       var contentId = req.query.id
-      Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',
+      Model.User.findOne({'name':req.query.name.toLowerCase()},'_id',
         function(err,userId){
             console.log(userId,content)
             Model.SingleContent.findOneAndDelete({user: userId, _id:contentId, available:false},
