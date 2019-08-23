@@ -53,7 +53,7 @@ var SiblingContent = Content.discriminator('SiblingContent', new mongoose.Schema
 }, { _id: false }));
 
 singleContentSchema.pre('remove', { query: true }, function(next) {
-    console.log("Pre middleware -")
+    console.log("Pre middleware - ",this.content)
     InfoContent.remove({_id: this.content}).exec();
     next();
 });
