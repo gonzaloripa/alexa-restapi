@@ -669,13 +669,13 @@ router.delete('/deleteContentUnavailable/:name',function(req,res){
       Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',
         function(err,userId){
             console.log(userId,content)
-            Model.Content.remove({ kind: 'SingleContent', user: userId, identificador: content.identificador, available:false},
-            function(err){
-                console.log("--content delete ")
+            Model.SingleContent.findOneAndDelete({user: userId, _id:content.contentId, identificador: content.identificador, available:false},
+            function(err,cont){
+                console.log("--content delete ", cont)
 
-                Model.InfoContent.remove({ _id: content.contentId},
-                function(err,cont){
-                    console.log("--info content delete ",cont)
+                Model.InfoContent.findByIdAndDelete(cont.content,
+                function(err,info){
+                    console.log("--info content delete ",info)
 
                     Model.Flow.findOneAndUpdate({ user:userId , contents: { $elemMatch: {_id: content.contentId} }}
                     ,{ $pull: {"contents": {_id:content.contentId } } },
