@@ -663,10 +663,10 @@ router.put('/setContentUnavailable/:name',function(req, res) {
       })
 });
 
-router.delete('/deleteContentUnavailable/:name/:id',function(req,res){
+router.delete('/deleteContentUnavailable',function(req,res){
       console.log("Entra en deleteContentUnavailable")
       //var content = req.body.content
-      var contentId = req.params.id
+      var contentId = req.query.id
       Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',
         function(err,userId){
             console.log(userId,content)
