@@ -665,7 +665,7 @@ router.put('/setContentUnavailable/:name',function(req, res) {
 
 router.delete('/deleteContentUnavailable/:name',function(req,res){
       console.log("Entra en deleteContentUnavailable")
-      var content = req.body
+      var content = req.body.content
       Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',
         function(err,userId){
             console.log(userId,content)
