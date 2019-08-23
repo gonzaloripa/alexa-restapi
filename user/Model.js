@@ -38,14 +38,15 @@ var contentSchema = new mongoose.Schema({
   available: Boolean,
   navegable: Boolean
 },{discriminatorKey: 'kind'});
+
 var Content = mongoose.model('Content', contentSchema);
 
 // The `contents` array can contain 2 different types of content: singleContent and siblingContent
-var SingleContent = Content.discriminator('SingleContent', singleContentSchema)
-
 var singleContentSchema = new mongoose.Schema({
   content: { type: mongoose.Schema.Types.ObjectId, ref:'InfoContent'}
 }, { _id: false });
+
+var SingleContent = Content.discriminator('SingleContent', singleContentSchema)
 
 var SiblingContent = Content.discriminator('SiblingContent', new mongoose.Schema({
   siblings: [{ type: mongoose.Schema.Types.ObjectId, ref:'SingleContent'}]
