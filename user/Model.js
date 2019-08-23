@@ -39,9 +39,9 @@ var contentSchema = new mongoose.Schema({
   navegable: Boolean
 },{discriminatorKey: 'kind'});
 
-contentSchema.pre('remove', { query: true }, function(next) {
+singleContentSchema.pre('remove', { query: true }, function(next) {
     console.log("Pre middleware -")
-    InfoContent.remove({_id: this._id}).exec();
+    InfoContent.remove({_id: this.content}).exec();
     next();
 });
 
@@ -66,9 +66,11 @@ var flowSchema = new mongoose.Schema({ user: {type: mongoose.Schema.Types.Object
 //var docArray = flowSchema.path('contents');
 
 // The `contents` array can contain 2 different types of content: singleContent and siblingContent
-var SingleContent = Content.discriminator('SingleContent', new mongoose.Schema({
+var SingleContent = Content.discriminator('SingleContent', singleContentSchema)
+
+var singleContentSchema = new mongoose.Schema({
   content: { type: mongoose.Schema.Types.ObjectId, ref:'InfoContent'}
-}, { _id: false }));
+}, { _id: false });
 
 var SiblingContent = Content.discriminator('SiblingContent', new mongoose.Schema({
   siblings: [{ type: mongoose.Schema.Types.ObjectId, ref:'SingleContent'}]
