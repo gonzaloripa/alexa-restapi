@@ -41,7 +41,7 @@ var contentSchema = new mongoose.Schema({
 
 contentSchema.pre('remove', { query: true }, function(next) {
     console.log("Pre middleware - ",this.discriminators.singleContent, this.discriminators.singleContent.content)
-    InfoContent.remove({_id: this._id}).exec();
+    this.model('InfoContentSchema').remove({_id: this._id}).exec();
     next();
 });
 
