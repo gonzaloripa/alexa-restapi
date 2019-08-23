@@ -39,6 +39,17 @@ var contentSchema = new mongoose.Schema({
   navegable: Boolean
 },{discriminatorKey: 'kind'});
 
+// The `contents` array can contain 2 different types of content: singleContent and siblingContent
+var SingleContent = Content.discriminator('SingleContent', singleContentSchema)
+
+var singleContentSchema = new mongoose.Schema({
+  content: { type: mongoose.Schema.Types.ObjectId, ref:'InfoContent'}
+}, { _id: false });
+
+var SiblingContent = Content.discriminator('SiblingContent', new mongoose.Schema({
+  siblings: [{ type: mongoose.Schema.Types.ObjectId, ref:'SingleContent'}]
+}, { _id: false }));
+
 singleContentSchema.pre('remove', { query: true }, function(next) {
     console.log("Pre middleware -")
     InfoContent.remove({_id: this.content}).exec();
@@ -65,16 +76,6 @@ var flowSchema = new mongoose.Schema({ user: {type: mongoose.Schema.Types.Object
 // flowSchema.path('contents')` gets the mongoose `DocumentArray`
 //var docArray = flowSchema.path('contents');
 
-// The `contents` array can contain 2 different types of content: singleContent and siblingContent
-var SingleContent = Content.discriminator('SingleContent', singleContentSchema)
-
-var singleContentSchema = new mongoose.Schema({
-  content: { type: mongoose.Schema.Types.ObjectId, ref:'InfoContent'}
-}, { _id: false });
-
-var SiblingContent = Content.discriminator('SiblingContent', new mongoose.Schema({
-  siblings: [{ type: mongoose.Schema.Types.ObjectId, ref:'SingleContent'}]
-}, { _id: false }));
 
 var Flow = mongoose.model('Flow', flowSchema);
 
