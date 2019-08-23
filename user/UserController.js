@@ -669,17 +669,22 @@ router.delete('/deleteContentUnavailable/:name',function(req,res){
       Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',
         function(err,userId){
             console.log(userId,content)
-            Model.SingleContent.remove({ kind: 'SingleContent', user: userId, identificador: content.identificador, available:false},
-            function(err,cont){
-                console.log("--content delete ",cont, cont.deletedCount)
+            Model.Content.remove({ kind: 'SingleContent', user: userId, identificador: content.identificador, available:false},
+            function(err){
+                console.log("--content delete ")
 
-                Model.Flow.findOneAndUpdate({ user:userId , contents: { $elemMatch: {_id: content.contentId} }}
-                ,{ $pull: {"contents": {_id:content.contentId } } },
-                function(err, result) {
-                    console.log("Flow update - ",result)
-                    if (err) return res.status(500).send("No se pudo eliminar el contenido");
-                    if (result == null) return res.status(200).send("El contenido no figuraba en ningun flow")
-                    res.status(200).send(result);
+                Model.InfoContent.remove({ _id: content.contentId},
+                function(err,cont){
+                    console.log("--info content delete ",cont)
+
+                    Model.Flow.findOneAndUpdate({ user:userId , contents: { $elemMatch: {_id: content.contentId} }}
+                    ,{ $pull: {"contents": {_id:content.contentId } } },
+                    function(err, result) {
+                        console.log("Flow update - ",result)
+                        if (err) return res.status(500).send("No se pudo eliminar el contenido");
+                        if (result == null) return res.status(200).send("El contenido no figuraba en ningun flow")
+                        res.status(200).send(result);
+                    })
                 })
             })
       })
