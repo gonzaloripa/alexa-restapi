@@ -671,7 +671,7 @@ router.delete('/deleteContentUnavailable/:name',function(req,res){
             console.log(userId,content)
             Model.Content.remove({ kind: 'SingleContent', user: userId, identificador: content.identificador, available:false},
             function(err,cont){
-                console.log("--content delete ",cont, cont.deletedCount)
+                console.log("--content delete ",cont)
 
                 Model.Flow.findOneAndUpdate({ user:userId , contents: { $elemMatch: {_id: content.contentId} }}
                 ,{ $pull: {"contents": {_id:content.contentId } } },
