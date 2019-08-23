@@ -663,13 +663,14 @@ router.put('/setContentUnavailable/:name',function(req, res) {
       })
 });
 
-router.delete('/deleteContentUnavailable/:name',function(req,res){
+router.delete('/deleteContentUnavailable/:name/:id',function(req,res){
       console.log("Entra en deleteContentUnavailable")
-      var content = req.body.content
+      //var content = req.body.content
+      var contentId = req.params.id
       Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',
         function(err,userId){
             console.log(userId,content)
-            Model.SingleContent.findOneAndDelete({user: userId, _id:content.contentId, identificador: content.identificador, available:false},
+            Model.SingleContent.findOneAndDelete({user: userId, _id:contentId, available:false},
             function(err,cont){
                 console.log("--content delete ", cont)
 
