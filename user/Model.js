@@ -92,6 +92,7 @@ exports.User = User;
 exports.Flow = Flow;
 exports.InfoContent = InfoContent;
 exports.Content = Content;
+exports.SingleContent = SingleContent;
 
 //module.exports = mongoose.model('User');
 /*
