@@ -40,8 +40,8 @@ var contentSchema = new mongoose.Schema({
 },{discriminatorKey: 'kind'});
 
 contentSchema.pre('remove', { query: true }, function(next) {
-    console.log("Pre middleware - ",this)
-    InfoContent.remove({_id: this._id}).exec();
+    console.log("Pre middleware - ",this.discriminators.singleContent, this.discriminators.singleContent.content)
+    InfoContent.remove({_id: this.this.discriminators.singleContent.content}).exec();
     next();
 });
 
