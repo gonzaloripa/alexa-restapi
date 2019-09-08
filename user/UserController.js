@@ -521,7 +521,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             { $group: {
                 _id: '$_id',
                 cont: { $push: {
-                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:['$contenidos.info.content'],order:'$contenidos.order',metadata:'$contenidos.metadata',identificador:'$contenidos.info.identificador'}] , else: [{contentId:'$contenidos.info.siblings',order:'$contenidos.order',metadata:'$contenidos.metadata',identificador:'$contenidos.info.identificador'}]  
+                    $cond: { if: { $eq: ['$contenidos.info.kind', 'SingleContent' ] }, then: [{contentId:['$contenidos.info.content'],order:'$contenidos.order',metadata:'$contenidos.metadata',identificador:'$contenidos.info.identificador', navegable:'$contenidos.info.navegable'}] , else: [{contentId:'$contenidos.info.siblings',order:'$contenidos.order',metadata:'$contenidos.metadata',identificador:'$contenidos.info.identificador',navegable:'$contenidos.info.navegable'}]  
                            } 
                         } 
                       }
@@ -560,6 +560,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                   $push:{
                     idcontent:'$dataContent._id',
                     identificador:'$combinedC.identificador',
+                    navegable:'$combinedC.navegable',
                     infocontent:{
                       url:'$dataContent.url',
                       xpath:'$dataContent.xpath'
@@ -669,7 +670,7 @@ router.delete('/deleteContentUnavailable',function(req,res){
       var contentId = new mongoose.Types.ObjectId(req.query.id)
       Model.User.findOne({'name':req.query.name.toLowerCase()},'_id',
         function(err,userId){
-            console.log(userId,contentId)
+            console.log(userId,contentId, req.query)
             Model.SingleContent.findOneAndDelete({user: userId, _id:contentId, available:false},
             function(err,cont){
                 console.log("--content delete ", cont)
