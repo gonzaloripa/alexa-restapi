@@ -601,7 +601,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
             { $group: {
                 _id: '$_id',
                 contenidos: { $push: {  
-                    $cond: { if: {$eq: ['$kind', 'SingleContent' ]}, then: ['$content'] , else: '$siblings'  
+                    $cond: { if: { $eq: ['$kind', 'SingleContent' ] }, then: [{contentId:['$content'],metadata:'$metadata',identificador:'$identificador', navegable:'$navegable'}] , else: [{contentId:'$siblings',metadata:'$metadata',identificador:'$identificador',navegable:'$navegable'}]  
                            } 
                         } 
                       }
@@ -620,11 +620,11 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
             { $unwind: '$combinedC'},
             { $lookup: {
                 from: 'infocontents',
-                localField: 'combinedC',
+                localField: 'combinedC.contentId',
                 foreignField: '_id',
                 as: 'infocontents'
               }
-            },
+            }/*,
             {
               $project:{
                  content:{
@@ -638,7 +638,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
                   },
                 _id:0
               }
-            }
+            }*/
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
