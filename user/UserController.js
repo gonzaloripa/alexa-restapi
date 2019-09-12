@@ -628,6 +628,8 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
             {
               $project:{
                  content:{
+                    metadata:'$metadata',
+                    navegable:'$navegable',
                     idcontent:'$infocontents._id',
                     infocontent:{
                       url:['$infocontents.url'],
@@ -646,9 +648,8 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
   });
 });
 
-//MAKE A CONTENT UNAVAILABLE
+//MAKE A CONTENT UNAVAILABLE (falta borrarlo del flow, no solo marcarlo como unavailable)
 router.put('/setContentUnavailable/:name',function(req, res) {     
-      //req.body = {content:{identificador,idcontent:[""],infocontent:{url:[""],xpath:[""]},data:{next:"",read:"",metainfo:""}} }
       var content = req.body.contenidos
       Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',
         function(err,userId){
