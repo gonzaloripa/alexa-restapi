@@ -622,23 +622,41 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
                 from: 'infocontents',
                 localField: 'combinedC.contentId',
                 foreignField: '_id',
-                as: 'infocontents'
+                as: 'dataContent'
               }
-            }/*,
+            },
             {
               $project:{
-                 content:{
-                    metadata:'$metadata',
-                    navegable:'$navegable',
-                    idcontent:'$infocontents._id',
+                combinedC:1,
+                dataContent:1
+              }
+            },
+            {
+              $group:{
+                _id:'$_id',
+                content:{
+                  $push:{
+                    idcontent:'$dataContent._id',
+                    identificador:'$combinedC.identificador',
+                    navegable:'$combinedC.navegable',
                     infocontent:{
-                      url:['$infocontents.url'],
-                      xpath:['$infocontents.xpath']
-                    }
-                  },
+                      url:'$dataContent.url',
+                      xpath:'$dataContent.xpath'
+                    },
+                    metadata:'$combinedC.metadata'
+                  }
+                }
+              }
+            },
+            {
+              $unwind:'$content'
+            },
+            {
+              $project:{
+                content:1,
                 _id:0
               }
-            }*/
+            }
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
