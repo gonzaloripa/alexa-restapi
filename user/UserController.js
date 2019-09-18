@@ -774,7 +774,7 @@ router.post('/addContent/user/:name',function(req, res) {
             console.log(userId)
             //controlar que no se repita el identificador      
             Model.Content.create(
-                { kind: 'SingleContent', user: userId, identificador: req.body.identificador.toUpperCase() , categoria:req.body.categoria, available:true, content: idContent }
+                { kind: 'SingleContent', user: userId, identificador: req.body.identificador, categoria:req.body.categoria, available:true, content: idContent }
                 ,function(err,contents){
                   console.log("--contents ",contents)
                   if (err) return res.status(500).send("No se pudo asignar el content para el usuario");
