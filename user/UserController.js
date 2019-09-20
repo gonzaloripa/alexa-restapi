@@ -285,7 +285,7 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
                         } 
                       }
               }
-            },           
+            }/*,           
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
