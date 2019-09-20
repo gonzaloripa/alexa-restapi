@@ -306,19 +306,13 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
             },
             { $unwind: '$dataContent'},
             {
-              $project: {
-                dataContent:1
-              }
-            }
-            /*,
-            {
               $project:{
                   contenidos: {
                     $mergeObjects: ["$combinedC", {url:"$dataContent.url"}]
                   },
                 _id:0
               }
-            }*/
+            }
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
