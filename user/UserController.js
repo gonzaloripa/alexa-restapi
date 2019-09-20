@@ -285,13 +285,7 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
                         } 
                       }
               }
-            },
-            {
-              $project:{
-                contenidos:1
-              }
-            }
-            /*            
+            },           
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
@@ -303,6 +297,12 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
                }
             },
             { $unwind: '$combinedC'},
+            {
+              $project:{
+                combinedC:1
+              }
+            }
+            /*
             { $lookup: {
                 from: 'infocontents',
                 localField: 'combinedC.contentId.0',
