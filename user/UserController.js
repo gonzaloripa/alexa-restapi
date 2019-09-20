@@ -304,7 +304,7 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
                 as: 'dataContent'
               }
             },
-            { $unwind: '$dataContent'},
+            { $unwind: '$dataContent'}/*,
             {
               $project:{
                   contenidos: {
@@ -312,7 +312,7 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
                   },
                 _id:0
               }
-            }
+            }*/
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
