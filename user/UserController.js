@@ -297,12 +297,6 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
                }
             },
             { $unwind: '$combinedC'},
-            {
-              $project: {
-                contenidos:1,
-                combinedC:1
-              }
-            }/*
             { $lookup: {
                 from: 'infocontents',
                 localField: 'combinedC.contentId',
@@ -310,7 +304,13 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
                 as: 'dataContent'
               }
             },
-            { $unwind: '$dataContent'}/*,
+            { $unwind: '$dataContent'},
+            {
+              $project: {
+                dataContent:1
+              }
+            }
+            /*,
             {
               $project:{
                   contenidos: {
