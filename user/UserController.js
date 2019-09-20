@@ -269,7 +269,7 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
   });
 })  
 
-// (ADMIN) GETS THE NOTICES OF ONE USER FILTERED BY CATEGORY (CORREGIR)
+// (ADMIN) GETS THE NOTICES OF ONE USER FILTERED BY CATEGORY 
 router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
   //Devolver tmb la url de la coleccion infoContent
   Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
@@ -285,7 +285,13 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
                         } 
                       }
               }
-            },            
+            },
+            {
+              $project:{
+                contenidos:1
+              }
+            }
+            /*            
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
@@ -312,7 +318,7 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
                   },
                 _id:0
               }
-            }
+            }*/
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
