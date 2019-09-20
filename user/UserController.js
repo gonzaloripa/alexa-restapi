@@ -285,6 +285,11 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
                         } 
                       }
               }
+            }, 
+            {
+              $project: {
+                contenidos:1
+              }
             }/*,           
             {  $addFields:{
                 'combinedC':{
