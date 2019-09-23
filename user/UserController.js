@@ -799,7 +799,7 @@ router.post('/createFlow/user/:name', function (req, res) {
               //fijarse si cambiar find por aggregate
               Model.Content.find({ user:userId, content: { $in: contentsId }, available:true}, '_id identificador',{lean:true}
               ,function(err,contents){
-                  console.log("Stored contents ",contents, contentsBody) //idContents= ["",""]
+                  console.log("Stored contents ",contents, contentsId) //idContents= ["",""]
                   if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
                   var idContents = [];
                   contentsId.forEach((id,index)=>{ //En el orden que que estan conectados
