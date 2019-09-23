@@ -297,19 +297,19 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
                }
             },
             { $unwind: '$combinedC'},
-            {
-              $project:{
-                combinedC:1
-              }
-            }
-            /*
             { $lookup: {
                 from: 'infocontents',
                 localField: 'combinedC.contentId.0',
                 foreignField: '_id',
                 as: 'dataContent'
               }
-            },
+            },            
+            {
+              $project:{
+                dataContent:1
+              }
+            }
+            /*,
             { $unwind: '$dataContent'},
             {
               $project:{
