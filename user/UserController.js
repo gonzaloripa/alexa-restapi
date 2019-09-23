@@ -303,12 +303,7 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
                 foreignField: '_id',
                 as: 'dataContent'
               }
-            },            
-            {
-              $project:{
-                dataContent:1
-              }
-            },   
+            },             
             { $unwind: '$dataContent'},
             {
               $project:{
