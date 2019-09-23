@@ -788,7 +788,7 @@ router.post('/addContent/user/:name',function(req, res) {
 router.post('/createFlow/user/:name', function (req, res) {
           console.log(req.body.contents)
           var contentsId = req.body.contents.map((content)=>{
-              content.idContent[0]//content.name.charAt(0).toUpperCase() + content.name.slice(1)
+              return content.idContent[0]//content.name.charAt(0).toUpperCase() + content.name.slice(1)
           })
           
           //req.body = {nombreConjunto:"",contents:[ {identificador,idcontent,data:{}},"",""]}
