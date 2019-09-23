@@ -788,7 +788,7 @@ router.post('/addContent/user/:name',function(req, res) {
 router.post('/createFlow/user/:name', function (req, res) {
           console.log(req.body.contents)
           var contentsId = req.body.contents.map((content)=>{
-              return content.idContent[0]//content.name.charAt(0).toUpperCase() + content.name.slice(1)
+              return new mongoose.Types.ObjectId(content.idContent[0])//content.name.charAt(0).toUpperCase() + content.name.slice(1)
           })
           
           //req.body = {nombreConjunto:"",contents:[ {identificador,idcontent,data:{}},"",""]}
@@ -803,8 +803,8 @@ router.post('/createFlow/user/:name', function (req, res) {
                   if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
                   var idContents = [];
                   contentsId.forEach((id,index)=>{ //En el orden que que estan conectados
-                    console.log(id,index)
-                    let indice = contents.findIndex(c => c.content == id)
+                    console.log(id,contents[0].content)
+                    let indice = contents.findIndex(c => new mongoose.Types.ObjectId(c.content) == id)
                     let cont = req.body.contents[indice]
                     if(indice != -1){
                       if(cont.metadata){
