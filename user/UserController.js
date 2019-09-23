@@ -804,7 +804,7 @@ router.post('/createFlow/user/:name', function (req, res) {
                   var idContents = [];
                   contentsId.forEach((id,index)=>{ //En el orden que que estan conectados
                     console.log(id,contents[0].content)
-                    let indice = contents.findIndex(c => new mongoose.Types.ObjectId(c.content) == id)
+                    let indice = contents.findIndex(c => new mongoose.Types.ObjectId(c.content) == new mongoose.Types.ObjectId(id))
                     let cont = req.body.contents[indice]
                     if(indice != -1){
                       if(cont.metadata){
