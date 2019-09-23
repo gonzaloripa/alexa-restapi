@@ -803,7 +803,7 @@ router.post('/createFlow/user/:name', function (req, res) {
                   if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
                   var idContents = [];
                   contentsId.forEach((id,index)=>{ //En el orden que que estan conectados
-                    let indice = contents.findIndex(c => c.content == id)
+                    let indice = contents.findIndex(c => new mongoose.Types.ObjectId(c.content) == id)
                     let cont = req.body.contents[indice]
                     if(indice != -1){
                       if(cont.metadata){
