@@ -797,7 +797,7 @@ router.post('/createFlow/user/:name', function (req, res) {
             ,function(err,userId){
               console.log(userId)
               //fijarse si cambiar find por aggregate
-              Model.Content.find({ user:userId, content: { $in: contentsId }, available:true}, '_id identificador',{lean:true}
+              Model.Content.find({ user:userId, content: { $in: contentsId }, available:true}, '_id identificador content',{lean:true}
               ,function(err,contents){
                   console.log("Stored contents ",contents, contentsId) //idContents= ["",""]
                   if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
