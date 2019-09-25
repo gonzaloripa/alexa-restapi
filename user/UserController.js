@@ -747,7 +747,7 @@ router.post('/addSiblingContents/user/:name',function(req, res) {
             console.log(userId)           
             //controlar que no se repitan los identificadores
             Model.Content.create(
-                { kind: 'SiblingContent', user: userId,identificador: req.body.identificador , categoria:req.body.categoria, available:true, siblings: ids }
+                { kind: 'SiblingContent', user: userId,identificador: req.body.identificador , categoria:req.body.categoria, available:true, navegable:req.body.navegable, siblings: ids }
                 ,function(err,contents){
                   console.log("--contents ",contents)
                   if (err) return res.status(500).send("No se pudieron asignar los contents para el usuario");
@@ -759,7 +759,7 @@ router.post('/addSiblingContents/user/:name',function(req, res) {
 
 //ADD A CONTENT INTO THE COLLECTIONS INFOCONTENT AND CONTENT OF A USER, WITHOUT ASSIGN A FLOW
 router.post('/addContent/user/:name',function(req, res) {      
-      //req.body = {identificador:"",categoria:"",available:"",content:{}}
+      //req.body = {identificador:"",categoria:"",available,navegable,content:{}}
       var content = req.body.content
       //Controlar antes que no se repita la info 
 
@@ -774,7 +774,7 @@ router.post('/addContent/user/:name',function(req, res) {
             console.log(userId)
             //controlar que no se repita el identificador      
             Model.Content.create(
-                { kind: 'SingleContent', user: userId, identificador: req.body.identificador, categoria:req.body.categoria, available:true, content: idContent }
+                { kind: 'SingleContent', user: userId, identificador: req.body.identificador, categoria:req.body.categoria, available:true, navegable:req.body.navegable , content: idContent }
                 ,function(err,contents){
                   console.log("--contents ",contents)
                   if (err) return res.status(500).send("No se pudo asignar el content para el usuario");
