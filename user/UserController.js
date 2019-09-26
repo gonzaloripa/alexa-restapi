@@ -788,7 +788,7 @@ router.post('/addContent/user/:name',function(req, res) {
 router.post('/createFlow/user/:name', function (req, res) {
           console.log(req.body.contents)
           var contentsId = req.body.contents.map((content)=>{
-              return new mongoose.Types.ObjectId(content.idContent[0])//content.name.charAt(0).toUpperCase() + content.name.slice(1)
+              return content.name.charAt(0).toUpperCase() + content.name.slice(1)
           })
           
           //req.body = {nombreConjunto:"",contents:[ {identificador,idcontent,data:{}},"",""]}
@@ -797,13 +797,13 @@ router.post('/createFlow/user/:name', function (req, res) {
             ,function(err,userId){
               console.log(userId)
               //fijarse si cambiar find por aggregate
-              Model.Content.find({ user:userId, content: { $in: contentsId }, available:true}, '_id identificador content',{lean:true}
+              Model.Content.find({ user:userId, content: { $in: contentsId }, available:true}, '_id identificador',{lean:true}
               ,function(err,contents){
                   console.log("Stored contents ",contents, contentsId) //idContents= ["",""]
                   if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
                   var idContents = [];
                   contentsId.forEach((id,index)=>{ //En el orden que que estan conectados
-                    let indice = contents.findIndex(c => JSON.stringify(c.content) == JSON.stringify(id))
+                    let indice = contents.findIndex(c => c.identificador === id)
                     let cont = req.body.contents[indice]
                     if(indice != -1){
                       if(cont.metadata){
