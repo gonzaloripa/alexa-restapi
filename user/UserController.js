@@ -339,7 +339,7 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
             { $group: {
                 _id: '$_id',
                 contenidos: { $push: {  
-                    $cond: { if: { $eq: ['$kind', 'SingleContent' ] }, then: [{contentId:'$content',identificador:'$identificador',categoria:'$categoria', available:'$available'}] , else: [{contentId:'$siblings', identificador:'$identificador', categoria:'$categoria', available:'$available'}]  
+                    $cond: { if: { $eq: ['$kind', 'SingleContent' ] }, then: [{contentId:['$content'],identificador:'$identificador',categoria:'$categoria', available:'$available'}] , else: [{contentId:'$siblings', identificador:'$identificador', categoria:'$categoria', available:'$available'}]  
                            }  
                         } 
                       }
@@ -358,7 +358,7 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
             { $unwind: '$combinedC'},
             { $lookup: {
                 from: 'infocontents',
-                localField: 'combinedC.contentId',
+                localField: 'combinedC.contentI.0',
                 foreignField: '_id',
                 as: 'dataContent'
               }
