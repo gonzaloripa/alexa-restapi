@@ -156,7 +156,7 @@ router.get('/', function (req, res) {
 // RETURNS A USER FILTER BY NAME
 router.get('/:name', function (req, res) {
     Model.User.find({ name:req.params.name.toLowerCase()}, function (err, user) {
-        if (err) return res.status(404).send("No se hallo ningún usuario con ese nombre");
+        if (err || !user) return res.status(404).send("No se hallo ningún usuario con ese nombre");
         res.status(200).send(user[0].name);
     });
 });
