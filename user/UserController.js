@@ -358,7 +358,7 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
             { $unwind: '$combinedC'},
             { $lookup: {
                 from: 'infocontents',
-                localField: 'combinedC.contentI.0',
+                localField: 'combinedC.contentId.0',
                 foreignField: '_id',
                 as: 'dataContent'
               }
