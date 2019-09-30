@@ -624,9 +624,10 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
             },
             {
               $project:{
-                dataContent:1
+                dataContent:1,
+                combinedC:1
               }
-            },
+            }/*,
             {
               $group:{
                 _id:'$_id',
@@ -645,7 +646,7 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
                 content:1,
                 _id:0
               }
-            }
+            }*/
            ])
         .exec(function (err,result) {
             console.log("-Contents id %s ",result)
