@@ -556,22 +556,10 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 dataContent:1
               }
             }
-            /*,
+            ,
             {
               $group:{
-                _id:'$_id',
-                content:{
-                  $push:{
-                    idcontent:'$dataContent._id',
-                    identificador:'$combinedC.identificador',
-                    navegable:'$combinedC.navegable',
-                    infocontent:{
-                      url:'$dataContent.url',
-                      xpath:'$dataContent.xpath'
-                    },
-                    metadata:'$combinedC.metadata'
-                  }
-                }
+                _id:'$_id'
               }
             },/*
             {
