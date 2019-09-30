@@ -528,6 +528,12 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                       }
               }
             },
+            {
+              $project:{
+                cont:1
+              }
+            }
+            /*
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
