@@ -553,7 +553,8 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             },
             {
               $project:{
-                dataContent:1
+                dataContent:1,
+                combinedC:1
               }
             }
             ,
@@ -562,7 +563,11 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                 _id:'$_id',
                 content:{
                   $push:{
-                    dataContent:'$dataContent'
+                    dataContent:{
+                      info:'$dataContent',
+                      metadata:'$combinedC.metadata',
+                      navegable:'$combinedC.navegable'
+                    }
                   }
                 }
               }
