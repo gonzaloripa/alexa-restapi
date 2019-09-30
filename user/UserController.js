@@ -577,7 +577,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             },
             {
               $project:{
-                content:1,
+                '$content.dataContent':1,
                 _id:0
               }
             },
