@@ -559,7 +559,12 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             ,
             {
               $group:{
-                _id:'$_id'
+                _id:'$_id',
+                content:{
+                  $push:{
+                    dataContent:'$dataContent'
+                  }
+                }
               }
             },/*
             {
