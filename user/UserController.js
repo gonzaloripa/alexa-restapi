@@ -528,12 +528,6 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                       }
               }
             },
-            {
-              $project:{
-                cont:1
-              }
-            }
-            /*
             {  $addFields:{
                 'combinedC':{
                    $reduce: {
@@ -545,14 +539,13 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                }
             },
             {
+              $unwind:'$combinedC'            
+            },
+            {
               $project:{
                 combinedC:1
               }
-            }
-            /*
-            {
-              $unwind:'$combinedC'            
-            },
+            }/*,
             { $lookup: {
                 from: 'infocontents',
                 localField: 'combinedC.contentId',
