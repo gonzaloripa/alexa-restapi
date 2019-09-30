@@ -539,6 +539,12 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                }
             },
             {
+              $project:{
+                combinedC:1
+              }
+            }
+            /*
+            {
               $unwind:'$combinedC'            
             },
             { $lookup: {
@@ -582,8 +588,8 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             },
             { 
               $sort: {'combinedC.order': 1 }
-            }
-           ])
+            }*/
+          ])
           .exec(function (err,result) {
               console.log("-Contents id %s ",result)
               res.status(200).send(result);
