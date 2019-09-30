@@ -539,12 +539,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
                }
             },
             {
-              $unwind:'$combinedC'            
-            },
-            {
-              $project:{
-                combinedC:1
-              }
+              $unwind:'$combinedC.contentId'            
             }/*,
             { $lookup: {
                 from: 'infocontents',
