@@ -549,7 +549,7 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
               }
             },
             {
-              $unwind:'$dataContent._id'
+              $unwind:'$dataContent'
             }
             /*,
             {
