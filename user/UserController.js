@@ -550,6 +550,11 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             },
             {
               $unwind:'$dataContent'
+            },
+            {
+              $project:{
+                dataContent:1
+              }
             }
             /*,
             {
