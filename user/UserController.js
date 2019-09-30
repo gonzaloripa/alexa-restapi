@@ -551,9 +551,20 @@ router.get('/contentsByOrder/:flow/:name', function (req, res) {
             {
               $project:{
                 combinedC:1,
-                dataContent:1
+                dataContent:1,
+                contenidos:{
+                  idcontent:'$dataContent._id',
+                  identificador:'$combinedC.identificador',
+                  navegable:'$combinedC.navegable',
+                  infocontent:{
+                    url:'$dataContent.url',
+                    xpath:'$dataContent.xpath'
+                  },
+                  metadata:'$combinedC.metadata'
+                }
               }
-            },
+            }
+            /*,
             {
               $group:{
                 _id:'$_id',
