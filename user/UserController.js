@@ -21,7 +21,7 @@ myEmitter.on('initEvent', () => {
 })
 
 myEmitter.on('secondEvent', (content) => {
-  console.log('The contents are ready')
+  console.log('The contents are ready',content)
   if(content != null)
     ready = true
 })
@@ -64,6 +64,7 @@ router.post('/nextRequest/', function(req,response){
 })
 
 router.get('/getContents', function(req,response){
+  console.log("/getContents",ready,content)
   if(ready == true){
     ready = false
     response.status(200).send(content) 
