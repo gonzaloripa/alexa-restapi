@@ -633,7 +633,8 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
             },
             {
               $project:{
-                dataContent:1
+                dataContent:1,
+                combinedC:1
               }
             },
             {
@@ -641,7 +642,10 @@ router.get('/contentsByCategory/:category/:name', function (req, res) {
                 _id:'$_id',
                 content:{
                   $push:{
-                    dataContent:'$dataContent'
+                    dataContent:{
+                      info:'$dataContent',
+                      navegable:'$combinedC.navegable'
+                    }
                   }
                 }
               }
