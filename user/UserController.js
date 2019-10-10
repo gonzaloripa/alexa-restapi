@@ -763,6 +763,7 @@ router.post('/addSiblingContents/user/:name',function(req, res) {
 router.post('/addContent/user/:name',function(req, res) {      
       //req.body = {identificador:"",categoria:"",available,navegable,content:{}}
       var content = req.body.content
+      console.log("AddContent - ",req.body, req.body.content)
       //Controlar antes que no se repita la info 
 
       Model.InfoContent.create(content
