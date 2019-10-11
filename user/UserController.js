@@ -805,9 +805,9 @@ router.post('/createFlow/user/:name', function (req, res) {
                   console.log("Stored contents ",contents, contentsId) //idContents= ["",""]
                   if (err | contents.length == 0) return res.status(404).send("No se hallaron contents para ese usuario");
                   var idContents = [];
-                  contentsId.forEach((id,index)=>{ //En el orden que que estan conectados
+                  contentsId.forEach((id,index)=>{ //En el orden que estan conectados
                     let indice = contents.findIndex(c => c.identificador === id)
-                    let cont = req.body.contents[indice]
+                    let cont = req.body.contents[index]
                     if(indice != -1){
                       if(cont.metadata){
                         var data = {};
