@@ -13,17 +13,18 @@ class MyEmitter extends EventEmitter {}
 const myEmitter = new MyEmitter();
 var content = null
 var ready = false;
+var waiting = true
 
 
-myEmitter.on('initEvent', () => {
-  console.log('The first content is ready')
+myEmitter.on('initEvent', (content) => {
+  console.log('The content is ready ', content)
   ready = true
 })
 
-myEmitter.on('secondEvent', (content) => {
-  console.log('The contents are ready',content)
-  if(content != null)
-    ready = true
+myEmitter.on('secondEvent', () => {
+  console.log('The content fail')
+  ready = false
+  waiting = false
 })
 
 //--------------------------  ROUTES -----------------------------------
@@ -35,14 +36,17 @@ router.post('/nextTitle/', function(req,response){
   fetch("https://headless-chrome-alexa.herokuapp.com/getTitle?url="+cont.url+"&path="+cont.xpath)
       .then(res => {
           console.log("devuelve "+res.ok)
-          if(res.ok)
-            return res.json()
+          return res.json()
       })
       .then(json => {
           content = json
           console.log("content from nextTitle ",json)
-          myEmitter.emit('secondEvent',json)       
+          myEmitter.emit('initEvent',json)       
       })
+      .catch(e => {
+        console.log(e)
+        myEmitter.emit('secondEvent')
+    }) 
 })
 
 
@@ -53,13 +57,16 @@ router.post('/nextRequest/', function(req,response){
   fetch("https://headless-chrome-alexa.herokuapp.com/getBodyContent?url="+cont.url+"&path="+cont.xpath)
     .then(res => {
         console.log("devuelve "+res.ok)
-        if(res.ok)
-          return res.json()
+        return res.json()
     })
     .then(json => {
         content = json //json={contenido,host,title,intro}
         console.log("contents from nextRequest ",content)
-        myEmitter.emit('secondEvent',json) 
+        myEmitter.emit('initEvent',json)
+    .catch(e => {
+      console.log(e)
+      myEmitter.emit('secondEvent')
+    }) 
   })
 })
 
@@ -67,10 +74,14 @@ router.get('/getContents', function(req,response){
   console.log("/getContents",ready,content)
   if(ready == true){
     ready = false
+    waiting = true
     response.status(200).send(content) 
   }
   else{
-    response.status(304).send("The contents are not ready")   
+    if (waiting == true)
+      response.status(304).send("The contents are not ready yet")
+    else
+      response.status(504).send("The contents were not obtained")
   }
 })
 
