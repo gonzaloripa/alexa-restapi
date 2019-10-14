@@ -63,6 +63,7 @@ router.post('/nextRequest/', function(req,response){
         content = json //json={contenido,host,title,intro}
         console.log("contents from nextRequest ",content)
         myEmitter.emit('initEvent',json)
+    })
     .catch(e => {
       console.log(e)
       myEmitter.emit('secondEvent')
