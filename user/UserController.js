@@ -68,7 +68,6 @@ router.post('/nextRequest/', function(req,response){
       console.log(e)
       myEmitter.emit('secondEvent')
     }) 
-  })
 })
 
 router.get('/getContents', function(req,response){
