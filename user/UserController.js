@@ -80,8 +80,10 @@ router.get('/getContents', function(req,response){
   else{
     if (waiting == true)
       response.status(304).send("The contents are not ready yet")
-    else
+    else{
+      waiting = true
       response.status(504).send("The contents were not obtained")
+    }
   }
 })
 
