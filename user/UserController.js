@@ -93,68 +93,14 @@ router.get('/getContents', function(req,response){
 // CREATES A NEW USER
 router.post('/newUser', function (req, res) {
   	var name = req.body.name.toLowerCase(); 
-    // Create a new flow of contents with different kinds
-    const array = [
-                    {
-                      url:"https://infocielo.com/",
-                      xpath:"//*[@id='noticias-destacadas-2']/div[1]/div[1]/article/a"
-                    },
-                    {
-                      url:"https://infocielo.com/",
-                      xpath:"//*[@id='noticias-destacadas-2']/div[1]/div[2]/article/a"
-                    },
-                    {
-                      url:"https://infocielo.com/",
-                      xpath:"//*[@id='modulo_especial_2']/div[2]/article/a"
-                    }
-                  ]
+
     var userId = new mongoose.Types.ObjectId;
-    Model.InfoContent.insertMany(array
-    ,function(err,contents){
-        console.log("----Contents:",contents)
-        if (err) return res.status(500).send("No se pudieron asignar los contents para el usuario creado");
-        const ids = []; 
-        contents.forEach((elem,index) => { if(index < 2) ids.push(elem._id) } ); 
-
-        console.log("----ids:",ids)
-
-        Model.Content.create([
-            { kind: 'SingleContent', user:userId, identificador: 'infocielo', categoria:'Portada', content:contents[2]._id },
-            { kind: 'SiblingContent', user:userId, identificador: 'infocielo-hermanos', categoria:'Portada', siblings: ids }
-          ],function(err,contents){
-            console.log("--diferent ",contents)
-            const idC = contents.map((elem,index) => { return {_id:elem._id,order:index } } );
-            const idC2 = [{_id:contents[1]._id,order:0},{ _id:contents[0]._id,order:1}]
-            console.log("conj ", idC, idC2)
-            var flows = [{
-              _id: new mongoose.Types.ObjectId,
-              user: userId,
-              nombreConjunto:'Primero',
-              pattern:'Read only titles',
-              contents: idC
-            },{
-              _id: new mongoose.Types.ObjectId,
-              user: userId,
-              nombreConjunto:'Segundo',
-              pattern:'Read introduction and content',
-              contents: idC2
-            }];
-
-            Model.Flow.insertMany(flows    
-            ,function (err, flows) {
-              console.log('---Flow: ',flows);
-              if (err) return res.status(500).send("No se pudo asignar el flujo para el usuario creado");
-              const idFlows = flows.map((elem) => { return elem._id } );          
-              console.log(idFlows)
-
-              Model.User.create({name: name, _id:userId, flows: idFlows }//Hace el new y el save juntos
-              ,function (err, user) {      
-                console.log("----Usuario:",user)
-                if (err) return res.status(500).send("No se pudo agregar al usuario en la base");
-                res.status(200).send(user);
-              })
-            })
-        })
+   
+    Model.User.create({name: name, _id:userId, flows: [] }//Hace el new y el save juntos
+    ,function (err, user) {      
+        console.log("----Usuario:",user)
+        if (err) return res.status(500).send("No se pudo agregar al usuario en la base");
+        res.status(200).send(user);
     })
 });
 
