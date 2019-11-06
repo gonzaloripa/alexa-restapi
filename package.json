@@ -16,9 +16,9 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.16.3",
+    "express-session": "^1.17.0",
     "http-auth": "^3.2.3",
     "mongoose": "^5.3.16",
-    "node-fetch": "^2.2.0",
-    "express-session": "^1.15.6"
+    "node-fetch": "^2.2.0"
   }
 }

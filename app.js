@@ -2,6 +2,7 @@
 var express = require('express');
 var app = express();
 var db = require('./db');
+var session = require("express-session")
 
 var UserController = require('./user/UserController');
 var allowCrossDomain = function(req, res, next) {
@@ -14,6 +15,8 @@ var allowCrossDomain = function(req, res, next) {
 
 app.use(allowCrossDomain);
 app.use('/users', UserController); //La ruta "/" del userController mapea con la ruta "/users"
-
+app.use(session({
+	'secret': 'tesis2019'
+}))
 
 module.exports = app;

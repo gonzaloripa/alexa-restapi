@@ -88,12 +88,27 @@ router.get('/getContents', function(req,response){
 })
 
 
+router.get('/closeSession', function(req,res){
+  req.session.username = ""
+  res.status(200).send("Se cerro la sesion");
+
+})
+
+router.get('/getSessionName', function(req,res){
+  var username
+  if (req.session.username != "") ? req.session.username : null
+  res.status(200).send(username)
+
+})
+
 //-------------- DB INTERACTION ---------------------------
 
 // CREATES A NEW USER
 router.post('/newUser', function (req, res) {
   	var name = req.body.name.toLowerCase(); 
-
+    //Guardo el nombre en la sesion
+    req.session.username = name
+    
     var userId = new mongoose.Types.ObjectId;
    
     Model.User.create({name: name, _id:userId, flows: [] }//Hace el new y el save juntos
@@ -134,8 +149,10 @@ router.get('/flows/:name', function (req, res) { //'/:usrid/:name'
 });
 
 // GETS THE FIRST CATEGORY OF A SINGLE USER 
-router.get('/getFirstCategory/:name', function (req, res) { //'/categories/:usrid/:name'
-    Model.User.findOne({'name':req.params.name.toLowerCase()})
+router.get('/getFirstCategory/', function (req, res) { //'/categories/:usrid/:name'
+    var username = req.session.username
+
+    Model.User.findOne({'name':username.toLowerCase()})
     .select('_id')
     .exec(function(err,userId){
         console.log('UserId %s ',userId)    
@@ -151,8 +168,10 @@ router.get('/getFirstCategory/:name', function (req, res) { //'/categories/:usri
 });
 
 // GETS THE CATEGORIES OF A SINGLE USER 
-router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name' 
-    Model.User.findOne({'name':req.params.name.toLowerCase()})
+router.get('/categories/', function (req, res) { //'/categories/:usrid/:name'
+    var username = req.session.username
+
+    Model.User.findOne({'name':username.toLowerCase()})
     .select('_id')
     .exec(function(err,userId){
         console.log('UserId %s ',userId)    
@@ -689,11 +708,12 @@ router.delete('/deleteContentUnavailable',function(req,res){
 
 
 //ADD A LIST OF SIBLING CONTENTS INTO THE COLLECTIONS CONTENT AND INFOCONTENT, WITHOUT ASSIGN A FLOW
-router.post('/addSiblingContents/user/:name',function(req, res) {
+router.post('/addSiblingContents',function(req, res) {
       //req.body = {identificador:"",categoria:"",siblings:[{infoContent}]}
       var infoArray = req.body.siblings
       /* Controlar antes que si se repite la info, pueda crear un nuevo conjunto de hermanos, 
       sin agregar la info */ 
+      var username = req.session.username
 
       Model.InfoContent.insertMany(infoArray
       ,function(err,contents){
@@ -704,7 +724,7 @@ router.post('/addSiblingContents/user/:name',function(req, res) {
           contents.forEach((cont) => ids.push(cont._id) );
           console.log("----ids:",ids)
 
-          Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+          Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
             console.log(userId)           
             //controlar que no se repitan los identificadores
             Model.Content.create(
@@ -719,11 +739,12 @@ router.post('/addSiblingContents/user/:name',function(req, res) {
 });
 
 //ADD A CONTENT INTO THE COLLECTIONS INFOCONTENT AND CONTENT OF A USER, WITHOUT ASSIGN A FLOW
-router.post('/addContent/user/:name',function(req, res) {      
+router.post('/addContent',function(req, res) {      
       //req.body = {identificador:"",categoria:"",available,navegable,content:{}}
       var content = req.body.content
       console.log("AddContent - ",req.body, req.body.content)
       //Controlar antes que no se repita la info 
+      var username = req.session.username
 
       Model.InfoContent.create(content
       ,function(err,content){
@@ -732,7 +753,7 @@ router.post('/addContent/user/:name',function(req, res) {
           const idContent = content._id;
           console.log("----id:",idContent)
 
-          Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+          Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
             console.log(userId)
             //controlar que no se repita el identificador      
             Model.Content.create(
@@ -747,15 +768,16 @@ router.post('/addContent/user/:name',function(req, res) {
 });
 
 //CREATE A FLOW FOR A USER WITH THE CONTENTS IN ORDER: UPDATE COLLECTION 'CONTENTS'
-router.post('/createFlow/user/:name', function (req, res) {
+router.post('/createFlow', function (req, res) {
           console.log(req.body.contents)
           var contentsId = req.body.contents.map((content)=>{
               return content.name.charAt(0).toUpperCase() + content.name.slice(1).toLowerCase()
           })
-          
+          var username = req.session.username
+
           //req.body = {nombreConjunto:"",contents:[ {identificador,idcontent,data:{}},"",""]}
           
-          Model.User.findOne({'name':req.params.name.toLowerCase()},'_id'
+          Model.User.findOne({'name':username.toLowerCase()},'_id'
             ,function(err,userId){
               console.log(userId)
               //fijarse si cambiar find por aggregate
@@ -812,10 +834,11 @@ router.post('/createFlow/user/:name', function (req, res) {
 });
 
 //CHANGE THE ORDER OF THE CONTENTS OF A FLOW: UPDATE COLLECTION 'FLOWS'
-router.put('/updateFlow/user/:name', function (req, res) {
+router.put('/updateFlow', function (req, res) {
+      var username = req.session.username
       
       //req.body = {nombreConjunto:"",contents:[ identificador1,"",""]}
-        Model.User.findOne({'name':req.params.name.toLowerCase()}, '_id', 
+        Model.User.findOne({'name':username.toLowerCase()}, '_id', 
         function(err,userId){
           if (err | userId == "") return res.status(404).send("No se pudo hallar al usuario");
           
