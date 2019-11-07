@@ -172,8 +172,8 @@ router.get('/getFirstCategory/', function (req, res) { //'/categories/:usrid/:na
 });
 
 // GETS THE CATEGORIES OF A SINGLE USER 
-router.get('/categories/', function (req, res) { //'/categories/:usrid/:name'
-    var username = req.session.username
+router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
+    var username = req.params.name//req.session.username
 
     Model.User.findOne({'name':username.toLowerCase()})
     .select('_id')
