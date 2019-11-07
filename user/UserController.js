@@ -259,7 +259,7 @@ router.get('/admin/contentsByOrder/:flow', function (req, res) {
 })  
 
 // (ADMIN) GETS THE NOTICES OF ONE USER FILTERED BY CATEGORY 
-router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
+router.get('/admin/contentsByCategory/:category', function (req, res) {
   //Devolver tmb la url de la coleccion infoContent
   
   var username = (req.session.username != "") ? req.session.username : ""
@@ -314,7 +314,7 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
 });
 
 // (ADMIN) GETS THE NOTICES OF ONE USER FILTERED BY CATEGORY
-router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
+router.get('/admin/contentsByFirstCategory', function (req, res) {
   //Devolver tmb la url de la coleccion infoContent
   var username = (req.session.username != "") ? req.session.username : ""
 
@@ -374,7 +374,7 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
 });
 
 // (ADMIN) GETS ALL THE NOTICES AND FLOWS OF ONE USER
-router.get('/admin/contentsAndFlows/:name', function (req, res) {
+router.get('/admin/contentsAndFlows', function (req, res) {
   
   var username = (req.session.username != "") ? req.session.username : ""
 
@@ -450,7 +450,7 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
 })
 
 // (ADMIN) GETS ALL THE NOTICES AND FLOWS OF ONE USER
-router.get('/admin/getContents/:name', function (req, res) {
+router.get('/admin/getContents', function (req, res) {
   
   var username = (req.session.username != "") ? req.session.username : ""
 
