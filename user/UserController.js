@@ -133,7 +133,7 @@ router.get('/', function (req, res) {
 });
 
 // RETURNS A USER FILTER BY NAME
-router.get('/:name', function (req, res) {
+router.get('/getUser/:name', function (req, res) {
     req.session.username = req.params.name.toLowerCase()
     
     Model.User.find({ name:req.session.username}, function (err, user) {
