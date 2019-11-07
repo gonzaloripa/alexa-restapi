@@ -136,7 +136,7 @@ router.get('/', function (req, res) {
 router.get('/:name', function (req, res) {
     req.session.username = req.params.name.toLowerCase()
     
-    Model.User.find({ name:req.session.name}, function (err, user) {
+    Model.User.find({ name:req.session.username}, function (err, user) {
       console.log(user)
         if (err || user.length == 0) return res.status(500).send("No se hallo ningún usuario con ese nombre");
         res.status(200).send({name:user[0].name});
