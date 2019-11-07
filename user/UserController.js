@@ -101,7 +101,7 @@ router.get('/getSessionName', function(req,res){
     res.status(200).send(username)
   }
   catch(e){
-    res.status(500).send(null)
+    res.status(200).send(null)
   }
 })
 
