@@ -97,11 +97,11 @@ router.get('/closeSession', function(req,res){
 router.get('/getSessionName', function(req,res){
   try{
     console.log("Sesion - ",req.session)
-    var username = (req.session.username != "") ? req.session.username : null
+    var username = (req.session.username != "") ? req.session.username : ""
     res.status(200).send(username)
   }
   catch(e){
-    res.status(200).send(null)
+    res.status(200).send("")
   }
 })
 
