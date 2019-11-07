@@ -172,8 +172,8 @@ router.get('/getFirstCategory/', function (req, res) { //'/categories/:usrid/:na
 });
 
 // GETS THE CATEGORIES OF A SINGLE USER 
-router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:name'
-    var username = req.params.name//req.session.username
+router.get('/categories', function (req, res) { //'/categories/:usrid/:name'
+    var username = req.session.username
 
     Model.User.findOne({'name':username.toLowerCase()})
     .select('_id')
@@ -189,9 +189,11 @@ router.get('/categories/:name', function (req, res) { //'/categories/:usrid/:nam
 
 
 // (ADMIN) GETS THE NOTICES OF ONE USER IN ORDER FILTERED BY FLOW
-router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
+router.get('/admin/contentsByOrder/:flow', function (req, res) {
 
-    Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+    var username = (req.session.username != "") ? req.session.username : ""
+
+    Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
       console.log(userId)
       Model.Flow.aggregate(
            [
@@ -256,7 +258,9 @@ router.get('/admin/contentsByOrder/:flow/:name', function (req, res) {
 // (ADMIN) GETS THE NOTICES OF ONE USER FILTERED BY CATEGORY 
 router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
   //Devolver tmb la url de la coleccion infoContent
-  Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+  
+  var username = (req.session.username != "") ? req.session.username : ""
+  Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
       console.log(userId)
       Model.Content.aggregate(
            [
@@ -309,8 +313,9 @@ router.get('/admin/contentsByCategory/:category/:name', function (req, res) {
 // (ADMIN) GETS THE NOTICES OF ONE USER FILTERED BY CATEGORY
 router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
   //Devolver tmb la url de la coleccion infoContent
+  var username = (req.session.username != "") ? req.session.username : ""
 
-  Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+  Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
       console.log(userId)
       Model.Content.find({user:new mongoose.Types.ObjectId(userId._id)})
       .select('categoria -_id')
@@ -367,7 +372,10 @@ router.get('/admin/contentsByFirstCategory/:name', function (req, res) {
 
 // (ADMIN) GETS ALL THE NOTICES AND FLOWS OF ONE USER
 router.get('/admin/contentsAndFlows/:name', function (req, res) {
-  Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+  
+  var username = (req.session.username != "") ? req.session.username : ""
+
+  Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
       console.log(userId)
       Model.Flow.aggregate(
            [
@@ -440,7 +448,10 @@ router.get('/admin/contentsAndFlows/:name', function (req, res) {
 
 // (ADMIN) GETS ALL THE NOTICES AND FLOWS OF ONE USER
 router.get('/admin/getContents/:name', function (req, res) {
-  Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+  
+  var username = (req.session.username != "") ? req.session.username : ""
+
+  Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
       Model.Content.aggregate(
            [
             { $match: {user:new mongoose.Types.ObjectId(userId._id)}},
@@ -470,8 +481,9 @@ router.get('/admin/getContents/:name', function (req, res) {
 
 // GETS THE NOTICES OF ONE USER IN ORDER FILTERED BY FLOW
 router.get('/contentsByOrder/:flow/:name', function (req, res) {
+    var username = (req.session.username != "") ? req.session.username : ""
 
-    Model.User.findOne({'name':req.params.name.toLowerCase()},'_id',function(err,userId){
+    Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
       console.log(userId)
       Model.Flow.aggregate([
             { $match: { nombreConjunto: req.params.flow, user:new mongoose.Types.ObjectId(userId._id) }},
@@ -671,7 +683,9 @@ router.delete('/deleteContentUnavailable',function(req,res){
       console.log("Entra en deleteContentUnavailable")
       //var content = req.body.content
       var contentId = new mongoose.Types.ObjectId(req.query.id)
-      Model.User.findOne({'name':req.query.name.toLowerCase()},'_id',
+    var username = (req.session.username != "") ? req.session.username : ""
+
+      Model.User.findOne({'name':username.toLowerCase()},'_id',
         function(err,userId){
             console.log(userId,contentId, req.query)
             Model.SingleContent.findOneAndDelete({user: userId, _id:contentId, available:false},
