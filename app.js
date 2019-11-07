@@ -12,11 +12,11 @@ var allowCrossDomain = function(req, res, next) {
 
     next();
 }
-
-app.use(allowCrossDomain);
-app.use('/users', UserController); //La ruta "/" del userController mapea con la ruta "/users"
 app.use(session({
 	'secret': 'tesis2019'
 }))
+app.use(allowCrossDomain);
+app.use('/users', UserController); //La ruta "/" del userController mapea con la ruta "/users"
+
 
 module.exports = app;
