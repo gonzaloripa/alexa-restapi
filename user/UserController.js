@@ -99,7 +99,8 @@ router.get('/getSessionName', function(req,res){
     console.log("Sesion - ",req.session)
     var username = (req.session.username != "") ? req.session.username : null
     res.status(200).send(username)
-  }catch(){
+  }
+  catch(e){
     res.status(500).send(null)
   }
 })
