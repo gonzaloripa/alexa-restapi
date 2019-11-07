@@ -95,9 +95,13 @@ router.get('/closeSession', function(req,res){
 })
 
 router.get('/getSessionName', function(req,res){
-  var username = (req.session.username != "") ? req.session.username : null
-  res.status(200).send(username)
-
+  try{
+    console.log("Sesion - ",req.session)
+    var username = (req.session.username != "") ? req.session.username : null
+    res.status(200).send(username)
+  }catch(){
+    res.status(500).send(null)
+  }
 })
 
 //-------------- DB INTERACTION ---------------------------
