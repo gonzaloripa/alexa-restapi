@@ -484,7 +484,7 @@ router.get('/admin/getContents', function (req, res) {
 
 // GETS THE NOTICES OF ONE USER IN ORDER FILTERED BY FLOW
 router.get('/contentsByOrder/:flow/:name', function (req, res) {
-    var username = (req.session.username != "") ? req.session.username : req.params.name
+    var username = req.params.name
     console.log(username, req.params.name)
     Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
       console.log(userId)
