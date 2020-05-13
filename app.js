@@ -1,4 +1,5 @@
-// app.js: for configuring the app
+// Configuracion del server
+
 var express = require('express');
 var app = express();
 var db = require('./db');
@@ -16,7 +17,7 @@ app.use(session({
 	'secret': 'tesis2019'
 }))
 app.use(allowCrossDomain);
-app.use('/users', UserController); //La ruta "/" del userController mapea con la ruta "/users"
+app.use('/users', UserController);
 
 
 module.exports = app;

@@ -1,3 +1,5 @@
 # Api Restful
 
-Servicio RestFul para Skill de Alexa implementado en NodeJs + ExpressJs. Se utilizó una base de datos NoSql con MongoDb + Mongoose como framework.
+Servicio RestFul para interactuar con nuestro entorno EUD y con la Skill de Alexa. 
+Implementado en NodeJs + ExpressJs. 
+Interactúa con una base de datos NoSql implementada con MongoDb + Mongoose como framework.

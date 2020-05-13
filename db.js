@@ -1,4 +1,4 @@
-// db.js:conectamos la base con el servidor
+// Conectamos la base alojada en Heroku con el servidor
 
 var mongoose = require('mongoose');
 mongoose.connect(process.env.MONGOLAB_BLACK_URI, function (err, res) {
