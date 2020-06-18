@@ -165,6 +165,22 @@ router.get('/getFirstCategory/', function (req, res) {
 });
 
 // Obtiene las categorías definidas por el usuario que está dentro de la sesión
+router.get('/categories/:name', function (req, res) { 
+    var username = req.params.name
+
+    Model.User.findOne({'name':username.toLowerCase()})
+    .select('_id')
+    .exec(function(err,userId){
+      console.log('UserId %s ',userId)    
+      if (err | userId == null) return res.status(404).send("No se hallaron flujos para ese usuario");
+      Model.Content.distinct('categoria',{'user': userId},function(err,resul){
+        if (err | resul.length == 0) return res.status(404).send("No se hallaron categorias para ese usuario");
+        res.status(200).send(resul);
+      })  
+    })
+});
+
+// Obtiene las categorías definidas por el usuario que está dentro de la sesión
 router.get('/categories', function (req, res) { 
     var username = req.session.username
 
