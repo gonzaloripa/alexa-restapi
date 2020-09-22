@@ -316,7 +316,7 @@ router.get('/admin/contentsByCategory/:category', function (req, res) {
 
 // (ADMIN) Obtiene los contenidos del usuario que inició sesión de la primer categoría definida
 router.get('/admin/contentsByFirstCategory', function (req, res) {
-  var username = (req.session.username != "") ? req.session.username : 'gonza'
+  var username = 'gonza' //(req.session.username != "") ? req.session.username : 'gonza'
 
   Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
     console.log(userId)
@@ -375,7 +375,7 @@ router.get('/admin/contentsByFirstCategory', function (req, res) {
 
 // (ADMIN) Obtiene todos los contenidos y grupos de contenidos del usuario que inició sesión
 router.get('/admin/contentsAndFlows', function (req, res) {
-  var username = (req.session.username != "") ? req.session.username : 'gonza'
+  var username = 'gonza' //(req.session.username != "") ? req.session.username : 'gonza'
 
   Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
   console.log(userId)
@@ -450,7 +450,7 @@ router.get('/admin/contentsAndFlows', function (req, res) {
 
 // (ADMIN) Obtiene todos los contenidos del usuario que inició sesión
 router.get('/admin/getContents', function (req, res) {  
-  var username = (req.session.username != "") ? req.session.username : 'gonza'
+  var username = 'gonza' (req.session.username != "") ? req.session.username : 'gonza'
 
   Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
     Model.Content.aggregate(
