@@ -201,7 +201,7 @@ router.get('/categories', function (req, res) {
 // (ADMIN) Obtiene los contenidos de un usuario en orden filtrado por nombre de grupo de contenido
 router.get('/admin/contentsByOrder/:flow', function (req, res) {
 
-    var username = (req.session.username != "") ? req.session.username : 'gonza'
+    var username = 'gonza' //(req.session.username != "") ? req.session.username : 'gonza'
 
     Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
       Model.Flow.aggregate(
@@ -264,7 +264,7 @@ router.get('/admin/contentsByOrder/:flow', function (req, res) {
 
 // (ADMIN) Obtiene los contenidos de un usuario filtrado por categoria
 router.get('/admin/contentsByCategory/:category', function (req, res) {  
-  var username = (req.session.username != "") ? req.session.username : 'gonza'
+  var username = 'gonza' //(req.session.username != "") ? req.session.username : 'gonza'
 
   Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
     console.log(userId)
@@ -450,7 +450,7 @@ router.get('/admin/contentsAndFlows', function (req, res) {
 
 // (ADMIN) Obtiene todos los contenidos del usuario que inició sesión
 router.get('/admin/getContents', function (req, res) {  
-  var username = 'gonza' (req.session.username != "") ? req.session.username : 'gonza'
+  var username = 'gonza' // (req.session.username != "") ? req.session.username : 'gonza'
 
   Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
     Model.Content.aggregate(
@@ -676,7 +676,7 @@ router.put('/setContentUnavailable/:name',function(req, res) {
 //Borra de la base un contenido que ya no está disponible
 router.delete('/deleteContentUnavailable',function(req,res){
   var contentId = new mongoose.Types.ObjectId(req.query.id)
-  var username = (req.session.username != "") ? req.session.username : 'gonza'
+  var username = 'gonza' //(req.session.username != "") ? req.session.username : 'gonza'
   
   Model.User.findOne({'name':username.toLowerCase()},'_id',
     function(err,userId){
