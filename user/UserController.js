@@ -148,7 +148,7 @@ router.get('/flows/:name', function (req, res) {
 
 // Obtiene la primer categoría definida por el usuario que está dentro de la sesión
 router.get('/getFirstCategory/', function (req, res) { 
-    var username = req.session.username
+    var username = 'gonza' //req.session.username
 
     Model.User.findOne({'name':username.toLowerCase()})
     .select('_id')
@@ -182,7 +182,7 @@ router.get('/categories/:name', function (req, res) {
 
 // Obtiene las categorías definidas por el usuario que está dentro de la sesión
 router.get('/categories', function (req, res) { 
-    var username = req.session.username
+    var username = 'gonza' //req.session.username
 
     Model.User.findOne({'name':username.toLowerCase()})
     .select('_id')
@@ -201,7 +201,7 @@ router.get('/categories', function (req, res) {
 // (ADMIN) Obtiene los contenidos de un usuario en orden filtrado por nombre de grupo de contenido
 router.get('/admin/contentsByOrder/:flow', function (req, res) {
 
-    var username = (req.session.username != "") ? req.session.username : ""
+    var username = (req.session.username != "") ? req.session.username : 'gonza'
 
     Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
       Model.Flow.aggregate(
@@ -264,7 +264,7 @@ router.get('/admin/contentsByOrder/:flow', function (req, res) {
 
 // (ADMIN) Obtiene los contenidos de un usuario filtrado por categoria
 router.get('/admin/contentsByCategory/:category', function (req, res) {  
-  var username = (req.session.username != "") ? req.session.username : ""
+  var username = (req.session.username != "") ? req.session.username : 'gonza'
 
   Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
     console.log(userId)
@@ -316,7 +316,7 @@ router.get('/admin/contentsByCategory/:category', function (req, res) {
 
 // (ADMIN) Obtiene los contenidos del usuario que inició sesión de la primer categoría definida
 router.get('/admin/contentsByFirstCategory', function (req, res) {
-  var username = (req.session.username != "") ? req.session.username : ""
+  var username = (req.session.username != "") ? req.session.username : 'gonza'
 
   Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
     console.log(userId)
@@ -375,7 +375,7 @@ router.get('/admin/contentsByFirstCategory', function (req, res) {
 
 // (ADMIN) Obtiene todos los contenidos y grupos de contenidos del usuario que inició sesión
 router.get('/admin/contentsAndFlows', function (req, res) {
-  var username = (req.session.username != "") ? req.session.username : ""
+  var username = (req.session.username != "") ? req.session.username : 'gonza'
 
   Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
   console.log(userId)
@@ -450,7 +450,7 @@ router.get('/admin/contentsAndFlows', function (req, res) {
 
 // (ADMIN) Obtiene todos los contenidos del usuario que inició sesión
 router.get('/admin/getContents', function (req, res) {  
-  var username = (req.session.username != "") ? req.session.username : ""
+  var username = (req.session.username != "") ? req.session.username : 'gonza'
 
   Model.User.findOne({'name':username.toLowerCase()},'_id',function(err,userId){
     Model.Content.aggregate(
@@ -676,7 +676,7 @@ router.put('/setContentUnavailable/:name',function(req, res) {
 //Borra de la base un contenido que ya no está disponible
 router.delete('/deleteContentUnavailable',function(req,res){
   var contentId = new mongoose.Types.ObjectId(req.query.id)
-  var username = (req.session.username != "") ? req.session.username : ""
+  var username = (req.session.username != "") ? req.session.username : 'gonza'
   
   Model.User.findOne({'name':username.toLowerCase()},'_id',
     function(err,userId){
@@ -699,7 +699,7 @@ router.delete('/deleteContentUnavailable',function(req,res){
 //Agrega una lista de contenidos hermanos a las colecciones 'content' e 'infocontent' sin asignarle un grupo
 router.post('/addSiblingContents',function(req, res) {
   var infoArray = req.body.siblings
-  var username = req.session.username
+  var username = 'gonza' //req.session.username
 
   Model.InfoContent.insertMany( infoArray, function(err,contents){
     if (err) return res.status(500).send("No se pudieron asignar los contents para el usuario");
@@ -720,7 +720,7 @@ router.post('/addSiblingContents',function(req, res) {
 //Agrega un contenido a las colecciones 'content' e 'infocontent' sin asignarle un grupo
 router.post('/addContent',function(req, res) {      
   var content = req.body.content
-  var username = req.session.username
+  var username = 'gonza' //req.session.username
 
   Model.InfoContent.create(content, function(err,content){
     if (err) return res.status(500).send("No se pudo asignar el content para el usuario")
@@ -743,7 +743,7 @@ router.post('/createFlow', function (req, res) {
     var contentsId = req.body.contents.map((content)=>{
         return content.name.charAt(0).toUpperCase() + content.name.slice(1).toLowerCase()
     })
-    var username = req.session.username
+    var username = 'gonza' //req.session.username
     
     Model.User.findOne({'name':username.toLowerCase()}, '_id', function(err,userId){
       Model.Content.find({ user:userId, identificador: { $in: contentsId }, available:true}, '_id identificador',{lean:true}
@@ -794,7 +794,7 @@ router.post('/createFlow', function (req, res) {
 
 //Cambia el orden de los contenidos dentro de un grupo de contenidos (actualiza la coleccion 'flows')
 router.put('/updateFlow', function (req, res) {
-    var username = req.session.username
+    var username = 'gonza' //req.session.username
 
     Model.User.findOne({'name':username.toLowerCase()}, '_id', function(err,userId){
       if (err | userId == "") return res.status(404).send("No se pudo hallar al usuario");
